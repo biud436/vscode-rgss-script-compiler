@@ -2,10 +2,13 @@
     "name": "rgss-script-compiler",
     "displayName": "rgss-script-compiler",
     "description": "This extension allows you to serialize a script text",
+    "repository": "https://github.com/biud436/vscode-rgss-script-compiler",
     "version": "0.0.1",
     "engines": {
         "vscode": "^1.65.0"
     },
+    "publisher": "biud436",
+    "license": "MIT",
     "categories": [
         "Other"
     ],
@@ -38,7 +41,8 @@
         "watch": "tsc -watch -p ./",
         "pretest": "yarn run compile && yarn run lint",
         "lint": "eslint src --ext ts",
-        "test": "node ./out/test/runTest.js"
+        "test": "node ./out/test/runTest.js",
+        "publish": "vsce package"
     },
     "devDependencies": {
         "@prettier/plugin-ruby": "^2.0.0",
