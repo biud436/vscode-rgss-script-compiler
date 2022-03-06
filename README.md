@@ -1,6 +1,6 @@
 # Introduction
 
-RGSS Script Compiler는 `VSCode Extension` 입니다. 이 확장을 사용하면 Visual Studio Code에서 RPG Maker VX Ace의 스크립트를 직접 편집할 수 있습니다.
+`RGSS Script Compiler` is the extension of Text Editor called `Visual Studio Code`. if you are using this extension, you can modify script files and create the bundle file called `Scripts.rvdata2` in `Visual Studio Code` without internal Script Editor directly.
 
 # Usage
 
