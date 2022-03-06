@@ -26,9 +26,19 @@ Ctrl (Cmd) + Shift + P 를 누르고, `rgss-script-compiler: Unpack`을 선택�
 
 스크립트를 편집하고, Ctrl (Cmd) + Shift + P 를 누르면, `rgss-script-compiler: Compile`을 선택하여 스크립트 파일을 직렬화(Serialize)할 수 있습니다.
 
-# 저작권 소유자
+# Maintainer and Contributors
 
--   Biud436 (https://github.com/biud436)
--   Korokke (gksdntjr714@naver.com)
--   CaptainJet (https://github.com/CaptainJet/RM-Gosu)
--   Yoji Ojima (Gotcha Gotcha Games, KADOKAWA)
+-   Extension Maintainer
+
+    -   Biud436 (https://github.com/biud436)
+
+-   `RGSS3/plugins/rxscript.rb`
+
+    -   Korokke (gksdntjr714@naver.com)
+
+-   `RGSS3/modules/Table.rb`
+
+    -   CaptainJet (https://github.com/CaptainJet/RM-Gosu)
+
+-   `RGSS3/RPG.rb`
+    -   Yoji Ojima (Gotcha Gotcha Games, KADOKAWA)
