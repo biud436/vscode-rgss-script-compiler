@@ -148,7 +148,8 @@ module RXDATA
         if File.exists? File.join(indir, 'info.txt')
             input = File.open(File.join(indir, 'info.txt'), 'r')
             input.read.each_line do |line|
-                files.push(File.join(indir, line.gsub("\n", '')))
+                filename = line.gsub("\n", '')
+                files.push(File.join(indir, filename))
             end
             input.close
         else
@@ -160,6 +161,7 @@ module RXDATA
             input = File.open(rb, 'r')
             section = RXDATA.GetRandomSection
             title = File.basename(rb, '.rb')
+            title = ' ' if title =~ /^(?:Untitled)\_[\d]+$/
             text = RXDATA.ZlibDeflate(input.read)
             scripts.push([section, title, text])
             input.close
