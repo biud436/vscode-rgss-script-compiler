@@ -6,6 +6,7 @@ import { ConfigService } from "./ConfigService";
 import { LoggingService } from "./LoggingService";
 import { Packer } from "./Packer";
 import { Unpacker } from "./Unpacker";
+import path = require("path");
 
 namespace Helper {
     export class Extension {
@@ -19,6 +20,7 @@ namespace Helper {
                 "rgss-script-compiler.setGamePath",
                 async () => {
                     await setGamePath(this.configService, this.loggingService);
+                    updateStatusBarItem();
                 }
             );
         }
@@ -181,6 +183,19 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(...statusBarItems);
     context.subscriptions.push(...helper.getCommands());
+    context.subscriptions.push(
+        vscode.workspace.onDidDeleteFiles((e) => {
+            e.files.forEach((e) => {
+                if (path.posix.join(e.path).includes("rgss-compiler.json")) {
+                    loggingService.info("설정파일이 삭제되었습니다.");
+
+                    statusBarItems.slice(1).forEach((e) => {
+                        e.hide();
+                    });
+                }
+            });
+        })
+    );
 
     updateStatusBarItem();
 }
