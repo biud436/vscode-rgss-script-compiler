@@ -12,12 +12,12 @@ const TARGET_SCRIPT_FILE_NAME = "Scripts.rvdata2";
 
 namespace RGSS {
     export class Unpacker {
-        private _targetFile: string;
-        private _isReady: boolean;
+        protected _targetFile: string;
+        protected _isReady: boolean;
 
         constructor(
-            private readonly configService: ConfigService,
-            private readonly loggingService: LoggingService
+            protected readonly configService: ConfigService,
+            protected readonly loggingService: LoggingService
         ) {
             this._targetFile = "";
             this._isReady = false;

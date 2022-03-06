@@ -25,6 +25,11 @@ module EntryPoint
                         '--input INPUT',
                         'Sets the script file ends with named rvdata2',
                     ) { |v| options[:input] = v }
+                    opts.on(
+                        '-c',
+                        '--compress',
+                        'Compress script files to Scripts.rvdata2',
+                    )
                     opts.on('-h', '--help', 'Prints the help documentaion') do
                         puts opts
                         exit
@@ -38,13 +43,18 @@ module EntryPoint
 
             @vscode_workspace = options[:output]
             @scripts_file = options[:input]
+            @compress = options[:compress]
         end
 
         ##
         # 스크립트 파일을 내보냅니다.
         #
         def start
-            extract_script(@vscode_workspace, @scripts_file)
+            if @compress
+                compress_script(@vscode_workspace, @scripts_file)
+            else
+                extract_script(@vscode_workspace, @scripts_file)
+            end
         end
 
         private
@@ -64,6 +74,26 @@ module EntryPoint
                 Dir.mkdir(extract_folder) if !File.exist?(extract_folder)
 
                 RXDATA.ExtractScript(extract_folder, @scripts_file)
+            rescue => e
+                puts e
+            end
+        end
+
+        ##
+        # Compress Script file.
+        #
+        # @param [String] vscode_workspace
+        # @param [String] scripts_file
+        # @return [void]
+        def compress_script(vscode_workspace, scripts_file)
+            begin
+                root_folder = @vscode_workspace
+                extract_folder =
+                    File.join(root_folder, 'extract').gsub('\\', '/')
+
+                Dir.mkdir(extract_folder) if !File.exist?(extract_folder)
+
+                RXDATA.CompressScript(extract_folder, @scripts_file)
             rescue => e
                 puts e
             end

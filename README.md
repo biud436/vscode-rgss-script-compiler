@@ -1,70 +1,34 @@
-# rgss-script-runner README
+# Introduction
 
-This is the README for your extension "rgss-script-runner". After writing up a brief description, we recommend including the following sections.
+RGSS Script Compiler는 `VSCode Extension` 입니다. 이 확장을 사용하면 Visual Studio Code에서 RPG Maker VX Ace의 스크립트를 직접 편집할 수 있습니다.
 
-## Features
+# Usage
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+본 확장은 macOS 와 Windows에서 사용할 수 있도록 설계되었습니다. RPG Maker VX Ace의 제안된 기능으로는 편집할 수 없습니다. 따라서 컴퓨터에 최신 Ruby v2.6.8 이상을 설치해야 합니다.
 
-For example if there is an image subfolder under your extension project workspace:
+```bash
+ruby -v
+```
 
-\!\[feature X\]\(images/feature-x.png\)
+위 명령어를 호출하여 루비 버전이 정상적으로 출력되는 지 확인하세요.
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+이 확장은 명령어 기반으로 동작합니다.
 
-## Requirements
+## 게임 폴더 설정
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+Ctrl (Cmd) + Shift + P 를 누르고, `rgss-script-compiler: Set Game Path`을 선택하여 게임 폴더를 설정하세요.
 
-## Extension Settings
+## 스크립트 가져오기
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+Ctrl (Cmd) + Shift + P 를 누르고, `rgss-script-compiler: Unpack`을 선택하여 스크립트 파일을 역직렬화(Deserialize)합니다.
 
-For example:
+## 스크립트 저장하기
 
-This extension contributes the following settings:
+스크립트를 편집하고, Ctrl (Cmd) + Shift + P 를 누르면, `rgss-script-compiler: Pack`을 선택하여 스크립트 파일을 직렬화(Serialize)할 수 있습니다.
 
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
+# 저작권 소유자
 
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
------------------------------------------------------------------------------------------------------------
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+-   Biud436 (https://github.com/biud436)
+-   Korokke (gksdntjr714@naver.com)
+-   CaptainJet (https://github.com/CaptainJet/RM-Gosu)
+-   Yoji Ojima (Gotcha Gotcha Games, KADOKAWA)

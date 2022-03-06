@@ -22,10 +22,10 @@ export type ExtractScriptFileFunction = (
 ) => void;
 
 export class RubyScriptService {
-    private _process!: cp.ChildProcess | undefined | null;
-    private _commandLineOptions: RubyRunnerCommandOptions;
-    private _callback: RubyProcessCallback;
-    private _args: string[] | undefined;
+    protected _process!: cp.ChildProcess | undefined | null;
+    protected _commandLineOptions: RubyRunnerCommandOptions;
+    protected _callback: RubyProcessCallback;
+    protected _args: string[] | undefined;
 
     get internel() {
         return this._process;
@@ -40,8 +40,8 @@ export class RubyScriptService {
      * @param callback
      */
     constructor(
-        private readonly configService: ConfigService,
-        private readonly loggingService: LoggingService,
+        protected readonly configService: ConfigService,
+        protected readonly loggingService: LoggingService,
         header: RubyRunnerCommandOptions,
         callback: RubyProcessCallback
     ) {
@@ -104,12 +104,29 @@ export class RubyScriptService {
     }
 }
 
+export class RubyCompressScriptService extends RubyScriptService {
+    makeCommand() {
+        super.makeCommand();
+
+        this._args?.push("--compress");
+    }
+}
+
 export function extractScriptFiles(
     loggingService: LoggingService,
     rubyScriptService: RubyScriptService
 ) {
     rubyScriptService.run()!.onExit((code: number, signal: any) => {
         loggingService.info(`${code} 스크립트 추출이 완료되었습니다.`);
+    });
+    rubyScriptService.pendingTerminate();
+}
+
+export function compressScriptFiles<
+    T extends RubyCompressScriptService = RubyCompressScriptService
+>(loggingService: LoggingService, rubyScriptService: T) {
+    rubyScriptService.run()!.onExit((code: number, signal: any) => {
+        loggingService.info(`${code} 스크립트 컴파일이 완료되었습니다.`);
     });
     rubyScriptService.pendingTerminate();
 }

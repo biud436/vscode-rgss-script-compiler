@@ -3,6 +3,7 @@ import { RubyScriptService } from "./commands/ExtractScriptFiles";
 import { setGamePath } from "./commands/SetGamePath";
 import { ConfigService } from "./ConfigService";
 import { LoggingService } from "./LoggingService";
+import { Packer } from "./Packer";
 import { Unpacker } from "./Unpacker";
 
 export function activate(context: vscode.ExtensionContext) {
@@ -24,14 +25,14 @@ export function activate(context: vscode.ExtensionContext) {
     loggingService.info("RGSS Script Compiler가 실행되었습니다");
 
     // 게임 폴더 설정
-    let disposable = vscode.commands.registerCommand(
+    const setGamePathCommand = vscode.commands.registerCommand(
         "rgss-script-compiler.setGamePath",
         () => {
             setGamePath(configService, loggingService);
         }
     );
 
-    let unpackCommand = vscode.commands.registerCommand(
+    const unpackCommand = vscode.commands.registerCommand(
         "rgss-script-compiler.unpack",
         () => {
             if (!configService) {
@@ -48,9 +49,30 @@ export function activate(context: vscode.ExtensionContext) {
         }
     );
 
+    const compileCommand = vscode.commands.registerCommand(
+        "rgss-script-compiler.compile",
+        () => {
+            if (!configService) {
+                loggingService.info("작업 폴더가 없습니다.");
+                return;
+            }
+
+            loggingService.info(
+                `작업 폴더는 ${configService.getMainGameFolder().path} 입니다.`
+            );
+
+            const bundler = new Packer(configService, loggingService);
+            bundler.pack();
+        }
+    );
+
     loggingService.show();
 
-    context.subscriptions.push(disposable, unpackCommand);
+    context.subscriptions.push(
+        setGamePathCommand,
+        unpackCommand,
+        compileCommand
+    );
 }
 
 export function deactivate() {}
