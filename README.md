@@ -6,6 +6,12 @@
 <img width="2016" alt="image" src="https://user-images.githubusercontent.com/13586185/156922009-39d4b686-cd9b-463b-9884-3c42d806486e.png">
 </p>
 
+`VSCode Marketplace` link is here.
+
+[https://marketplace.visualstudio.com/items?itemName=biud436.rgss-script-compiler](https://marketplace.visualstudio.com/items?itemName=biud436.rgss-script-compiler)
+
+This expansion is still under development.
+
 # Usage
 
 본 확장은 macOS 와 Windows에서 사용할 수 있도록 설계되었습니다. RPG Maker VX Ace의 제한된 기능으로는 편집할 수 없습니다. 따라서 컴퓨터에 최신 Ruby v2.6.8 이상을 설치해야 합니다.
