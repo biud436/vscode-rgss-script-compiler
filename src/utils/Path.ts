@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import * as path from "path";
 
 class PathImpl {
     platform: NodeJS.Platform;
@@ -13,7 +14,7 @@ class PathImpl {
                 return url.fsPath;
             default:
             case "darwin":
-                return url.path;
+                return path.posix.join(url.path);
         }
     }
 }

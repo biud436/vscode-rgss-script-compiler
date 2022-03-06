@@ -8,23 +8,22 @@ import { Path } from "../utils/Path";
  *
  * @param logging
  */
-export function setGamePath(
+export async function setGamePath(
     configService: ConfigService,
     loggingService: LoggingService
 ) {
-    vscode.window
-        .showOpenDialog({
-            canSelectFiles: false,
-            canSelectFolders: true,
-            canSelectMany: false,
-            openLabel: "게임 폴더 설정",
-        })
-        .then((value) => {
-            if (value) {
-                loggingService.info(
-                    `설정된 게임 폴더는 ${Path.resolve(value[0])} 입니다`
-                );
-                configService.setGameFolder(value[0]);
-            }
-        });
+    const value = await vscode.window.showOpenDialog({
+        canSelectFiles: false,
+        canSelectFolders: true,
+        canSelectMany: false,
+        openLabel: "게임 폴더 설정",
+    });
+
+    if (value) {
+        loggingService.info(
+            `설정된 게임 폴더는 ${Path.resolve(value[0])} 입니다`
+        );
+        configService.setGameFolder(value[0]);
+        await configService.saveConfig();
+    }
 }

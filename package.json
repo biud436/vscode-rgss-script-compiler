@@ -12,7 +12,8 @@
     "activationEvents": [
         "onCommand:rgss-script-compiler.setGamePath",
         "onCommand:rgss-script-compiler.unpack",
-        "onCommand:rgss-script-compiler.compile"
+        "onCommand:rgss-script-compiler.compile",
+        "*"
     ],
     "main": "./out/extension.js",
     "contributes": {
