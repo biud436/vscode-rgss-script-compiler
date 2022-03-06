@@ -161,7 +161,7 @@ module RXDATA
             input = File.open(rb, 'r')
             section = RXDATA.GetRandomSection
             title = File.basename(rb, '.rb')
-            title = ' ' if title =~ /^(?:Untitled)\_[\d]+$/
+            title = '' if title =~ /^(?:Untitled)\_[\d]+$/
             text = RXDATA.ZlibDeflate(input.read)
             scripts.push([section, title, text])
             input.close
