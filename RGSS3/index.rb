@@ -11,7 +11,7 @@ raise 'Ruby 1.9.2 or later is required.' if RUBY_VERSION <= '1.9.1'
 module EntryPoint
     class App
         def initialize
-            options = {}
+            options = { compress: false }
             OptionParser
                 .new do |opts|
                     opts.banner = 'Usage: rvdata2 [options]'
@@ -29,7 +29,7 @@ module EntryPoint
                         '-c',
                         '--compress',
                         'Compress script files to Scripts.rvdata2',
-                    )
+                    ) { |v| options[:compress] = v }
                     opts.on('-h', '--help', 'Prints the help documentaion') do
                         puts opts
                         exit
@@ -51,6 +51,7 @@ module EntryPoint
         #
         def start
             if @compress
+                p '스크립트를 압축하겠습니다.'
                 compress_script(@vscode_workspace, @scripts_file)
             else
                 extract_script(@vscode_workspace, @scripts_file)

@@ -5,11 +5,22 @@ import {
 } from "./commands/ExtractScriptFiles";
 import { ConfigService } from "./ConfigService";
 import { LoggingService } from "./LoggingService";
-import { Unpacker } from "./Unpacker";
+import { TARGET_SCRIPT_FILE_NAME, Unpacker } from "./Unpacker";
+import * as path from "path";
 
 export class Packer extends Unpacker {
     constructor(configService: ConfigService, loggingService: LoggingService) {
         super(configService, loggingService);
+    }
+
+    initWithTargetFile() {
+        const root = this.configService.getMainGameFolder().path;
+        const targetFile = path
+            .join(root, "Data", TARGET_SCRIPT_FILE_NAME)
+            .replace(/\\/g, "/");
+
+        this._targetFile = targetFile;
+        this._isReady = true;
     }
 
     pack() {
@@ -38,7 +49,10 @@ export class Packer extends Unpacker {
                 }
             );
 
-            compressScriptFiles(this.loggingService, rubyScriptService);
+            compressScriptFiles<RubyCompressScriptService>(
+                this.loggingService,
+                rubyScriptService
+            );
         } catch (e) {
             this.loggingService.info((<Error>e).message);
         }

@@ -8,9 +8,8 @@ import {
     RubyScriptService,
 } from "./commands/ExtractScriptFiles";
 
-const TARGET_SCRIPT_FILE_NAME = "Scripts.rvdata2";
-
 namespace RGSS {
+    export const TARGET_SCRIPT_FILE_NAME = "Scripts.rvdata2";
     export class Unpacker {
         protected _targetFile: string;
         protected _isReady: boolean;
