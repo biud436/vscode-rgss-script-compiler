@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
 import { Path } from "./utils/Path";
+import { LoggingService } from "./LoggingService";
 
 namespace RGSS {
     export type config = {
@@ -47,7 +48,7 @@ export class ConfigService {
         );
     }
 
-    public async loadConfig() {
+    public async loadConfig(loggingService?: LoggingService) {
         if (!vscode.workspace.workspaceFolders) {
             return vscode.window.showInformationMessage(
                 "No folder or workspace opened"
@@ -58,10 +59,10 @@ export class ConfigService {
         const fileUri = folderUri.with({
             path: path.posix.join(folderUri.path, "rgss-compiler.json"),
         });
-
         const readData = await vscode.workspace.fs.readFile(fileUri);
         const jsonData = Buffer.from(readData).toString("utf8");
         this.config = {
+            ...this.config,
             mainGameFolder: vscode.Uri.file(
                 JSON.parse(jsonData).mainGameFolder
             ),

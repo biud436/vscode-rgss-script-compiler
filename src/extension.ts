@@ -133,6 +133,19 @@ let statusBarItems = [
 
 let gameFolderPathWather: vscode.StatusBarItem | undefined;
 
+function showGamePathWatcher(
+    context: vscode.ExtensionContext,
+    configService: ConfigService
+) {
+    const config = configService.getConfig();
+    gameFolderPathWather =
+        Helper.StatusBarProvider.getGameFolderPathStatusBarItem(
+            config.mainGameFolder!
+        );
+    context.subscriptions.push(gameFolderPathWather);
+    gameFolderPathWather.show();
+}
+
 export function activate(context: vscode.ExtensionContext) {
     const loggingService = new LoggingService();
     const configService = new ConfigService();
@@ -140,49 +153,41 @@ export function activate(context: vscode.ExtensionContext) {
     // 컨텍스트 설정
     configService.setExtensionContext(context);
 
-    configService
-        .loadConfig()
-        .then((e) => {
-            const config = configService.getConfig();
-            gameFolderPathWather =
-                Helper.StatusBarProvider.getGameFolderPathStatusBarItem(
-                    config.mainGameFolder!
-                );
-            context.subscriptions.push(gameFolderPathWather);
-            gameFolderPathWather.show();
-        })
-        .catch((e) => {
-            if (gameFolderPathWather) {
-                gameFolderPathWather.hide();
-            }
-        });
-
-    // 헬퍼 생성
-    const helper = new Helper.Extension(configService, loggingService);
-
     if (!vscode.workspace.workspaceFolders) {
         loggingService.info("작업 폴더가 지정되어 있지 않습니다.");
         throw new Error("작업 폴더가 지정되어 있지 않습니다.");
     }
 
-    context.subscriptions.push(...statusBarItems);
-
     const workspaces = vscode.workspace.workspaceFolders;
     configService.setVSCodeWorkSpace(workspaces[0].uri);
-    configService.loadConfig();
+
+    // 헬퍼 생성
+    const helper = new Helper.Extension(configService, loggingService);
 
     loggingService.info("RGSS Script Compiler가 실행되었습니다");
 
+    configService
+        .loadConfig(loggingService)
+        .then((e) => {
+            showGamePathWatcher(context, configService);
+        })
+        .catch((e) => {
+            statusBarItems.slice(1).forEach((e) => {
+                e.hide();
+            });
+        });
+
     loggingService.show();
 
+    context.subscriptions.push(...statusBarItems);
     context.subscriptions.push(...helper.getCommands());
 
     updateStatusBarItem();
 }
 
 function updateStatusBarItem(): void {
-    statusBarItems.forEach((item) => {
-        item.show();
+    statusBarItems.forEach((e) => {
+        e.show();
     });
 }
 
