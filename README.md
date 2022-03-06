@@ -2,6 +2,10 @@
 
 `RGSS Script Compiler` is the extension of Text Editor called `Visual Studio Code`. if you are using this extension, you can modify script files and create the bundle file called `Scripts.rvdata2` in `Visual Studio Code` without internal Script Editor directly.
 
+<p style="text-align:center">
+<img width="2016" alt="image" src="https://user-images.githubusercontent.com/13586185/156922009-39d4b686-cd9b-463b-9884-3c42d806486e.png">
+</p>
+
 # Usage
 
 본 확장은 macOS 와 Windows에서 사용할 수 있도록 설계되었습니다. RPG Maker VX Ace의 제안된 기능으로는 편집할 수 없습니다. 따라서 컴퓨터에 최신 Ruby v2.6.8 이상을 설치해야 합니다.
