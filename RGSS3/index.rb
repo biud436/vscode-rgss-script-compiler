@@ -51,7 +51,6 @@ module EntryPoint
         #
         def start
             if @compress
-                p '스크립트를 압축하겠습니다.'
                 compress_script(@vscode_workspace, @scripts_file)
             else
                 extract_script(@vscode_workspace, @scripts_file)
