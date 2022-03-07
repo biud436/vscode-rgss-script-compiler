@@ -1,68 +1,78 @@
 {
-    "name": "rgss-script-compiler",
-    "displayName": "rgss-script-compiler",
-    "description": "This extension allows you to serialize a script text",
-    "repository": "https://github.com/biud436/vscode-rgss-script-compiler",
-    "version": "0.0.1",
-    "engines": {
-        "vscode": "^1.65.0"
-    },
-    "publisher": "biud436",
-    "license": "MIT",
-    "categories": [
-        "Other"
-    ],
-    "activationEvents": [
-        "onCommand:rgss-script-compiler.setGamePath",
-        "onCommand:rgss-script-compiler.unpack",
-        "onCommand:rgss-script-compiler.compile",
-        "*"
-    ],
-    "main": "./out/extension.js",
-    "contributes": {
-        "commands": [
-            {
-                "command": "rgss-script-compiler.setGamePath",
-                "title": "rgss-script-compiler: Set Game Path"
-            },
-            {
-                "command": "rgss-script-compiler.unpack",
-                "title": "rgss-script-compiler: Unpack"
-            },
-            {
-                "command": "rgss-script-compiler.compile",
-                "title": "rgss-script-compiler: Compile"
-            }
-        ]
-    },
-    "scripts": {
-        "vscode:prepublish": "yarn run compile",
-        "compile": "tsc -p ./",
-        "watch": "tsc -watch -p ./",
-        "pretest": "yarn run compile && yarn run lint",
-        "lint": "eslint src --ext ts",
-        "test": "node ./out/test/runTest.js",
-        "publish": "vsce package"
-    },
-    "devDependencies": {
-        "@prettier/plugin-ruby": "^2.0.0",
-        "@types/glob": "^7.2.0",
-        "@types/mocha": "^9.1.0",
-        "@types/node": "14.x",
-        "@types/vscode": "^1.65.0",
-        "@typescript-eslint/eslint-plugin": "^5.12.1",
-        "@typescript-eslint/parser": "^5.12.1",
-        "@vscode/test-electron": "^2.1.2",
-        "eslint": "^8.9.0",
-        "glob": "^7.2.0",
-        "mocha": "^9.2.1",
-        "prettier": "^2.5.1",
-        "typescript": "^4.5.5"
-    },
-    "dependencies": {
-        "@types/marshal": "^0.5.1",
-        "chalk": "^4",
-        "marshal": "^0.5.3",
-        "uuid": "^8.3.2"
-    }
+  "name": "rgss-script-compiler",
+  "displayName": "RGSS Script Compiler",
+  "description": "This extension allows you to compile script files as a bundle file called 'Scripts.rvdata2'",
+  "repository": "https://github.com/biud436/vscode-rgss-script-compiler",
+  "version": "0.0.3",
+  "engines": {
+    "vscode": "^1.65.0"
+  },
+  "publisher": "biud436",
+  "license": "MIT",
+  "categories": [
+    "Other"
+  ],
+  "icon": "images/icon256x256.png",
+  "activationEvents": [
+    "onCommand:rgss-script-compiler.setGamePath",
+    "onCommand:rgss-script-compiler.unpack",
+    "onCommand:rgss-script-compiler.compile",
+    "workspaceContains:Game.ini",
+    "*"
+  ],
+  "bugs": {
+    "url": "https://github.com/biud436/vscode-rgss-script-compiler/issues",
+    "email": "biud436@gmail.com"
+  },
+  "keywords": [
+    "rgss",
+    "rpg maker vx ace"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "rgss-script-compiler.setGamePath",
+        "title": "rgss-script-compiler: Set Game Path"
+      },
+      {
+        "command": "rgss-script-compiler.unpack",
+        "title": "rgss-script-compiler: Unpack"
+      },
+      {
+        "command": "rgss-script-compiler.compile",
+        "title": "rgss-script-compiler: Compile"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "yarn run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "yarn run compile && yarn run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js",
+    "publish": "vsce package"
+  },
+  "devDependencies": {
+    "@prettier/plugin-ruby": "^2.0.0",
+    "@types/glob": "^7.2.0",
+    "@types/mocha": "^9.1.0",
+    "@types/node": "14.x",
+    "@types/vscode": "^1.65.0",
+    "@typescript-eslint/eslint-plugin": "^5.12.1",
+    "@typescript-eslint/parser": "^5.12.1",
+    "@vscode/test-electron": "^2.1.2",
+    "eslint": "^8.9.0",
+    "glob": "^7.2.0",
+    "mocha": "^9.2.1",
+    "prettier": "^2.5.1",
+    "typescript": "^4.5.5"
+  },
+  "dependencies": {
+    "@types/marshal": "^0.5.1",
+    "chalk": "^4",
+    "marshal": "^0.5.3",
+    "uuid": "^8.3.2"
+  }
 }

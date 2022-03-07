@@ -14,41 +14,35 @@ This expansion is still under development.
 
 # Usage
 
-본 확장은 macOS 와 Windows에서 사용할 수 있도록 설계되었습니다. RPG Maker VX Ace의 제한된 기능으로는 편집할 수 없습니다. 따라서 컴퓨터에 최신 Ruby v2.6.8 이상을 설치해야 합니다.
+This extension is designed for use in macOS and Windows 11. Before starting this extension, first up, Please you must install Ruby v2.6.8 or above on you local machine. Here's how to check if Ruby is installed on your computer.
+
+Try this command on your terminal or command prompt.
 
 ```bash
 ruby -v
 ```
 
-위 명령어를 호출하여 루비 버전이 정상적으로 출력되는 지 확인하세요.
+You call the command above to see if the ruby version is output normally like as `v2.6.8`
 
-이 확장은 명령어 기반으로 동작합니다.
+## Video
 
-## 게임 폴더 설정
+Please refer to the following video for detailed explanation.
 
-Ctrl (Cmd) + Shift + P 를 누르고, `rgss-script-compiler: Set Game Path`을 선택하여 게임 폴더를 설정하세요.
-
-## 스크립트 가져오기
-
-Ctrl (Cmd) + Shift + P 를 누르고, `rgss-script-compiler: Unpack`을 선택하여 스크립트 파일을 역직렬화(Deserialize)합니다.
-
-## 스크립트 저장하기
-
-스크립트를 편집하고, Ctrl (Cmd) + Shift + P 를 누르면, `rgss-script-compiler: Compile`을 선택하여 스크립트 파일을 직렬화(Serialize)할 수 있습니다.
+![IMG](https://img.youtube.com/vi/-8LVDPLnVkc/0.jpg)(https://www.youtube.com/watch?v=-8LVDPLnVkc)
 
 # Maintainer and Contributors
 
--   Extension Maintainer
+- Extension Maintainer
 
-    -   Biud436 (https://github.com/biud436)
+  - Biud436 (https://github.com/biud436)
 
--   `RGSS3/plugins/rxscript.rb`
+- `RGSS3/plugins/rxscript.rb`
 
-    -   Korokke (gksdntjr714@naver.com)
+  - Korokke (gksdntjr714@naver.com)
 
--   `RGSS3/modules/Table.rb`
+- `RGSS3/modules/Table.rb`
 
-    -   CaptainJet (https://github.com/CaptainJet/RM-Gosu)
+  - CaptainJet (https://github.com/CaptainJet/RM-Gosu)
 
--   `RGSS3/RPG.rb`
-    -   Yoji Ojima (Gotcha Gotcha Games, KADOKAWA)
+- `RGSS3/RPG.rb`
+  - Yoji Ojima (Gotcha Gotcha Games, KADOKAWA)
