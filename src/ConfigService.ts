@@ -3,104 +3,245 @@ import * as fs from "fs";
 import * as path from "path";
 import { Path } from "./utils/Path";
 import { LoggingService } from "./LoggingService";
+import { Mutex } from "./Mutex";
 
 namespace RGSS {
-    export type config = {
-        mainGameFolder?: vscode.Uri;
-        workSpace?: vscode.Uri;
-        extensionContext?: vscode.ExtensionContext;
-    };
+  export type VERSION = "RGSS1" | "RGSS2" | "RGSS3";
+
+  export type config = {
+    /**
+     * Sets or Gets the path of the main game folder.
+     */
+    mainGameFolder?: vscode.Uri;
+    /**
+     * Sets or Gets the path of the workspace.
+     */
+    workSpace?: vscode.Uri;
+
+    /**
+     * Sets or Gets the path of the extension folder.
+     */
+    extensionContext?: vscode.ExtensionContext;
+
+    /**
+     * Sets or Gets the RGSS version.
+     */
+    rgssVersion?: VERSION;
+  };
+
+  export type MapOfPath = "RGSS1" | "RGSS2" | "RGSS3";
+
+  export type Path = {
+    [key in MapOfPath]: vscode.Uri;
+  } & {
+    RGSS1: vscode.Uri;
+    RGSS2: vscode.Uri;
+    RGSS3: vscode.Uri;
+  };
 }
 
 export class ConfigService {
-    private config: RGSS.config;
+  /**
+   * Gets or Sets the configuration.
+   */
+  private config: RGSS.config;
 
-    constructor() {
-        this.config = {};
+  /**
+   * ! ON LOAD GAME FOLDER EVENT DISPATCHER.
+   *
+   * Creates an event that is fired when the main game folder is changed.
+   */
+  public ON_LOAD_GAME_FOLDER: vscode.EventEmitter<string> =
+    new vscode.EventEmitter<string>();
+
+  /**
+   * ! ON LOAD RGSS VERSION EVENT DISPATCHER
+   */
+  private ON_LOAD_RGSS_VERSION: vscode.EventEmitter<void> =
+    new vscode.EventEmitter<void>();
+
+  /**
+   * TARGET_SCRIPT_FILE_NAME
+   */
+  public static TARGET_SCRIPT_FILE_NAME = "Scripts.rvdata2";
+
+  constructor(private readonly loggingService: LoggingService) {
+    this.config = {};
+  }
+
+  public async setGameFolder(gameFolder: vscode.Uri) {
+    this.config.mainGameFolder = gameFolder;
+    this.detectRGSSVersion();
+  }
+
+  /**
+   * Writes a file named "rgss-compiler.json" in the workspace folder.
+   *
+   * @returns
+   */
+  public async saveConfig() {
+    if (!vscode.workspace.workspaceFolders) {
+      return vscode.window.showInformationMessage(
+        "No folder or workspace opened"
+      );
     }
 
-    public setGameFolder(gameFolder: vscode.Uri) {
-        this.config.mainGameFolder = gameFolder;
+    const folderUri = vscode.workspace.workspaceFolders![0].uri;
+    const fileUri = folderUri.with({
+      path: path.posix.join(folderUri.path, "rgss-compiler.json"),
+    });
+
+    await vscode.workspace.fs.writeFile(
+      fileUri,
+      Buffer.from(
+        JSON.stringify({
+          mainGameFolder: path.posix.join(this.config.mainGameFolder?.path!),
+          rgssVersion: this.config.rgssVersion,
+        }),
+        "utf8"
+      )
+    );
+  }
+
+  /**
+   * Loads a file named "rgss-compiler.json" in the workspace folder.
+   *
+   * @param loggingService
+   * @returns
+   */
+  public async loadConfig(loggingService?: LoggingService) {
+    if (!vscode.workspace.workspaceFolders) {
+      return vscode.window.showInformationMessage(
+        "No folder or workspace opened"
+      );
     }
 
-    public async saveConfig() {
-        if (!vscode.workspace.workspaceFolders) {
-            return vscode.window.showInformationMessage(
-                "No folder or workspace opened"
-            );
-        }
+    const folderUri = vscode.workspace.workspaceFolders![0].uri;
+    const fileUri = folderUri.with({
+      path: path.posix.join(folderUri.path, "rgss-compiler.json"),
+    });
+    const readData = await vscode.workspace.fs.readFile(fileUri);
+    const jsonData = Buffer.from(readData).toString("utf8");
+    this.config = {
+      ...this.config,
+      mainGameFolder: vscode.Uri.file(JSON.parse(jsonData).mainGameFolder),
+    };
 
-        const folderUri = vscode.workspace.workspaceFolders![0].uri;
-        const fileUri = folderUri.with({
-            path: path.posix.join(folderUri.path, "rgss-compiler.json"),
-        });
+    vscode.window.showInformationMessage(jsonData);
+  }
 
-        await vscode.workspace.fs.writeFile(
-            fileUri,
-            Buffer.from(
-                JSON.stringify({
-                    mainGameFolder: path.posix.join(
-                        this.config.mainGameFolder?.path!
-                    ),
-                }),
-                "utf8"
-            )
-        );
+  public setVSCodeWorkSpace(workingFolder: vscode.Uri) {
+    this.config.workSpace = workingFolder;
+  }
+
+  public setExtensionContext(context: vscode.ExtensionContext) {
+    this.config.extensionContext = context;
+  }
+
+  public getExtensionContext(): vscode.ExtensionContext {
+    return this.config.extensionContext!;
+  }
+
+  /**
+   * Returns the main game folder.
+   * Note that this return type is not a string, it is a vscode.Uri type.
+   * you should use the path.posix.join() function if you are using the path information in the vscode extension.
+   *
+   * @returns the main game folder.
+   */
+  public getMainGameFolder(): vscode.Uri {
+    return this.config.mainGameFolder!;
+  }
+
+  /**
+   * Gets the workspace in user's visual studio code.
+   *
+   * @returns
+   */
+  public getVSCodeWorkSpace(): vscode.Uri {
+    return this.config.workSpace!;
+  }
+
+  public getConfig(): RGSS.config {
+    return this.config;
+  }
+
+  public getRGSSVersion(): RGSS.MapOfPath {
+    return this.config.rgssVersion!;
+  }
+
+  /**
+   * Detects the Ruby Game Scripting System version.
+   */
+  public async detectRGSSVersion() {
+    if (this.config.rgssVersion) {
+      return this.config.rgssVersion;
     }
 
-    public async loadConfig(loggingService?: LoggingService) {
-        if (!vscode.workspace.workspaceFolders) {
-            return vscode.window.showInformationMessage(
-                "No folder or workspace opened"
-            );
-        }
+    const gameFolderUri = this.getMainGameFolder();
+    const version = <RGSS.Path>{
+      RGSS1: gameFolderUri.with({
+        path: path.posix.join("Data", "Scripts.rxdata"),
+      }),
+      RGSS2: gameFolderUri.with({
+        path: path.posix.join("Data", "Scripts.rvdata"),
+      }),
+      RGSS3: gameFolderUri.with({
+        path: path.posix.join("Data", "Scripts.rvdata2"),
+      }),
+    };
 
-        const folderUri = vscode.workspace.workspaceFolders![0].uri;
-        const fileUri = folderUri.with({
-            path: path.posix.join(folderUri.path, "rgss-compiler.json"),
-        });
-        const readData = await vscode.workspace.fs.readFile(fileUri);
-        const jsonData = Buffer.from(readData).toString("utf8");
-        this.config = {
-            ...this.config,
-            mainGameFolder: vscode.Uri.file(
-                JSON.parse(jsonData).mainGameFolder
-            ),
-        };
+    // RGSS version을 Lazy하게 찾아냅니다.
+    const mutex = new Mutex<number>();
+    Array.from<keyof RGSS.Path>(["RGSS1", "RGSS2", "RGSS3"]).forEach(
+      async (key) => {
+        const unlock = await mutex.lock();
 
-        vscode.window.showInformationMessage(jsonData);
-    }
+        // visual studio code extension에서 Node.js의 File System API가 동작하지 않았습니다.
+        // 이것은 fs.existsSync의 대체 동작합니다.
+        // 확장 API는 비동기 동작이 기본이므로 아래와 같이 작성하는 것은 뭔가 잘못되었다고 판단됩니다.
+        try {
+          const isValid = await vscode.workspace.fs.stat(
+            this.getMainGameFolder().with({
+              path: path.posix.join(
+                this.getMainGameFolder().path,
+                version[key].path
+              ),
+            })
+          );
 
-    public setVSCodeWorkSpace(workingFolder: vscode.Uri) {
-        this.config.workSpace = workingFolder;
-    }
+          if (isValid) {
+            this.config.rgssVersion = <RGSS.MapOfPath>key;
+          }
 
-    public setExtensionContext(context: vscode.ExtensionContext) {
-        this.config.extensionContext = context;
-    }
+          // 처리 완료를 알리는 이벤트를 발생시킵니다.
+          this.ON_LOAD_RGSS_VERSION.fire();
+          this.ON_LOAD_GAME_FOLDER.fire(Path.resolve(this.getMainGameFolder()));
+        } catch {}
+        unlock();
+      }
+    );
 
-    public getExtensionContext(): vscode.ExtensionContext {
-        return this.config.extensionContext!;
-    }
+    // RGSS version이 Lazy 하기 때문에, 이벤트로 처리 결과를 받습니다.
+    this.ON_LOAD_RGSS_VERSION.event(async () => {
+      switch (this.config.rgssVersion!) {
+        case "RGSS1":
+          ConfigService.TARGET_SCRIPT_FILE_NAME = "Scripts.rxdata";
+          break;
+        case "RGSS2":
+          ConfigService.TARGET_SCRIPT_FILE_NAME = "Scripts.rvdata";
+          break;
+        default:
+        case "RGSS3":
+          ConfigService.TARGET_SCRIPT_FILE_NAME = "Scripts.rvdata2";
+          break;
+      }
+      this.loggingService.info(
+        `RGSS Version is the same as ${this.config.rgssVersion}`
+      );
+      await this.saveConfig();
+    });
 
-    /**
-     * 게임 폴더를 반환합니다.
-     *
-     */
-    public getMainGameFolder(): vscode.Uri {
-        return this.config.mainGameFolder!;
-    }
-
-    /**
-     * VSCode의 작업 공간을 반환합니다.
-     *
-     * @returns
-     */
-    public getVSCodeWorkSpace(): vscode.Uri {
-        return this.config.workSpace!;
-    }
-
-    public getConfig(): RGSS.config {
-        return this.config;
-    }
+    return this.config.rgssVersion;
+  }
 }

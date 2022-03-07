@@ -1,9 +1,19 @@
-# Change Log
+# Version Log
 
-All notable changes to the "rgss-script-runner" extension will be documented in this file.
+## 0.0.4 - 07 Mar 2022
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+### Fixed
 
-## [Unreleased]
+- Fixed the language of the hard coded logger message as in English.
+- Fixed the issue that line break character is changed empty string in `plugins/rxscript.tb`
+- Changed export folder name as `Scripts`
 
-- Initial release
+## 0.0.3 - 07 Mar 2022
+
+### Added
+
+- Added a new event that can detect a file named `Game.ini` in the workspace folder.
+
+### Fixed
+
+- Fixed the language of the hard coded logger message as in English.
