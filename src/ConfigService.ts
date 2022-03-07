@@ -53,8 +53,8 @@ export class JSerializeObject {
         return Buffer.from(JSON.stringify(this.data), "utf8");
     }
 
-    static of(data: Uint8Array): string {
-        return Buffer.from(data).toString("utf8");
+    static of(data: Uint8Array): RGSS.JSerializeData {
+        return JSON.parse(Buffer.from(data).toString("utf8"));
     }
 }
 
@@ -149,12 +149,8 @@ export class ConfigService {
         const jsonData = JSerializeObject.of(readData);
         this.config = {
             ...this.config,
-            mainGameFolder: vscode.Uri.file(
-                JSON.parse(jsonData).mainGameFolder
-            ),
+            mainGameFolder: vscode.Uri.file(jsonData.mainGameFolder),
         };
-
-        vscode.window.showInformationMessage(jsonData);
     }
 
     /**
