@@ -14,6 +14,10 @@ export class Packer extends Unpacker {
     super(configService, loggingService);
   }
 
+  /**
+   * Sets the target file from the main game folder.
+   * it is assumed that the file extension is one of ruby serialized files(*.rvdata2, *.rvdata, *.rxdata)
+   */
   initWithTargetFile() {
     const root = Path.resolve(this.configService.getMainGameFolder());
     const targetFile = path
@@ -47,7 +51,7 @@ export class Packer extends Unpacker {
           if (err) {
             this.loggingService.info(err);
           }
-          this.loggingService.info("Import completed");
+          this.loggingService.info("Job completed.");
         }
       );
 

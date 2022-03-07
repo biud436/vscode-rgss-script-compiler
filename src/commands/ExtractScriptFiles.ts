@@ -147,7 +147,7 @@ export function extractScriptFiles(
   rubyScriptService: RubyScriptService
 ) {
   rubyScriptService.run()!.onExit((code: number, signal: any) => {
-    loggingService.info(`${code} 스크립트 추출이 완료되었습니다.`);
+    loggingService.info(`${code} Script import is complete.`);
   });
   rubyScriptService.pendingTerminate();
 }
@@ -156,7 +156,7 @@ export function compressScriptFiles<
   T extends RubyCompressScriptService = RubyCompressScriptService
 >(loggingService: LoggingService, rubyScriptService: T) {
   rubyScriptService.run()!.onExit((code: number, signal: any) => {
-    loggingService.info(`${code} 스크립트 컴파일이 완료되었습니다.`);
+    loggingService.info(`${code} Script Compile is complete.`);
   });
   rubyScriptService.pendingTerminate();
 }

@@ -29,6 +29,10 @@ namespace RGSS {
       this.initWithTargetFile();
     }
 
+    /**
+     * Sets the target file from the main game folder.
+     * it is assumed that the file extension is one of ruby serialized files(*.rvdata2, *.rvdata, *.rxdata)
+     */
     initWithTargetFile() {
       const root = Path.resolve(this.configService.getMainGameFolder());
       const targetFile = path
