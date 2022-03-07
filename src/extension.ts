@@ -8,7 +8,13 @@ import { Packer } from "./Packer";
 import { Unpacker } from "./Unpacker";
 import path = require("path");
 
+/**
+ * @namespace Helper
+ */
 namespace Helper {
+  /**
+   * @class Extension
+   */
   export class Extension {
     constructor(
       private readonly configService: ConfigService,
@@ -20,7 +26,10 @@ namespace Helper {
         "rgss-script-compiler.setGamePath",
         async () => {
           await setGamePath(this.configService, this.loggingService);
-          updateStatusBarItem();
+          this.configService.ON_LOAD_GAME_FOLDER.event((gameFolder) => {
+            this.loggingService.info(`Game folder is changed to ${gameFolder}`);
+            updateStatusBarItem();
+          });
         }
       );
     }
@@ -135,9 +144,9 @@ function showGamePathWatcher(
 
 export function activate(context: vscode.ExtensionContext) {
   const loggingService = new LoggingService();
-  const configService = new ConfigService();
+  const configService = new ConfigService(loggingService);
 
-  // 컨텍스트 설정
+  // Set the extension context.
   configService.setExtensionContext(context);
 
   if (!vscode.workspace.workspaceFolders) {
@@ -148,11 +157,12 @@ export function activate(context: vscode.ExtensionContext) {
   const workspaces = vscode.workspace.workspaceFolders;
   configService.setVSCodeWorkSpace(workspaces[0].uri);
 
-  // 헬퍼 생성
+  // Create a helper class.
   const helper = new Helper.Extension(configService, loggingService);
 
   loggingService.info("RGSS Script Compiler has executed successfully");
 
+  // Load configuration file.
   configService
     .loadConfig(loggingService)
     .then((e) => {
@@ -166,6 +176,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   loggingService.show();
 
+  // Sets Subscriptions.
   context.subscriptions.push(...statusBarItems);
   context.subscriptions.push(...helper.getCommands());
   context.subscriptions.push(
@@ -174,9 +185,7 @@ export function activate(context: vscode.ExtensionContext) {
         if (path.posix.join(e.path).includes("rgss-compiler.json")) {
           loggingService.info("rgss-compiler.json is deleted.");
 
-          statusBarItems.slice(1).forEach((e) => {
-            e.hide();
-          });
+          hideStatusBarItem();
         }
       });
     })
@@ -188,6 +197,12 @@ export function activate(context: vscode.ExtensionContext) {
 function updateStatusBarItem(): void {
   statusBarItems.forEach((e) => {
     e.show();
+  });
+}
+
+function hideStatusBarItem(): void {
+  statusBarItems.slice(1).forEach((e) => {
+    e.hide();
   });
 }
 

@@ -3,6 +3,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { Path } from "./utils/Path";
 import { LoggingService } from "./LoggingService";
+import { Mutex } from "./Mutex";
 
 namespace RGSS {
   export type VERSION = "RGSS1" | "RGSS2" | "RGSS3";
@@ -40,18 +41,44 @@ namespace RGSS {
 }
 
 export class ConfigService {
+  /**
+   * Gets or Sets the configuration.
+   */
   private config: RGSS.config;
+
+  /**
+   * ! ON LOAD GAME FOLDER EVENT DISPATCHER.
+   *
+   * Creates an event that is fired when the main game folder is changed.
+   */
+  public ON_LOAD_GAME_FOLDER: vscode.EventEmitter<string> =
+    new vscode.EventEmitter<string>();
+
+  /**
+   * ! ON LOAD RGSS VERSION EVENT DISPATCHER
+   */
+  private ON_LOAD_RGSS_VERSION: vscode.EventEmitter<void> =
+    new vscode.EventEmitter<void>();
+
+  /**
+   * TARGET_SCRIPT_FILE_NAME
+   */
   public static TARGET_SCRIPT_FILE_NAME = "Scripts.rvdata2";
 
-  constructor() {
+  constructor(private readonly loggingService: LoggingService) {
     this.config = {};
   }
 
-  public setGameFolder(gameFolder: vscode.Uri) {
+  public async setGameFolder(gameFolder: vscode.Uri) {
     this.config.mainGameFolder = gameFolder;
     this.detectRGSSVersion();
   }
 
+  /**
+   * Writes a file named "rgss-compiler.json" in the workspace folder.
+   *
+   * @returns
+   */
   public async saveConfig() {
     if (!vscode.workspace.workspaceFolders) {
       return vscode.window.showInformationMessage(
@@ -69,12 +96,19 @@ export class ConfigService {
       Buffer.from(
         JSON.stringify({
           mainGameFolder: path.posix.join(this.config.mainGameFolder?.path!),
+          rgssVersion: this.config.rgssVersion,
         }),
         "utf8"
       )
     );
   }
 
+  /**
+   * Loads a file named "rgss-compiler.json" in the workspace folder.
+   *
+   * @param loggingService
+   * @returns
+   */
   public async loadConfig(loggingService?: LoggingService) {
     if (!vscode.workspace.workspaceFolders) {
       return vscode.window.showInformationMessage(
@@ -132,10 +166,14 @@ export class ConfigService {
     return this.config;
   }
 
+  public getRGSSVersion(): RGSS.MapOfPath {
+    return this.config.rgssVersion!;
+  }
+
   /**
    * Detects the Ruby Game Scripting System version.
    */
-  public detectRGSSVersion() {
+  public async detectRGSSVersion() {
     if (this.config.rgssVersion) {
       return this.config.rgssVersion;
     }
@@ -153,24 +191,56 @@ export class ConfigService {
       }),
     };
 
-    Array.from<keyof RGSS.Path>(["RGSS1", "RGSS2", "RGSS3"]).forEach((key) => {
-      if (fs.existsSync(Path.resolve(version[key]))) {
-        this.config.rgssVersion = key;
-      }
-    });
+    // RGSS version을 Lazy하게 찾아냅니다.
+    const mutex = new Mutex<number>();
+    Array.from<keyof RGSS.Path>(["RGSS1", "RGSS2", "RGSS3"]).forEach(
+      async (key) => {
+        const unlock = await mutex.lock();
 
-    switch (this.config.rgssVersion!) {
-      case "RGSS1":
-        ConfigService.TARGET_SCRIPT_FILE_NAME = "Scripts.rxdata";
-        break;
-      case "RGSS2":
-        ConfigService.TARGET_SCRIPT_FILE_NAME = "Scripts.rvdata";
-        break;
-      default:
-      case "RGSS3":
-        ConfigService.TARGET_SCRIPT_FILE_NAME = "Scripts.rvdata2";
-        break;
-    }
+        // visual studio code extension에서 Node.js의 File System API가 동작하지 않았습니다.
+        // 이것은 fs.existsSync의 대체 동작합니다.
+        // 확장 API는 비동기 동작이 기본이므로 아래와 같이 작성하는 것은 뭔가 잘못되었다고 판단됩니다.
+        try {
+          const isValid = await vscode.workspace.fs.stat(
+            this.getMainGameFolder().with({
+              path: path.posix.join(
+                this.getMainGameFolder().path,
+                version[key].path
+              ),
+            })
+          );
+
+          if (isValid) {
+            this.config.rgssVersion = <RGSS.MapOfPath>key;
+          }
+
+          // 처리 완료를 알리는 이벤트를 발생시킵니다.
+          this.ON_LOAD_RGSS_VERSION.fire();
+          this.ON_LOAD_GAME_FOLDER.fire(Path.resolve(this.getMainGameFolder()));
+        } catch {}
+        unlock();
+      }
+    );
+
+    // RGSS version이 Lazy 하기 때문에, 이벤트로 처리 결과를 받습니다.
+    this.ON_LOAD_RGSS_VERSION.event(async () => {
+      switch (this.config.rgssVersion!) {
+        case "RGSS1":
+          ConfigService.TARGET_SCRIPT_FILE_NAME = "Scripts.rxdata";
+          break;
+        case "RGSS2":
+          ConfigService.TARGET_SCRIPT_FILE_NAME = "Scripts.rvdata";
+          break;
+        default:
+        case "RGSS3":
+          ConfigService.TARGET_SCRIPT_FILE_NAME = "Scripts.rvdata2";
+          break;
+      }
+      this.loggingService.info(
+        `RGSS Version is the same as ${this.config.rgssVersion}`
+      );
+      await this.saveConfig();
+    });
 
     return this.config.rgssVersion;
   }

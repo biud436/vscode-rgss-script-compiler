@@ -20,7 +20,10 @@ export async function setGamePath(
   });
 
   if (value) {
-    configService.setGameFolder(value[0]);
+    await configService.setGameFolder(value[0]);
     await configService.saveConfig();
+
+    // emits on load game folder event.
+    configService.ON_LOAD_GAME_FOLDER.fire(value[0].fsPath);
   }
 }

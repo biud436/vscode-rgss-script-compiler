@@ -1,5 +1,13 @@
 # Version Log
 
+## 0.0.4 - 07 Mar 2022
+
+### Fixed
+
+- Fixed the language of the hard coded logger message as in English.
+- Fixed the issue that line break character is changed empty string in `plugins/rxscript.tb`
+- Changed export folder name as `Scripts`
+
 ## 0.0.3 - 07 Mar 2022
 
 ### Added
