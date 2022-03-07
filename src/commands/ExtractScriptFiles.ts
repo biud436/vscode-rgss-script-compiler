@@ -66,6 +66,8 @@ export type ExtractScriptFileFunction = (
  *
  * However it was not work fine. so I used a way to execute ruby directly using node child process module.
  * So it's strongly coupled to the ruby language.
+ *
+ * This means that you have to install ruby interpreter on your system.
  */
 export class RubyScriptService {
     protected _process!: cp.ChildProcess | undefined | null;
@@ -172,6 +174,8 @@ export class RubyScriptService {
  *
  * However it was not work fine. so I used a way to execute ruby directly using node child process module.
  * So it's strongly coupled to the ruby language.
+ *
+ * This means that you have to install ruby interpreter on your system.
  */
 export class RubyCompressScriptService extends RubyScriptService {
     makeCommand() {
