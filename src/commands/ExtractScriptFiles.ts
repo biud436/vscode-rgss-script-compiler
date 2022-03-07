@@ -122,6 +122,10 @@ export class RubyScriptService {
         ];
     }
 
+    /**
+     * Executes the ruby script using the ruby interpreter is installed on your system.
+     * if the ruby interpreter is not installed, it can't be executed.
+     */
     run(): void | this {
         this._process = cp.execFile(
             `ruby`,
@@ -178,6 +182,9 @@ export class RubyScriptService {
  * This means that you have to install ruby interpreter on your system.
  */
 export class RubyCompressScriptService extends RubyScriptService {
+    /**
+     * Adds a new argument named '--compress' to inherited command line options.
+     */
     makeCommand() {
         super.makeCommand();
 
