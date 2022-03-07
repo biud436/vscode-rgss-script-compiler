@@ -192,6 +192,12 @@ export class RubyCompressScriptService extends RubyScriptService {
     }
 }
 
+/**
+ * Extracts the game script files after running the Ruby interpreter.
+ *
+ * @param loggingService
+ * @param rubyScriptService
+ */
 export function extractScriptFiles(
     loggingService: LoggingService,
     rubyScriptService: RubyScriptService
@@ -202,6 +208,12 @@ export function extractScriptFiles(
     rubyScriptService.pendingTerminate();
 }
 
+/**
+ * This function is responsible for creating all script files as one script bundle file after running the Ruby interpreter.
+ *
+ * @param loggingService
+ * @param rubyScriptService
+ */
 export function compressScriptFiles<
     T extends RubyCompressScriptService = RubyCompressScriptService
 >(loggingService: LoggingService, rubyScriptService: T) {
