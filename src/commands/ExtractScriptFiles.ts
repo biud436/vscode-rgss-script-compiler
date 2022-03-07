@@ -54,7 +54,7 @@ export type ExtractScriptFileFunction = (
  * @class RubyScriptService
  * @description
  * This class is responsible to make the ruby script files after extracting the file that ends with *.rvdata2.
- * Data/Scripts.rvdata2 does not be encrypted. it would be compressed or deserialized using zlib and Marshal.load.
+ * Data/Scripts.rvdata2 does not be encrypted. it would be decompressed or deserialized using zlib and Marshal.load.
  *
  * zlib is famous library. so it can use in almost every languages and it is supported it in TypeScript too.
  * But Marshal is pretty exclusived in Ruby Languages. so it is not available in Typescript.
