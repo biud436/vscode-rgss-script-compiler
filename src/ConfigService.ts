@@ -38,8 +38,30 @@ namespace RGSS {
         RGSS2: vscode.Uri;
         RGSS3: vscode.Uri;
     };
+
+    export type JSerializeData = { [key in keyof RGSS.config]: any };
 }
 
+/**
+ * @class JSerializeObject
+ * @description This class is responsible for serializing and deserializing the config object.
+ */
+export class JSerializeObject {
+    constructor(private readonly data: RGSS.JSerializeData) {}
+
+    toBuffer(): Buffer {
+        return Buffer.from(JSON.stringify(this.data), "utf8");
+    }
+
+    static of(data: Uint8Array): string {
+        return Buffer.from(data).toString("utf8");
+    }
+}
+
+/**
+ * @class ConfigService
+ * @description This class is responsible for managing the config file.
+ */
 export class ConfigService {
     /**
      * Gets or Sets the configuration.
@@ -96,18 +118,12 @@ export class ConfigService {
             path: path.posix.join(folderUri.path, "rgss-compiler.json"),
         });
 
-        await vscode.workspace.fs.writeFile(
-            fileUri,
-            Buffer.from(
-                JSON.stringify({
-                    mainGameFolder: path.posix.join(
-                        this.config.mainGameFolder?.path!
-                    ),
-                    rgssVersion: this.config.rgssVersion,
-                }),
-                "utf8"
-            )
-        );
+        const buffer = new JSerializeObject({
+            mainGameFolder: path.posix.join(this.config.mainGameFolder?.path!),
+            rgssVersion: this.config.rgssVersion,
+        }).toBuffer();
+
+        await vscode.workspace.fs.writeFile(fileUri, buffer);
     }
 
     /**
@@ -130,7 +146,7 @@ export class ConfigService {
             path: path.posix.join(folderUri.path, "rgss-compiler.json"),
         });
         const readData = await vscode.workspace.fs.readFile(fileUri);
-        const jsonData = Buffer.from(readData).toString("utf8");
+        const jsonData = JSerializeObject.of(readData);
         this.config = {
             ...this.config,
             mainGameFolder: vscode.Uri.file(
