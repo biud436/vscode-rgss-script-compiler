@@ -1,5 +1,11 @@
 # Version Log
 
+## 0.0.5 - 08 Mar 2022
+
+### Fixed
+
+- Removed `*` event that means to start the extension unconditionally when starting up the `vscode`
+
 ## 0.0.4 - 07 Mar 2022
 
 ### Fixed

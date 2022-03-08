@@ -3,7 +3,7 @@
   "displayName": "RGSS Script Compiler",
   "description": "This extension allows you to compile script files as a bundle file called 'Scripts.rvdata2'",
   "repository": "https://github.com/biud436/vscode-rgss-script-compiler",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "engines": {
     "vscode": "^1.65.0"
   },
@@ -17,8 +17,7 @@
     "onCommand:rgss-script-compiler.setGamePath",
     "onCommand:rgss-script-compiler.unpack",
     "onCommand:rgss-script-compiler.compile",
-    "workspaceContains:Game.ini",
-    "*"
+    "workspaceContains:**/Game.ini"
   ],
   "bugs": {
     "url": "https://github.com/biud436/vscode-rgss-script-compiler/issues",
