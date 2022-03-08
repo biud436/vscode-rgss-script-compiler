@@ -1,6 +1,6 @@
 # Version Log
 
-## 0.0.6 - 08 Mar 2022
+## 0.0.7 - 09 Mar 2022
 
 ### Added
 

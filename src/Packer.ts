@@ -23,7 +23,7 @@ export class Packer extends Unpacker {
     initWithTargetFile() {
         const root = Path.resolve(this.configService.getMainGameFolder());
         const targetFile = path
-            .join(root, "Data", TARGET_SCRIPT_FILE_NAME)
+            .join(root, "Data", ConfigService.TARGET_SCRIPT_FILE_NAME)
             .replace(/\\/g, "/");
 
         this._targetFile = targetFile;
@@ -40,6 +40,7 @@ export class Packer extends Unpacker {
             throw new Error(PACKER_IS_READY);
         }
 
+        this.updateTargetFile();
         const targetFile = <string>this._targetFile;
 
         try {
