@@ -8,8 +8,17 @@ require 'zlib'
 
 raise 'Ruby 1.9.2 or later is required.' if RUBY_VERSION <= '1.9.1'
 
+##
+# +Entrypoint+
+# Entry point for the application.
+#
 module EntryPoint
+  ##
+  # +App+
+  # This class allows you to handle by passing the arguments to the application.
   class App
+    ##
+    # Initialize the application.
     def initialize
       options = { compress: false }
       OptionParser
