@@ -28,21 +28,21 @@ You call the command above to see if the ruby version is output normally like as
 
 Please refer to the following video for detailed explanation.
 
-![IMG](https://img.youtube.com/vi/-8LVDPLnVkc/0.jpg)(https://www.youtube.com/watch?v=-8LVDPLnVkc)
+[![IMG](https://img.youtube.com/vi/-8LVDPLnVkc/0.jpg)](https://www.youtube.com/watch?v=-8LVDPLnVkc)
 
 # Maintainer and Contributors
 
-- Extension Maintainer
+-   Extension Maintainer
 
-  - Biud436 (https://github.com/biud436)
+    -   Biud436 (https://github.com/biud436)
 
-- `RGSS3/plugins/rxscript.rb`
+-   `RGSS3/plugins/rxscript.rb`
 
-  - Korokke (gksdntjr714@naver.com)
+    -   Korokke (gksdntjr714@naver.com)
 
-- `RGSS3/modules/Table.rb`
+-   `RGSS3/modules/Table.rb`
 
-  - CaptainJet (https://github.com/CaptainJet/RM-Gosu)
+    -   CaptainJet (https://github.com/CaptainJet/RM-Gosu)
 
-- `RGSS3/RPG.rb`
-  - Yoji Ojima (Gotcha Gotcha Games, KADOKAWA)
+-   `RGSS3/RPG.rb`
+    -   Yoji Ojima (Gotcha Gotcha Games, KADOKAWA)
