@@ -14,11 +14,11 @@ This extension is a beta version that has not been tested elaborately. We have s
 
 -   There must be only one parent folder in the workspace (if there are more than one, the top folder is recognized only)
 -   The workspace is not automatically set to the initial game folder(This is because workspace and game folders may be different)
--   This extension is not always active. `Game.ini` file must be in the root game folder to be activated.
--   This extension activates the rest of the buttons only when selecting the game folder. However, if the `rgss-compiler.json` file exists, it is automatically activated. When `VS Code` is started up, the `Import` or `Compile` button is automatically activated when this file is existed.
--   You should not compile scripts while `RPG Maker XP` or `RPG Maker VX Ace` is on. the script information in RPG Maker exists in the state of a global variable in memory based on the initial imported file content (`Scripts.rvdata2`), and does not detect that the file has been changed. To manipulate memory based on the contents of the file, it is beyond this extension because it requires heap memory manipulation in the tool, such as `CreateRemoteThread` or `DLL Injection` to directly penetrate the target process and implement a kind of Hack, such as the RPG Maker tool's Virtual Memory. When loaded with `RGSS301.dll`, etc. using `CreateRemoteThread`, one thread is executed, and if you hang a specific script at that time, you can implement `Hack` like as cheat engine.
+-   This extension is not always active. Game.ini file must be in the root game folder to be activated.
+-   This extension activates the rest of the buttons only when selecting the game folder. However, if the rgss-compiler.json file exists, it is automatically activated. When VS Code is started up, the Import or Compile button is automatically activated when this file is existed.
+-   You should not compile scripts while RPG Maker XP or RPG Maker VX Ace is on. the script information in RPG Maker exists in the state of a global variable in memory based on the initial imported file content (Scripts.rvdata2), and does not detect that the file has been changed. To manipulate memory based on the contents of the file, it is beyond this extension because it requires heap memory manipulation in the tool, such as CreateRemoteThread or DLL Injection to directly penetrate the target process and implement a kind of Hack, such as the RPG Maker tool's Virtual Memory. When loaded with RGSS301.dll, etc. using CreateRemoteThread, one thread is executed, and if you hang a specific script at that time, you can implement Hack like as cheat engine.
 
-## Known Issues (translator)
+## Known Issues
 
 This is a list of bugs that we know but have not solved.
 
