@@ -116,7 +116,7 @@ namespace Helper {
             const statusBarItem = vscode.window.createStatusBarItem(
                 vscode.StatusBarAlignment.Left
             );
-            statusBarItem.text = `$(file-directory) RGSS3: Set Game Folder`;
+            statusBarItem.text = `$(file-directory) RGSS: Set Game Folder`;
             statusBarItem.command = "rgss-script-compiler.setGamePath";
 
             return statusBarItem;
@@ -126,7 +126,7 @@ namespace Helper {
             const statusBarItem = vscode.window.createStatusBarItem(
                 vscode.StatusBarAlignment.Left
             );
-            statusBarItem.text = `$(sync~spin) RGSS3: Import`;
+            statusBarItem.text = `$(sync~spin) RGSS: Import`;
             statusBarItem.command = "rgss-script-compiler.unpack";
 
             return statusBarItem;
@@ -136,7 +136,7 @@ namespace Helper {
             const statusBarItem = vscode.window.createStatusBarItem(
                 vscode.StatusBarAlignment.Left
             );
-            statusBarItem.text = `$(sync) RGSS3: Compile`;
+            statusBarItem.text = `$(sync) RGSS: Compile`;
             statusBarItem.command = "rgss-script-compiler.compile";
 
             return statusBarItem;
@@ -156,7 +156,7 @@ namespace Helper {
             const statusBarItem = vscode.window.createStatusBarItem(
                 vscode.StatusBarAlignment.Left
             );
-            statusBarItem.text = `$(file-directory) RGSS3: Open Game Folder`;
+            statusBarItem.text = `$(file-directory) RGSS: Open Game Folder`;
             statusBarItem.command = "rgss-script-compiler.openGameFolder";
 
             return statusBarItem;
