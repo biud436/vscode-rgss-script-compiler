@@ -1,11 +1,12 @@
 # Version Log
 
-## 0.0.8 - 09 Mar 2022
+## 0.0.9 - 09 Mar 2022
 
 ### Added
 
 -   Added a new feature that can open the game folder in the visual studio code's workspace.
 -   Allow the user to import scripts for RPG Maker XP on Windows or MacOS.
+-   `README.md` was supplemented by using a translator.
 
 ## 0.0.5 - 08 Mar 2022
 
