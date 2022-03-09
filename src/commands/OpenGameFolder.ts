@@ -43,9 +43,6 @@ export async function openGameFolder(
             case "darwin":
                 await execPromise(`open ${targetFolder}`);
                 break;
-            default:
-                showWarnMessage(loggingService);
-                break;
         }
     } catch (e) {
         showWarnMessage(loggingService);
