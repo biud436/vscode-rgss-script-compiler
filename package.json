@@ -12,7 +12,7 @@
     "categories": [
         "Other"
     ],
-    "icon": "images/icon256x256.png",
+    "icon": "images/icon-simple256x256.png",
     "activationEvents": [
         "onCommand:rgss-script-compiler.setGamePath",
         "onCommand:rgss-script-compiler.unpack",

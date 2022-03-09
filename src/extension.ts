@@ -156,7 +156,7 @@ namespace Helper {
             const statusBarItem = vscode.window.createStatusBarItem(
                 vscode.StatusBarAlignment.Left
             );
-            statusBarItem.text = `$(file-directory) RGSS: Open Game Folder`;
+            statusBarItem.text = `$(folder) RGSS: Open Game Folder`;
             statusBarItem.command = "rgss-script-compiler.openGameFolder";
 
             return statusBarItem;
