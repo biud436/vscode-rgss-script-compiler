@@ -14,7 +14,7 @@ const execPromise = promisify(exec);
  *
  * @param error
  */
-function showWarnaMessage(loggingService: LoggingService): void {
+function showWarnMessage(loggingService: LoggingService): void {
     const platform = <NodeJS.Platform>process.platform;
 
     loggingService.info(
@@ -44,9 +44,10 @@ export async function openGameFolder(
                 await execPromise(`open ${targetFolder}`);
                 break;
             default:
-                showWarnaMessage(loggingService);
+                showWarnMessage(loggingService);
+                break;
         }
     } catch (e) {
-        showWarnaMessage(loggingService);
+        showWarnMessage(loggingService);
     }
 }
