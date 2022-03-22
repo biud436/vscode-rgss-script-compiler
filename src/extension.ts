@@ -43,6 +43,7 @@ namespace Helper {
         "rgss-script-compiler.save",
         async () => {
           this.loggingService.info("save");
+          await this.configService.detectRGSSVersion();
           await vscode.commands.executeCommand("workbench.action.files.save");
           await vscode.commands.executeCommand("rgss-script-compiler.compile");
         }
