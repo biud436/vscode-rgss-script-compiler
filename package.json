@@ -3,7 +3,7 @@
   "displayName": "RGSS Script Compiler",
   "description": "This extension allows you to compile script files as a bundle file called 'Scripts.rvdata2'",
   "repository": "https://github.com/biud436/vscode-rgss-script-compiler",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "engines": {
     "vscode": "^1.65.0"
   },
@@ -56,12 +56,12 @@
         "command": "rgss-script-compiler.save",
         "key": "ctrl+s",
         "mac": "cmd+s",
-        "when": "editorTextFocus"
+        "when": "editorTextFocus && resourceExtname == .rb"
       },
       {
         "command": "rgss-script-compiler.testPlay",
         "key": "f5",
-        "when": "editorTextFocus",
+        "when": "editorTextFocus && resourceExtname == .rb",
         "mac": "cmd+f5"
       }
     ]
