@@ -9,7 +9,7 @@ import { Unpacker } from "./Unpacker";
 import path = require("path");
 import { openGameFolder } from "./commands/OpenGameFolder";
 import { GamePlayService } from "./commands/TestGamePlay";
-import { ScriptViewerProvider } from "./providers/ScriptViewer";
+import { ScriptExplorerProvider } from "./providers/ScriptViewer";
 
 /**
  * @namespace Helper
@@ -21,14 +21,14 @@ namespace Helper {
    * @class Extension
    */
   export class Extension {
-    private scriptProvider?: ScriptViewerProvider;
+    private scriptProvider?: ScriptExplorerProvider;
 
     constructor(
       private readonly configService: ConfigService,
       private readonly loggingService: LoggingService
     ) {}
 
-    setScriptProvider(scriptProvider: ScriptViewerProvider) {
+    setScriptProvider(scriptProvider: ScriptExplorerProvider) {
       this.scriptProvider = scriptProvider;
     }
 
@@ -212,7 +212,7 @@ namespace Helper {
       loggingService.info("Importing the scripts....");
 
       const scriptViewerPath = Path.resolve(configService.getMainGameFolder());
-      const scriptProvider = new ScriptViewerProvider(
+      const scriptProvider = new ScriptExplorerProvider(
         scriptViewerPath,
         loggingService
       );
