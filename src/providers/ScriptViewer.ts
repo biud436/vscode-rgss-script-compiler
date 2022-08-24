@@ -1,12 +1,12 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
-import { RGSSScriptSection } from "./RGSSScriptSection";
+import { RGSSScriptSection as ScriptSection } from "./RGSSScriptSection";
 import { ConfigService } from "../ConfigService";
 import { LoggingService } from "../LoggingService";
 
-export class ScriptViewerProvider
-  implements vscode.TreeDataProvider<RGSSScriptSection>
+export class ScriptExplorerProvider
+  implements vscode.TreeDataProvider<ScriptSection>
 {
   constructor(
     private workspaceRoot: string,
@@ -14,25 +14,28 @@ export class ScriptViewerProvider
   ) {}
 
   private _onDidChangeTreeData: vscode.EventEmitter<
-    RGSSScriptSection | undefined | null | void
-  > = new vscode.EventEmitter<RGSSScriptSection | undefined | null | void>();
+    ScriptSection | undefined | null | void
+  > = new vscode.EventEmitter<ScriptSection | undefined | null | void>();
   readonly onDidChangeTreeData: vscode.Event<
-    RGSSScriptSection | undefined | null | void
+    ScriptSection | undefined | null | void
   > = this._onDidChangeTreeData.event;
 
+  /**
+   * Refresh the tree data in the script explorer.
+   */
   refresh(): void {
     this._onDidChangeTreeData.fire();
   }
 
   getTreeItem(
-    element: RGSSScriptSection
+    element: ScriptSection
   ): vscode.TreeItem | Thenable<vscode.TreeItem> {
     return element;
   }
 
   getChildren(
-    element?: RGSSScriptSection | undefined
-  ): vscode.ProviderResult<RGSSScriptSection[]> {
+    element?: ScriptSection | undefined
+  ): vscode.ProviderResult<ScriptSection[]> {
     if (!this.workspaceRoot) {
       return [];
     }
@@ -41,10 +44,14 @@ export class ScriptViewerProvider
   }
 
   private createEmptyScriptSection() {
-    return new RGSSScriptSection("", vscode.TreeItemCollapsibleState.None);
+    return new ScriptSection("", vscode.TreeItemCollapsibleState.None);
   }
 
-  private parseScriptSectionFromList(): RGSSScriptSection[] {
+  /**
+   * Parse each lines from a file called 'info.txt' and extract the script title.
+   * and then next this method will be created an each script tree data for [vscode.TreeDataProvider](https://code.visualstudio.com/api/references/vscode-api#TreeDataProvider).
+   */
+  private parseScriptSectionFromList(): ScriptSection[] {
     const targetFilePath = path.join(
       this.workspaceRoot,
       "Scripts",
@@ -62,7 +69,7 @@ export class ScriptViewerProvider
 
     const IGNORE_BLACK_LIST_REGEXP = /(?:Untitled)\_[\d]+/gi;
     const lines = raw.split("\n");
-    const scriptSections: RGSSScriptSection[] = [];
+    const scriptSections: ScriptSection[] = [];
 
     const COLLAPSED = vscode.TreeItemCollapsibleState.None;
 
@@ -73,7 +80,7 @@ export class ScriptViewerProvider
 
     for (const line of lines) {
       if (line.match(IGNORE_BLACK_LIST_REGEXP)) {
-        scriptSections.push(this.createEmptyScriptSection());
+        // scriptSections.push(this.createEmptyScriptSection());
         continue;
       }
 
@@ -83,12 +90,10 @@ export class ScriptViewerProvider
         targetScriptSection = line.replace(".rb", "");
       }
 
-      const scriptSection = new RGSSScriptSection(
-        targetScriptSection,
-        COLLAPSED
-      );
+      const scriptSection = new ScriptSection(targetScriptSection, COLLAPSED);
       scriptSection.command = {
-        command: "rgss-script-compiler.openScript",
+        // command: "rgss-script-compiler.openScript",
+        command: "vscode.open",
         title: "Open Script",
         arguments: [
           fileUri.with({
