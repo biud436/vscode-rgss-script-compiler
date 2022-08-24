@@ -2,9 +2,15 @@
 
 This extension allows you to edit scripts directly in Visual Studio Code without using the script editor of RPG Maker VX Ace or RPG Maker XP.
 
-[![IMG](https://img.youtube.com/vi/0uqOVCvXC-E/0.jpg)](https://youtu.be/0uqOVCvXC-E)
+![rgss-compiler-preview](https://user-images.githubusercontent.com/13586185/186309563-f5d00d1c-c9bb-4b93-8bb1-e98f888d705c.gif)
 
 This extension is a beta version that has not been tested elaborately. We have secured stability by correcting problems such as third-party scripts, but please back up the scripts in advance.
+
+## Feature
+
+> `CTRL + S` : Save files and compile automatically
+
+> `F5` : Test Play (Windows Only)
 
 ## Marketplace Link
 
@@ -47,12 +53,11 @@ You call the command above to see if the ruby version is output normally like as
 
 # Change Log
 
-## 0.0.12 - 22 Mar 2022
+## 0.0.15 - 24.08.2022
 
 ### New Features
 
-- Added a feature that can execute game when pressing the key called `F5` (#3)
-- Added a feature that can compile ruby files automatically when pressing the key called `ctrl + s` (#2)
+- Added a new feature that can open the script file using script explorer on Windows or MacOS
 
 # Maintainer and Contributors
 
