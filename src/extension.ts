@@ -10,6 +10,7 @@ import path = require("path");
 import { openGameFolder } from "./commands/OpenGameFolder";
 import { GamePlayService } from "./commands/TestGamePlay";
 import { ScriptExplorerProvider } from "./providers/ScriptViewer";
+import { Buttons } from "./buttons.enum";
 
 /**
  * @namespace Helper
@@ -249,6 +250,40 @@ function showGamePathWatcher(
   gameFolderPathWather.show();
 }
 
+/**
+ * Check whether the ruby-cli is installed in your system.
+ * if not, this extension will not work, so it is will be installed automatically from the ruby server.
+ * in case of on Windows, You have to be installed manually, because some useful tools such as 'curl' or 'wget' are not supported on Windows.
+ */
+function checkDependencies() {
+  const platform = process.platform;
+
+  if (!(["linux", "darwin"] as NodeJS.Platform[]).includes(platform)) {
+    vscode.window.showErrorMessage(
+      "it is not supported on Windows. Please install the Ruby CLI manually."
+    );
+    return;
+  }
+
+  vscode.window
+    .showInformationMessage(
+      "Ruby didn't install in your system, Do you want to install Ruby?",
+      {
+        modal: true,
+      },
+      Buttons.OK
+    )
+    .then((e) => {
+      if (e === Buttons.OK) {
+        // install ruby
+      } else {
+        vscode.window.showErrorMessage(
+          "This extension will not work without Ruby."
+        );
+      }
+    });
+}
+
 export function activate(context: vscode.ExtensionContext) {
   const loggingService = new LoggingService();
   const configService = new ConfigService(loggingService);
@@ -293,6 +328,8 @@ export function activate(context: vscode.ExtensionContext) {
   configService.ON_LOAD_GAME_FOLDER.event(() => {
     Helper.createScriptProviderFunction(helper, configService, loggingService);
   });
+
+  // checkDependencies();
 
   // Sets Subscriptions.
   context.subscriptions.push(...statusBarItems);
