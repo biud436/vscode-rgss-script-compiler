@@ -78,7 +78,7 @@
       "activitybar": [
         {
           "id": "rgssScriptViewer",
-          "title": "스크립트 에디터",
+          "title": "Script Editor",
           "icon": "images/dep.svg"
         }
       ]
