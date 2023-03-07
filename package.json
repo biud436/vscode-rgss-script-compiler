@@ -74,7 +74,24 @@
         "mac": "cmd+f5"
       }
     ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "rgssScriptViewer",
+          "title": "스크립트 에디터",
+          "icon": "images/dep.svg"
+        }
+      ]
+    },
     "views": {
+      "rgssScriptViewer": [
+        {
+          "id": "rgssScriptViewer",
+          "name": "Script Editor",
+          "icon": "images/dep.svg",
+          "contextualTitle": "Script Editor"
+        }
+      ],
       "explorer": [
         {
           "id": "rgssScriptViewer",
