@@ -71,19 +71,58 @@ export class ScriptExplorerProvider
     async addTreeItem(item: ScriptSection): Promise<void> {
         this.loggingService.info(`Add ${JSON.stringify(item)}`);
 
-        const targetIndex = this._tree.findIndex(
-            (treeItem) => treeItem.id === item.id
-        );
+        const result = await vscode.window.showInputBox({
+            prompt: "Please a new script name.",
+            value: "Untitled",
+            validateInput: (value: string) => {
+                if (value.length === 0) {
+                    return "Please input a script name.";
+                }
 
-        const copiedItem = {
-            ...item,
-        };
+                if (value.match(/[\s]/)) {
+                    return "Please remove the space.";
+                }
 
-        copiedItem.id = uuidv4();
+                if (value.match(/[\W]/)) {
+                    return "Please remove the special characters.";
+                }
 
-        this._tree.splice(targetIndex, 0, copiedItem);
+                return null;
+            },
+        });
 
-        this.refresh();
+        if (result) {
+            const targetFilePath = path.join(
+                this.workspaceRoot,
+                "Scripts",
+                result + ".rb"
+            );
+
+            if (!fs.existsSync(targetFilePath)) {
+                fs.writeFileSync(targetFilePath, "", "utf8");
+            }
+
+            const targetIndex = this._tree.findIndex(
+                (treeItem) => treeItem.id === item.id
+            );
+
+            const copiedItem = {
+                ...item,
+            };
+
+            copiedItem.id = uuidv4();
+            copiedItem.label = result;
+            copiedItem.filePath = targetFilePath;
+            copiedItem.command = {
+                command: "vscode.open",
+                title: "Open Script",
+                arguments: [targetFilePath],
+            };
+
+            this._tree.splice(targetIndex, 0, copiedItem);
+
+            this.refresh();
+        }
     }
 
     /**
