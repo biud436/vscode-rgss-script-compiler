@@ -378,6 +378,14 @@ export function activate(context: vscode.ExtensionContext) {
             }
         )
     );
+    context.subscriptions.push(
+        vscode.commands.registerCommand(
+            "rgss-script-compiler.refreshScriptExplorer",
+            () => {
+                helper.getScriptProvider()?.refreshExplorer();
+            }
+        )
+    );
 
     context.subscriptions.push(
         vscode.workspace.onDidDeleteFiles((e) => {

@@ -80,8 +80,6 @@ export class ScriptExplorerProvider
      * @param item {ScriptSection} The new script section.
      */
     async addTreeItem(item: ScriptSection): Promise<void> {
-        this.loggingService.info(`Add ${JSON.stringify(item)}`);
-
         const result = await vscode.window.showInputBox({
             prompt: "Please a new script name.",
             value: "Untitled",
@@ -106,7 +104,7 @@ export class ScriptExplorerProvider
             const targetFilePath = path.join(
                 this.workspaceRoot,
                 "Scripts",
-                result + ".rb"
+                result + Path.defaultExt
             );
 
             if (!fs.existsSync(targetFilePath)) {
@@ -146,10 +144,10 @@ export class ScriptExplorerProvider
 
         const lines = [];
 
-        for (const { filePath, label } of this._tree) {
+        for (const { filePath } of this._tree) {
             const filename = Path.getFileName(filePath);
 
-            if (filename === ".rb") {
+            if (filename === Path.defaultExt) {
                 continue;
             }
 
@@ -158,9 +156,13 @@ export class ScriptExplorerProvider
 
         const raw = lines.join("\n");
 
-        console.log(raw);
-
         await fs.promises.writeFile(targetFilePath, raw, "utf8");
+    }
+
+    refreshExplorer() {
+        this._tree = [];
+
+        this.refresh();
     }
 
     /**
@@ -201,15 +203,15 @@ export class ScriptExplorerProvider
 
             let targetScriptSection = "";
 
-            if (line.endsWith(".rb")) {
-                targetScriptSection = line.replace(".rb", "");
+            if (line.endsWith(Path.defaultExt)) {
+                targetScriptSection = line.replace(Path.defaultExt, "");
             }
 
             const scriptFilePath = fileUri
                 .with({
                     path: path.posix.join(
                         fileUri.path,
-                        targetScriptSection + ".rb"
+                        targetScriptSection + Path.defaultExt
                     ),
                 })
                 .toString();

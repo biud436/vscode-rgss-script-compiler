@@ -78,6 +78,11 @@
                 "command": "rgss-script-compiler.deleteFile",
                 "title": "Delete",
                 "icon": "$(trash)"
+            },
+            {
+                "command": "rgss-script-compiler.refreshScriptExplorer",
+                "title": "Refresh",
+                "icon": "$(refresh)"
             }
         ],
         "keybindings": [
@@ -127,6 +132,11 @@
                 },
                 {
                     "command": "rgss-script-compiler.openGameFolder",
+                    "when": "view == rgssScriptViewer",
+                    "group": "navigation"
+                },
+                {
+                    "command": "rgss-script-compiler.refreshScriptExplorer",
                     "when": "view == rgssScriptViewer",
                     "group": "navigation"
                 }
