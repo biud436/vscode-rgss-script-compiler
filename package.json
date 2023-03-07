@@ -1,178 +1,179 @@
 {
-  "name": "rgss-script-compiler",
-  "displayName": "RGSS Script Compiler",
-  "description": "This extension allows you to compile script files as a bundle file called 'Scripts.rvdata2'",
-  "repository": "https://github.com/biud436/vscode-rgss-script-compiler",
-  "version": "0.0.15",
-  "engines": {
-    "vscode": "^1.65.0"
-  },
-  "publisher": "biud436",
-  "license": "MIT",
-  "categories": [
-    "Other"
-  ],
-  "icon": "images/icon-simple256x256.png",
-  "activationEvents": [
-    "onCommand:rgss-script-compiler.setGamePath",
-    "onCommand:rgss-script-compiler.unpack",
-    "onCommand:rgss-script-compiler.compile",
-    "workspaceContains:**/Game.ini",
-    "onView:rgssScriptViewer"
-  ],
-  "bugs": {
-    "url": "https://github.com/biud436/vscode-rgss-script-compiler/issues",
-    "email": "biud436@gmail.com"
-  },
-  "keywords": [
-    "rgss",
-    "rpg maker vx ace",
-    "rpg maker xp"
-  ],
-  "main": "./out/extension.js",
-  "contributes": {
-    "commands": [
-      {
-        "command": "rgss-script-compiler.setGamePath",
-        "title": "Set Game Path",
-        "icon": "$(file-directory)"
-      },
-      {
-        "command": "rgss-script-compiler.unpack",
-        "title": "Unpack",
-        "icon": "$(package)"
-      },
-      {
-        "command": "rgss-script-compiler.compile",
-        "title": "Compile",
-        "icon": "$(file-binary)"
-      },
-      {
-        "command": "rgss-script-compiler.testPlay",
-        "title": "Test Play",
-        "icon": "$(debug-console)"
-      },
-      {
-        "command": "rgss-script-compiler.save",
-        "title": "Save"
-      },
-      {
-        "command": "rgssScriptViewer.refreshEntry",
-        "title": "Refresh"
-      },
-      {
-        "command": "rgss-script-compiler.openGameFolder",
-        "title": "Open Game Folder",
-        "icon": "$(root-folder-opened)"
-      },
-      {
-        "command": "rgss-script-compiler.openScript",
-        "title": "Open Script"
-      },
-      {
-        "command": "rgss-script-compiler.newFile",
-        "title": "New File",
-        "icon": "$(file-add)"
-      },
-      {
-        "command": "rgss-script-compiler.deleteFile",
-        "title": "Delete",
-        "icon": "$(trash)"
-      }
-    ],
-    "keybindings": [
-      {
-        "command": "rgss-script-compiler.save",
-        "key": "ctrl+s",
-        "mac": "cmd+s",
-        "when": "editorTextFocus && resourceExtname == .rb"
-      },
-      {
-        "command": "rgss-script-compiler.testPlay",
-        "key": "f5",
-        "when": "editorTextFocus && resourceExtname == .rb",
-        "mac": "cmd+f5"
-      }
-    ],
-    "viewsContainers": {
-      "activitybar": [
-        {
-          "id": "rgssScriptViewer",
-          "title": "Script Editor",
-          "icon": "images/dep.svg"
-        }
-      ]
+    "name": "rgss-script-compiler",
+    "displayName": "RGSS Script Compiler",
+    "description": "This extension allows you to compile script files as a bundle file called 'Scripts.rvdata2'",
+    "repository": "https://github.com/biud436/vscode-rgss-script-compiler",
+    "version": "0.0.15",
+    "engines": {
+        "vscode": "^1.65.0"
     },
-    "views": {
-      "rgssScriptViewer": [
-        {
-          "id": "rgssScriptViewer",
-          "name": "Script Editor",
-          "icon": "images/dep.svg",
-          "contextualTitle": "Script Editor"
-        }
-      ]
+    "publisher": "biud436",
+    "license": "MIT",
+    "categories": [
+        "Other"
+    ],
+    "icon": "images/icon-simple256x256.png",
+    "activationEvents": [
+        "onCommand:rgss-script-compiler.setGamePath",
+        "onCommand:rgss-script-compiler.unpack",
+        "onCommand:rgss-script-compiler.compile",
+        "workspaceContains:**/Game.ini",
+        "onView:rgssScriptViewer"
+    ],
+    "bugs": {
+        "url": "https://github.com/biud436/vscode-rgss-script-compiler/issues",
+        "email": "biud436@gmail.com"
     },
-    "menus": {
-      "view/title": [
-        {
-          "command": "rgss-script-compiler.setGamePath",
-          "when": "view == rgssScriptViewer",
-          "group": "navigation"
+    "keywords": [
+        "rgss",
+        "rpg maker vx ace",
+        "rpg maker xp"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "rgss-script-compiler.setGamePath",
+                "title": "Set Game Path",
+                "icon": "$(file-directory)"
+            },
+            {
+                "command": "rgss-script-compiler.unpack",
+                "title": "Unpack",
+                "icon": "$(package)"
+            },
+            {
+                "command": "rgss-script-compiler.compile",
+                "title": "Compile",
+                "icon": "$(file-binary)"
+            },
+            {
+                "command": "rgss-script-compiler.testPlay",
+                "title": "Test Play",
+                "icon": "$(debug-console)"
+            },
+            {
+                "command": "rgss-script-compiler.save",
+                "title": "Save"
+            },
+            {
+                "command": "rgssScriptViewer.refreshEntry",
+                "title": "Refresh"
+            },
+            {
+                "command": "rgss-script-compiler.openGameFolder",
+                "title": "Open Game Folder",
+                "icon": "$(root-folder-opened)"
+            },
+            {
+                "command": "rgss-script-compiler.openScript",
+                "title": "Open Script"
+            },
+            {
+                "command": "rgss-script-compiler.newFile",
+                "title": "New File",
+                "icon": "$(file-add)"
+            },
+            {
+                "command": "rgss-script-compiler.deleteFile",
+                "title": "Delete",
+                "icon": "$(trash)"
+            }
+        ],
+        "keybindings": [
+            {
+                "command": "rgss-script-compiler.save",
+                "key": "ctrl+s",
+                "mac": "cmd+s",
+                "when": "editorTextFocus && resourceExtname == .rb"
+            },
+            {
+                "command": "rgss-script-compiler.testPlay",
+                "key": "f5",
+                "when": "editorTextFocus && resourceExtname == .rb",
+                "mac": "cmd+f5"
+            }
+        ],
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "rgssScriptViewer",
+                    "title": "Script Editor",
+                    "icon": "images/dep.svg"
+                }
+            ]
         },
-        {
-          "command": "rgss-script-compiler.unpack",
-          "when": "view == rgssScriptViewer",
-          "group": "navigation"
+        "views": {
+            "rgssScriptViewer": [
+                {
+                    "id": "rgssScriptViewer",
+                    "name": "Script Editor",
+                    "icon": "images/dep.svg",
+                    "contextualTitle": "Script Editor"
+                }
+            ]
         },
-        {
-          "command": "rgss-script-compiler.openGameFolder",
-          "when": "view == rgssScriptViewer",
-          "group": "navigation"
+        "menus": {
+            "view/title": [
+                {
+                    "command": "rgss-script-compiler.setGamePath",
+                    "when": "view == rgssScriptViewer",
+                    "group": "navigation"
+                },
+                {
+                    "command": "rgss-script-compiler.unpack",
+                    "when": "view == rgssScriptViewer",
+                    "group": "navigation"
+                },
+                {
+                    "command": "rgss-script-compiler.openGameFolder",
+                    "when": "view == rgssScriptViewer",
+                    "group": "navigation"
+                }
+            ],
+            "view/item/context": [
+                {
+                    "command": "rgss-script-compiler.newFile",
+                    "when": "view == rgssScriptViewer",
+                    "group": "inline"
+                },
+                {
+                    "command": "rgss-script-compiler.deleteFile",
+                    "when": "view == rgssScriptViewer",
+                    "group": "inline"
+                }
+            ]
         }
-      ],
-      "view/item/context": [
-        {
-          "command": "rgss-script-compiler.newFile",
-          "when": "view == rgssScriptViewer",
-          "group": "inline"
-        },
-        {
-          "command": "rgss-script-compiler.deleteFile",
-          "when": "view == rgssScriptViewer",
-          "group": "inline"
-        }
-      ]
+    },
+    "scripts": {
+        "vscode:prepublish": "yarn run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "pretest": "yarn run compile && yarn run lint",
+        "lint": "eslint src --ext ts",
+        "test": "node ./out/test/runTest.js",
+        "publish": "vsce package"
+    },
+    "devDependencies": {
+        "@prettier/plugin-ruby": "^2.0.0",
+        "@types/glob": "^7.2.0",
+        "@types/mocha": "^9.1.0",
+        "@types/node": "14.x",
+        "@types/vscode": "^1.65.0",
+        "@typescript-eslint/eslint-plugin": "^5.12.1",
+        "@typescript-eslint/parser": "^5.12.1",
+        "@vscode/test-electron": "^2.1.2",
+        "eslint": "^8.9.0",
+        "glob": "^7.2.0",
+        "mocha": "^9.2.1",
+        "prettier": "^2.5.1",
+        "typescript": "^4.5.5"
+    },
+    "dependencies": {
+        "@types/marshal": "^0.5.1",
+        "@types/uuid": "^9.0.1",
+        "chalk": "^4",
+        "marshal": "^0.5.3",
+        "uuid": "^9.0.0"
     }
-  },
-  "scripts": {
-    "vscode:prepublish": "yarn run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "pretest": "yarn run compile && yarn run lint",
-    "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js",
-    "publish": "vsce package"
-  },
-  "devDependencies": {
-    "@prettier/plugin-ruby": "^2.0.0",
-    "@types/glob": "^7.2.0",
-    "@types/mocha": "^9.1.0",
-    "@types/node": "14.x",
-    "@types/vscode": "^1.65.0",
-    "@typescript-eslint/eslint-plugin": "^5.12.1",
-    "@typescript-eslint/parser": "^5.12.1",
-    "@vscode/test-electron": "^2.1.2",
-    "eslint": "^8.9.0",
-    "glob": "^7.2.0",
-    "mocha": "^9.2.1",
-    "prettier": "^2.5.1",
-    "typescript": "^4.5.5"
-  },
-  "dependencies": {
-    "@types/marshal": "^0.5.1",
-    "chalk": "^4",
-    "marshal": "^0.5.3",
-    "uuid": "^8.3.2"
-  }
 }

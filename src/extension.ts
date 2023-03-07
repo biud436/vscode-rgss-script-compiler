@@ -1,6 +1,5 @@
 import * as vscode from "vscode";
 import { Path } from "./utils/Path";
-import { RubyScriptService } from "./commands/ExtractScriptFiles";
 import { setGamePath } from "./commands/SetGamePath";
 import { ConfigService } from "./ConfigService";
 import { LoggingService } from "./LoggingService";
@@ -11,6 +10,7 @@ import { openGameFolder } from "./commands/OpenGameFolder";
 import { GamePlayService } from "./commands/TestGamePlay";
 import { ScriptExplorerProvider } from "./providers/ScriptViewer";
 import { Buttons } from "./buttons.enum";
+import { RGSSScriptSection } from "./providers/RGSSScriptSection";
 
 /**
  * @namespace Helper
@@ -360,6 +360,25 @@ export function activate(context: vscode.ExtensionContext) {
             helper.getScriptProvider()?.refresh()
         )
     );
+
+    // Delete the script file.
+    context.subscriptions.push(
+        vscode.commands.registerCommand(
+            "rgss-script-compiler.deleteFile",
+            (item: RGSSScriptSection) => {
+                helper.getScriptProvider()?.deleteTreeItem(item);
+            }
+        )
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand(
+            "rgss-script-compiler.newFile",
+            (item: RGSSScriptSection) => {
+                helper.getScriptProvider()?.addTreeItem(item);
+            }
+        )
+    );
+
     context.subscriptions.push(
         vscode.workspace.onDidDeleteFiles((e) => {
             e.files.forEach((e) => {

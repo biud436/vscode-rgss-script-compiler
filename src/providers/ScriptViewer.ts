@@ -5,10 +5,13 @@ import { RGSSScriptSection as ScriptSection } from "./RGSSScriptSection";
 import { ConfigService } from "../ConfigService";
 import { LoggingService } from "../LoggingService";
 import { Path } from "../utils/Path";
+import { v4 as uuidv4 } from "uuid";
 
 export class ScriptExplorerProvider
     implements vscode.TreeDataProvider<ScriptSection>
 {
+    private _tree: ScriptSection[] = [];
+
     constructor(
         private workspaceRoot: string,
         private readonly loggingService: LoggingService
@@ -41,11 +44,46 @@ export class ScriptExplorerProvider
             return [];
         }
 
-        return this.parseScriptSectionFromList();
+        if (this._tree.length === 0) {
+            return this.parseScriptSectionFromList();
+        }
+
+        return this._tree;
     }
 
-    private createEmptyScriptSection() {
-        return new ScriptSection("", vscode.TreeItemCollapsibleState.None);
+    /**
+     * Delete a script section from the tree data.
+     * However, this method will not delete the script file
+     *
+     * @param item
+     */
+    async deleteTreeItem(item: ScriptSection): Promise<void> {
+        this._tree = this._tree.filter((treeItem) => treeItem.id !== item.id);
+
+        this.refresh();
+    }
+
+    /**
+     * Add a new script section to the tree data.
+     *
+     * @param item {ScriptSection} The new script section.
+     */
+    async addTreeItem(item: ScriptSection): Promise<void> {
+        this.loggingService.info(`Add ${JSON.stringify(item)}`);
+
+        const targetIndex = this._tree.findIndex(
+            (treeItem) => treeItem.id === item.id
+        );
+
+        const copiedItem = {
+            ...item,
+        };
+
+        copiedItem.id = uuidv4();
+
+        this._tree.splice(targetIndex, 0, copiedItem);
+
+        this.refresh();
     }
 
     /**
@@ -81,7 +119,6 @@ export class ScriptExplorerProvider
 
         for (const line of lines) {
             if (line.match(IGNORE_BLACK_LIST_REGEXP)) {
-                // scriptSections.push(this.createEmptyScriptSection());
                 continue;
             }
 
@@ -91,37 +128,31 @@ export class ScriptExplorerProvider
                 targetScriptSection = line.replace(".rb", "");
             }
 
+            const scriptFilePath = fileUri
+                .with({
+                    path: path.posix.join(
+                        fileUri.path,
+                        targetScriptSection + ".rb"
+                    ),
+                })
+                .toString();
+
             const scriptSection = new ScriptSection(
                 targetScriptSection,
-                COLLAPSED
+                COLLAPSED,
+                scriptFilePath
             );
 
-            this.loggingService.info(
-                fileUri
-                    .with({
-                        path: path.posix.join(
-                            fileUri.path,
-                            targetScriptSection + ".rb"
-                        ),
-                    })
-                    .toString()
-            );
-
+            scriptSection.id = uuidv4();
             scriptSection.command = {
-                // command: "rgss-script-compiler.openScript",
                 command: "vscode.open",
                 title: "Open Script",
-                arguments: [
-                    fileUri.with({
-                        path: path.posix.join(
-                            fileUri.path,
-                            targetScriptSection + ".rb"
-                        ),
-                    }),
-                ],
+                arguments: [scriptFilePath],
             };
             scriptSections.push(scriptSection);
         }
+
+        this._tree = scriptSections;
 
         return scriptSections;
     }
