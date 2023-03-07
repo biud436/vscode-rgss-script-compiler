@@ -34,31 +34,45 @@
     "commands": [
       {
         "command": "rgss-script-compiler.setGamePath",
-        "title": "rgss-script-compiler: Set Game Path"
+        "title": "Set Game Path"
       },
       {
         "command": "rgss-script-compiler.unpack",
-        "title": "rgss-script-compiler: Unpack"
+        "title": "Unpack"
       },
       {
         "command": "rgss-script-compiler.compile",
-        "title": "rgss-script-compiler: Compile"
+        "title": "Compile"
       },
       {
         "command": "rgss-script-compiler.testPlay",
-        "title": "rgss-script-compiler: Test Play"
+        "title": "Test Play"
       },
       {
         "command": "rgss-script-compiler.save",
-        "title": "rgss-script-compiler: Test Play"
+        "title": "Save"
       },
       {
         "command": "rgssScriptViewer.refreshEntry",
         "title": "Refresh"
       },
       {
+        "command": "rgss-script-compiler.openGameFolder",
+        "title": "Open Game Folder"
+      },
+      {
         "command": "rgss-script-compiler.openScript",
         "title": "Open Script"
+      },
+      {
+        "command": "rgss-script-compiler.newFile",
+        "title": "New File",
+        "icon": "$(file-add)"
+      },
+      {
+        "command": "rgss-script-compiler.deleteFile",
+        "title": "Delete",
+        "icon": "$(trash)"
       }
     ],
     "keybindings": [
@@ -107,6 +121,28 @@
           "command": "rgss-script-compiler.setGamePath",
           "when": "view == rgssScriptViewer",
           "group": "navigation"
+        },
+        {
+          "command": "rgss-script-compiler.unpack",
+          "when": "view == rgssScriptViewer",
+          "group": "navigation"
+        },
+        {
+          "command": "rgss-script-compiler.openGameFolder",
+          "when": "view == rgssScriptViewer",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "rgss-script-compiler.newFile",
+          "when": "view == rgssScriptViewer",
+          "group": "inline"
+        },
+        {
+          "command": "rgss-script-compiler.deleteFile",
+          "when": "view == rgssScriptViewer",
+          "group": "inline"
         }
       ]
     }
