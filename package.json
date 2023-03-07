@@ -34,19 +34,23 @@
     "commands": [
       {
         "command": "rgss-script-compiler.setGamePath",
-        "title": "Set Game Path"
+        "title": "Set Game Path",
+        "icon": "$(file-directory)"
       },
       {
         "command": "rgss-script-compiler.unpack",
-        "title": "Unpack"
+        "title": "Unpack",
+        "icon": "$(package)"
       },
       {
         "command": "rgss-script-compiler.compile",
-        "title": "Compile"
+        "title": "Compile",
+        "icon": "$(file-binary)"
       },
       {
         "command": "rgss-script-compiler.testPlay",
-        "title": "Test Play"
+        "title": "Test Play",
+        "icon": "$(debug-console)"
       },
       {
         "command": "rgss-script-compiler.save",
@@ -58,7 +62,8 @@
       },
       {
         "command": "rgss-script-compiler.openGameFolder",
-        "title": "Open Game Folder"
+        "title": "Open Game Folder",
+        "icon": "$(root-folder-opened)"
       },
       {
         "command": "rgss-script-compiler.openScript",
