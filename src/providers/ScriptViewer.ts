@@ -11,6 +11,7 @@ export class ScriptExplorerProvider
     implements vscode.TreeDataProvider<ScriptSection>
 {
     private _tree: ScriptSection[] = [];
+    private _scriptDirectory = "Scripts";
 
     constructor(
         private workspaceRoot: string,
@@ -61,7 +62,7 @@ export class ScriptExplorerProvider
 
         const targetFilePath = path.join(
             this.workspaceRoot,
-            "Scripts",
+            this._scriptDirectory,
             Path.getFileName(item.filePath)
         );
 
@@ -102,7 +103,7 @@ export class ScriptExplorerProvider
         if (result) {
             const targetFilePath = path.join(
                 this.workspaceRoot,
-                "Scripts",
+                this._scriptDirectory,
                 result + Path.defaultExt
             );
 
@@ -137,7 +138,7 @@ export class ScriptExplorerProvider
     async refreshListFile() {
         const targetFilePath = path.join(
             this.workspaceRoot,
-            "Scripts",
+            this._scriptDirectory,
             ConfigService.TARGET_SCRIPT_LIST_FILE_NAME
         );
 
@@ -171,7 +172,7 @@ export class ScriptExplorerProvider
     private parseScriptSectionFromList(): ScriptSection[] {
         const targetFilePath = path.join(
             this.workspaceRoot,
-            "Scripts",
+            this._scriptDirectory,
             ConfigService.TARGET_SCRIPT_LIST_FILE_NAME
         );
 
@@ -192,7 +193,7 @@ export class ScriptExplorerProvider
 
         const folderUri = vscode.workspace.workspaceFolders![0].uri;
         const fileUri = folderUri.with({
-            path: path.posix.join(folderUri.path, "Scripts"),
+            path: path.posix.join(folderUri.path, this._scriptDirectory),
         });
 
         for (const line of lines) {
