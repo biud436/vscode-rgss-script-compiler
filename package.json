@@ -100,6 +100,15 @@
           "when": "resourceExtname == .rb"
         }
       ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "rgss-script-compiler.setGamePath",
+          "when": "view == rgssScriptViewer",
+          "group": "navigation"
+        }
+      ]
     }
   },
   "scripts": {
