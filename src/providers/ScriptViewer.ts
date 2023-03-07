@@ -53,7 +53,6 @@ export class ScriptExplorerProvider
 
     /**
      * Delete a script section from the tree data.
-     * However, this method will not delete the script file
      *
      * @param item
      */
