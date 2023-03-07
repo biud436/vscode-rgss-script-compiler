@@ -26,7 +26,8 @@
   },
   "keywords": [
     "rgss",
-    "rpg maker vx ace"
+    "rpg maker vx ace",
+    "rpg maker xp"
   ],
   "main": "./out/extension.js",
   "contributes": {
