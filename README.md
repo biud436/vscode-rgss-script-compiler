@@ -3,6 +3,7 @@
 This extension allows you to edit scripts directly in Visual Studio Code without using the script editor of RPG Maker VX Ace or RPG Maker XP.
 
 ![rgss-compiler-preview](https://user-images.githubusercontent.com/13586185/186309563-f5d00d1c-c9bb-4b93-8bb1-e98f888d705c.gif)
+![rgss-compiler-preview2](https://user-images.githubusercontent.com/13586185/223461482-994b2186-7f37-4e87-a398-333bf6ce4cff.gif)
 
 This extension is a beta version that has not been tested elaborately. We have secured stability by correcting problems such as third-party scripts, but please back up the scripts in advance.
 
@@ -14,28 +15,28 @@ This extension is a beta version that has not been tested elaborately. We have s
 
 ## Marketplace Link
 
-- [https://marketplace.visualstudio.com/items?itemName=biud436.rgss-script-compiler](https://marketplace.visualstudio.com/items?itemName=biud436.rgss-script-compiler)
+-   [https://marketplace.visualstudio.com/items?itemName=biud436.rgss-script-compiler](https://marketplace.visualstudio.com/items?itemName=biud436.rgss-script-compiler)
 
 ## Caution
 
-- There must be only one parent folder in the workspace (if there are more than one, the top folder is recognized only)
-- The workspace is not automatically set to the initial game folder(This is because workspace and game folders may be different)
-- This extension is not always active. Game.ini file must be in the root game folder to be activated.
-- This extension activates the rest of the buttons only when selecting the game folder. However, if the rgss-compiler.json file exists, it is automatically activated. When VS Code is started up, the Import or Compile button is automatically activated when this file is existed.
-- You should not compile scripts while RPG Maker XP or RPG Maker VX Ace is on. the script information in RPG Maker exists in the state of a global variable in memory based on the initial imported file content (Scripts.rvdata2), and does not detect that the file has been changed. To manipulate memory based on the contents of the file, it is beyond this extension because it requires heap memory manipulation in the tool, such as CreateRemoteThread or DLL Injection to directly penetrate the target process and implement a kind of Hack, such as the RPG Maker tool's Virtual Memory. When loaded with RGSS301.dll, etc. using CreateRemoteThread, one thread is executed, and if you hang a specific script at that time, you can implement Hack like as cheat engine.
+-   There must be only one parent folder in the workspace (if there are more than one, the top folder is recognized only)
+-   The workspace is not automatically set to the initial game folder(This is because workspace and game folders may be different)
+-   This extension is not always active. Game.ini file must be in the root game folder to be activated.
+-   This extension activates the rest of the buttons only when selecting the game folder. However, if the rgss-compiler.json file exists, it is automatically activated. When VS Code is started up, the Import or Compile button is automatically activated when this file is existed.
+-   You should not compile scripts while RPG Maker XP or RPG Maker VX Ace is on. the script information in RPG Maker exists in the state of a global variable in memory based on the initial imported file content (Scripts.rvdata2), and does not detect that the file has been changed. To manipulate memory based on the contents of the file, it is beyond this extension because it requires heap memory manipulation in the tool, such as CreateRemoteThread or DLL Injection to directly penetrate the target process and implement a kind of Hack, such as the RPG Maker tool's Virtual Memory. When loaded with RGSS301.dll, etc. using CreateRemoteThread, one thread is executed, and if you hang a specific script at that time, you can implement Hack like as cheat engine.
 
 ## Known Issues
 
 This is a list of bugs that we know but have not solved.
 
-- In some cases, the rest of the buttons are activated only when the game folder setting button is pressed more than once. (In some cases, RGSS version identification and game folder setting information are reflected in the setting file are executed separately.
+-   In some cases, the rest of the buttons are activated only when the game folder setting button is pressed more than once. (In some cases, RGSS version identification and game folder setting information are reflected in the setting file are executed separately.
 
 This bug occurred by changing the synchronization function to an asynchronous function.
 
 ## Supported tools
 
-- RPG Maker XP
-- RPG Maker VX Ace
+-   RPG Maker XP
+-   RPG Maker VX Ace
 
 ## Usage
 
@@ -57,21 +58,21 @@ You call the command above to see if the ruby version is output normally like as
 
 ### New Features
 
-- Added a new feature that can open the script file using script explorer on Windows or MacOS
+-   Added a new feature that can open the script file using script explorer on Windows or MacOS
 
 # Maintainer and Contributors
 
-- Extension Maintainer
+-   Extension Maintainer
 
-  - Biud436 (https://github.com/biud436)
+    -   Biud436 (https://github.com/biud436)
 
-- `RGSS3/plugins/rxscript.rb`
+-   `RGSS3/plugins/rxscript.rb`
 
-  - Korokke (gksdntjr714@naver.com)
+    -   Korokke (gksdntjr714@naver.com)
 
-- `RGSS3/modules/Table.rb`
+-   `RGSS3/modules/Table.rb`
 
-  - CaptainJet (https://github.com/CaptainJet/RM-Gosu)
+    -   CaptainJet (https://github.com/CaptainJet/RM-Gosu)
 
-- `RGSS3/RPG.rb`
-  - Yoji Ojima (Gotcha Gotcha Games, KADOKAWA)
+-   `RGSS3/RPG.rb`
+    -   Yoji Ojima (Gotcha Gotcha Games, KADOKAWA)
