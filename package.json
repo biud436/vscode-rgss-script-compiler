@@ -106,13 +106,6 @@
           "icon": "images/dep.svg",
           "contextualTitle": "Script Editor"
         }
-      ],
-      "explorer": [
-        {
-          "id": "rgssScriptViewer",
-          "name": "Script Editor",
-          "when": "resourceExtname == .rb"
-        }
       ]
     },
     "menus": {

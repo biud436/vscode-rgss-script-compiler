@@ -91,6 +91,7 @@ export class ScriptExplorerProvider
       }
 
       const scriptSection = new ScriptSection(targetScriptSection, COLLAPSED);
+
       scriptSection.command = {
         // command: "rgss-script-compiler.openScript",
         command: "vscode.open",
