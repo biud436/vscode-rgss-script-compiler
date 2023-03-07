@@ -24,6 +24,18 @@ class PathImpl {
                 return path.posix.join(url.path);
         }
     }
+
+    getFileName(filePath: string) {
+        return path.basename(filePath);
+    }
+
+    getParentDirectory(filePath: string) {
+        return path.dirname(filePath);
+    }
+
+    join(...paths: string[]) {
+        return path.posix.join(...paths);
+    }
 }
 
 export const Path = new PathImpl();

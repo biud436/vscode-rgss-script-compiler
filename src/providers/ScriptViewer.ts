@@ -60,7 +60,18 @@ export class ScriptExplorerProvider
     async deleteTreeItem(item: ScriptSection): Promise<void> {
         this._tree = this._tree.filter((treeItem) => treeItem.id !== item.id);
 
+        const targetFilePath = path.join(
+            this.workspaceRoot,
+            "Scripts",
+            Path.getFileName(item.filePath)
+        );
+
+        if (fs.existsSync(targetFilePath)) {
+            fs.unlinkSync(targetFilePath);
+        }
+
         this.refresh();
+        this.refreshListFile();
     }
 
     /**
@@ -122,7 +133,34 @@ export class ScriptExplorerProvider
             this._tree.splice(targetIndex, 0, copiedItem);
 
             this.refresh();
+            this.refreshListFile();
         }
+    }
+
+    async refreshListFile() {
+        const targetFilePath = path.join(
+            this.workspaceRoot,
+            "Scripts",
+            ConfigService.TARGET_SCRIPT_LIST_FILE_NAME
+        );
+
+        const lines = [];
+
+        for (const { filePath, label } of this._tree) {
+            const filename = Path.getFileName(filePath);
+
+            if (filename === ".rb") {
+                continue;
+            }
+
+            lines.push(decodeURIComponent(filename));
+        }
+
+        const raw = lines.join("\n");
+
+        console.log(raw);
+
+        await fs.promises.writeFile(targetFilePath, raw, "utf8");
     }
 
     /**
