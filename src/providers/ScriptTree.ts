@@ -23,6 +23,10 @@ export class ScriptTree<T> {
         return this.data.findIndex(callback);
     }
 
+    public find(callback: FilterPredicate<T>): T | undefined {
+        return this.data.find(callback);
+    }
+
     get length(): number {
         return this.data.length;
     }

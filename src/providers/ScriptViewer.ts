@@ -92,10 +92,30 @@ export class ScriptExplorerProvider
             `[file ${LoggingMarker.CHANGED}] ${JSON.stringify(url)}`
         );
     }
+
+    /**
+     * 삭제된 아이템을 반영하여 트리를 갱신한다.
+     * 이때 아이템은 파일 주소만 반환된다.
+     * Windows는 중복된 파일명을 허용하지 않으므로 파일명으로 트리에서 아이템을 찾을 수 있다.
+     *
+     * @param url
+     */
     private onDidDelete(url: vscode.Uri) {
         this.loggingService.info(
             `[file ${LoggingMarker.DELETED}] ${JSON.stringify(url)}`
         );
+
+        // 파일명은 같지만 프로토콜이 다를 수 있다.
+        // 따라서 파일명만 추출하여 트리에서 아이템을 찾는다.
+        const scriptSection = this._tree?.find(
+            (item) =>
+                Path.getFileName(item.filePath) === Path.getFileName(url.fsPath)
+        );
+
+        if (scriptSection) {
+            this.loggingService.info("삭재할 아이템을 찾았습니다.");
+            this.deleteTreeItem(scriptSection);
+        }
     }
 
     /**
