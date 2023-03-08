@@ -19,6 +19,7 @@ export class ScriptExplorerProvider
 {
   private _tree: ScriptSection[] = [];
   private _scriptDirectory = "Scripts";
+  private _glob = "**/*.rb";
   private _watcher?: vscode.FileSystemWatcher;
 
   constructor(
@@ -39,7 +40,7 @@ export class ScriptExplorerProvider
    * Create the file watcher for the script directory.
    */
   initWithFileWatcher() {
-    this._watcher = vscode.workspace.createFileSystemWatcher("**/*.rb");
+    this._watcher = vscode.workspace.createFileSystemWatcher(this._glob);
 
     /**
      * 파일 이름 변경 이벤트
