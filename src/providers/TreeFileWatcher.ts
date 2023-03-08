@@ -3,6 +3,11 @@ import { LoggingService } from "../LoggingService";
 import { RGSSScriptSection } from "./RGSSScriptSection";
 import { LoggingMarker } from "./ScriptViewer";
 
+export type OnDidRenameFilesProps = {
+    oldUrl: vscode.Uri;
+    newUrl: vscode.Uri;
+};
+
 export class TreeFileWatcher implements vscode.Disposable {
     private _glob = "**/*.rb";
     private _watcher?: vscode.FileSystemWatcher;
@@ -11,10 +16,7 @@ export class TreeFileWatcher implements vscode.Disposable {
      * 이벤트 드리븐 방식의 디커플링 패턴
      * `vscode.TreeDataProvider<ScriptSection>`가 아래 파일 이벤트를 구독한다.
      */
-    public onDidRenameFiles = new vscode.EventEmitter<{
-        oldUrl: vscode.Uri;
-        newUrl: vscode.Uri;
-    }>();
+    public onDidRenameFiles = new vscode.EventEmitter<OnDidRenameFilesProps>();
 
     /**
      * 파일 생성 이벤트
