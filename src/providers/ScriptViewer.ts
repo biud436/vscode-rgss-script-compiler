@@ -113,7 +113,7 @@ export class ScriptExplorerProvider
         );
 
         if (scriptSection) {
-            this.loggingService.info("삭재할 아이템을 찾았습니다.");
+            this.loggingService.info("삭제할 아이템을 찾았습니다.");
             this.deleteTreeItem(scriptSection);
         }
     }
