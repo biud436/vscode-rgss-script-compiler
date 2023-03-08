@@ -15,6 +15,7 @@ export enum LoggingMarker {
     CREATED = "created",
     CHANGED = "changed",
     DELETED = "deleted",
+    RENAME = "rename",
 }
 
 export class ScriptExplorerProvider
@@ -51,6 +52,19 @@ export class ScriptExplorerProvider
     initWithFileWatcher() {
         this._watcher = new TreeFileWatcher(this.loggingService);
         this._watcher.create();
+
+        this._watcher.onDidRenameFiles.event(({ oldUrl, newUrl }) => {
+            this.onDidRenameFiles(oldUrl, newUrl);
+        });
+        this._watcher.onDidCreate.event((file) => {
+            this.onDidCreate(file);
+        });
+        this._watcher.onDidChange.event((file) => {
+            this.onDidChange(file);
+        });
+        this._watcher.onDidDelete.event((file) => {
+            this.onDidDelete(file);
+        });
     }
 
     /**
@@ -58,6 +72,30 @@ export class ScriptExplorerProvider
      */
     dispose() {
         this._watcher?.dispose();
+    }
+
+    private onDidRenameFiles(oldUrl: vscode.Uri, newUrl: vscode.Uri) {
+        this.loggingService.info(
+            `[file ${LoggingMarker.RENAME}] ${JSON.stringify(
+                oldUrl
+            )} -> ${JSON.stringify(newUrl)}`
+        );
+    }
+
+    private onDidCreate(url: vscode.Uri) {
+        this.loggingService.info(
+            `[file ${LoggingMarker.CREATED}] ${JSON.stringify(url)}`
+        );
+    }
+    private onDidChange(url: vscode.Uri) {
+        this.loggingService.info(
+            `[file ${LoggingMarker.CHANGED}] ${JSON.stringify(url)}`
+        );
+    }
+    private onDidDelete(url: vscode.Uri) {
+        this.loggingService.info(
+            `[file ${LoggingMarker.DELETED}] ${JSON.stringify(url)}`
+        );
     }
 
     /**

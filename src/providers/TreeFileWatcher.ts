@@ -67,10 +67,6 @@ export class TreeFileWatcher implements vscode.Disposable {
          * 파일 생성 이벤트
          */
         this._watcher?.onDidCreate((event) => {
-            this.loggingService.info(
-                `[file ${LoggingMarker.CREATED}] ${JSON.stringify(event)}`
-            );
-
             this.onDidCreate.fire(event);
         });
 
@@ -78,10 +74,6 @@ export class TreeFileWatcher implements vscode.Disposable {
          * 파일 변경 이벤트
          */
         this._watcher?.onDidChange((event) => {
-            this.loggingService.info(
-                `[file ${LoggingMarker.CHANGED}] ${JSON.stringify(event)}`
-            );
-
             this.onDidChange.fire(event);
         });
 
@@ -89,10 +81,6 @@ export class TreeFileWatcher implements vscode.Disposable {
          * 파일 삭제 이벤트
          */
         this._watcher?.onDidDelete((event) => {
-            this.loggingService.info(
-                `[file ${LoggingMarker.DELETED}] ${JSON.stringify(event)}`
-            );
-
             this.onDidDelete.fire(event);
         });
     }
