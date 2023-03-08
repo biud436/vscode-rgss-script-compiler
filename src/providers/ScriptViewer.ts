@@ -30,13 +30,7 @@ export class ScriptExplorerProvider
         private readonly loggingService: LoggingService
     ) {
         this.initWithFileWatcher();
-
-        // const n = [1, 2, 3, 4];
         this._tree = new ScriptTree<ScriptSection>([]);
-
-        // for (const i of tree) {
-        //     this.loggingService.info(i.toString());
-        // }
     }
 
     private _onDidChangeTreeData: vscode.EventEmitter<
@@ -87,6 +81,7 @@ export class ScriptExplorerProvider
             `[file ${LoggingMarker.CREATED}] ${JSON.stringify(url)}`
         );
     }
+
     private onDidChange(url: vscode.Uri) {
         this.loggingService.info(
             `[file ${LoggingMarker.CHANGED}] ${JSON.stringify(url)}`
@@ -182,15 +177,15 @@ export class ScriptExplorerProvider
                     return Validator.PLASE_INPUT_SCR_NAME;
                 }
 
-                // 공백이 포함되어 있을 경우
-                if (value.match(/[\s]/)) {
-                    return Validator.REMOVE_SPACE;
-                }
+                // 공백이 포함되어 있을 경우 (주석처리하면 공백 허용)
+                // if (value.match(/[\s]/)) {
+                //     return Validator.REMOVE_SPACE;
+                // }
 
-                // 특수 문자가 포함되어 있을 경우 (한글 포함)
-                if (Validator.isSpecialCharacter(value)) {
-                    return Validator.REMOVE_SPECIAL_CHARACTER;
-                }
+                // 특수 문자가 포함되어 있을 경우 (한글 포함) (주석처리하면 특수문자 허용)
+                // if (Validator.isSpecialCharacter(value)) {
+                //     return Validator.REMOVE_SPECIAL_CHARACTER;
+                // }
 
                 return Validator.VALID;
             },
