@@ -15,8 +15,27 @@ export class TreeFileWatcher implements vscode.Disposable {
         oldUrl: vscode.Uri;
         newUrl: vscode.Uri;
     }>();
+
+    /**
+     * 파일 생성 이벤트
+     *
+     * 트리를 info.txt로부터 다시 그릴 필요는 없지만, 기존 트리에 새로운 파일의 경로 값으로 데이터를 추가해야 한다.
+     * 이때, Main.rb의 위쪽 또는 현재 선택된 파일의 아래쪽에 추가해야 한다.
+     */
     public onDidCreate = new vscode.EventEmitter<vscode.Uri>();
+
+    /**
+     * 파일 변경 이벤트
+     *
+     * 트리 변경의 필요성이 있는지 검토해야 한다.
+     */
     public onDidChange = new vscode.EventEmitter<vscode.Uri>();
+
+    /**
+     * 파일 삭제 이벤트
+     *
+     * 트리를 info.txt로부터 다시 그릴 필요는 없지만, 기존 트리에서 파일의 경로 값으로 데이터를 찾아 삭제 처리를 해야 한다.
+     */
     public onDidDelete = new vscode.EventEmitter<vscode.Uri>();
 
     constructor(private readonly loggingService: LoggingService) {}
@@ -51,9 +70,6 @@ export class TreeFileWatcher implements vscode.Disposable {
             );
 
             this.onDidCreate.fire(event);
-
-            // 트리를 info.txt로부터 다시 그릴 필요는 없지만, 기존 트리에 새로운 파일의 경로 값으로 데이터를 추가해야 한다.
-            // 이때, Main.rb의 위쪽 또는 현재 선택된 파일의 아래쪽에 추가해야 한다.
         });
 
         /**
@@ -64,7 +80,6 @@ export class TreeFileWatcher implements vscode.Disposable {
                 `[file ${LoggingMarker.CHANGED}] ${JSON.stringify(event)}`
             );
 
-            // 트리 변경의 필요성이 있는지 검토해야 한다.
             this.onDidChange.fire(event);
         });
 
@@ -76,7 +91,6 @@ export class TreeFileWatcher implements vscode.Disposable {
                 `[file ${LoggingMarker.DELETED}] ${JSON.stringify(event)}`
             );
 
-            // 트리를 info.txt로부터 다시 그릴 필요는 없지만, 기존 트리에서 파일의 경로 값으로 데이터를 찾아 삭제 처리를 해야 한다.
             this.onDidDelete.fire(event);
         });
     }
