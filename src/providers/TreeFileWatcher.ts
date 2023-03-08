@@ -86,6 +86,10 @@ export class TreeFileWatcher implements vscode.Disposable {
     }
 
     dispose() {
+        this.onDidRenameFiles.dispose();
+        this.onDidCreate.dispose();
+        this.onDidChange.dispose();
+        this.onDidDelete.dispose();
         this._watcher?.dispose();
     }
 }
