@@ -27,6 +27,10 @@ export class ScriptTree<T> {
         return this.data.length;
     }
 
+    /**
+     * for ... of 로 접근할 수 있도록 iterator를 구현한다.
+     * @returns
+     */
     public [Symbol.iterator](): Iterator<T> {
         return this.data[Symbol.iterator]();
     }
