@@ -15,7 +15,7 @@ export function isInstalledRuby(): boolean {
         } else {
             isInstalled = false;
         }
-    } catch (error) {
+    } catch (error: any) {
         isInstalled = false;
     }
 
