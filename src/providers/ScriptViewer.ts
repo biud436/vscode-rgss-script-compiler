@@ -10,6 +10,7 @@ import { generateUUID } from "../utils/uuid";
 import { Validator } from "../utils/Validator";
 import { TreeFileWatcher } from "./TreeFileWatcher";
 import { ScriptTree } from "./ScriptTree";
+import { platform } from "os";
 
 export enum LoggingMarker {
     CREATED = "created",
@@ -182,10 +183,9 @@ export class ScriptExplorerProvider
                 //     return Validator.REMOVE_SPACE;
                 // }
 
-                // 특수 문자가 포함되어 있을 경우 (한글 포함) (주석처리하면 특수문자 허용)
-                // if (Validator.isSpecialCharacter(value)) {
-                //     return Validator.REMOVE_SPECIAL_CHARACTER;
-                // }
+                if (!Validator.isValidScriptName(value)) {
+                    return Validator.INVALID_SCRIPT_NAME;
+                }
 
                 return Validator.VALID;
             },
