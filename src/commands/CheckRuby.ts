@@ -8,7 +8,7 @@ export function isInstalledRuby(): boolean {
     let isInstalled = false;
 
     try {
-        const stdout = execSync(COMMAND).toString();
+        const stdout = execSync(COMMAND).toString() ?? "";
 
         if (stdout.startsWith("ruby")) {
             isInstalled = true;
