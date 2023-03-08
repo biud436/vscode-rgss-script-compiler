@@ -178,11 +178,6 @@ export class ScriptExplorerProvider
                     return Validator.PLASE_INPUT_SCR_NAME;
                 }
 
-                // 공백이 포함되어 있을 경우 (주석처리하면 공백 허용)
-                // if (value.match(/[\s]/)) {
-                //     return Validator.REMOVE_SPACE;
-                // }
-
                 if (!Validator.isValidScriptName(value)) {
                     return Validator.INVALID_SCRIPT_NAME;
                 }

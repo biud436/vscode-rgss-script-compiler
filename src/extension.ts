@@ -11,6 +11,7 @@ import { GamePlayService } from "./commands/TestGamePlay";
 import { ScriptExplorerProvider } from "./providers/ScriptViewer";
 import { Buttons } from "./buttons.enum";
 import { RGSSScriptSection } from "./providers/RGSSScriptSection";
+import { isInstalledRuby } from "./commands/CheckRuby";
 
 /**
  * @namespace Helper
@@ -304,6 +305,8 @@ function checkDependencies() {
 export function activate(context: vscode.ExtensionContext) {
     const loggingService = new LoggingService();
     const configService = new ConfigService(loggingService);
+
+    loggingService.info(`Ruby installed: ${isInstalledRuby()}`);
 
     // Set the extension context.
     configService.setExtensionContext(context);

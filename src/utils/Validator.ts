@@ -54,6 +54,12 @@ export namespace Validator {
         return true;
     }
 
+    /**
+     * Checks whether the script name is valid or not.
+     *
+     * @param filename specified script name
+     * @returns
+     */
     export function isValidScriptName(filename: string): boolean {
         let isValid = true;
 
