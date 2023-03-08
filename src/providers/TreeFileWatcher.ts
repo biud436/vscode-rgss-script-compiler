@@ -7,7 +7,17 @@ export class TreeFileWatcher implements vscode.Disposable {
     private _glob = "**/*.rb";
     private _watcher?: vscode.FileSystemWatcher;
 
-    public subscriptions = new vscode.EventEmitter<RGSSScriptSection>();
+    /**
+     * 이벤트 드리븐 방식의 디커플링 패턴
+     * `vscode.TreeDataProvider<ScriptSection>`가 아래 파일 이벤트를 구독한다.
+     */
+    public onDidRenameFiles = new vscode.EventEmitter<{
+        oldUrl: vscode.Uri;
+        newUrl: vscode.Uri;
+    }>();
+    public onDidCreate = new vscode.EventEmitter<vscode.Uri>();
+    public onDidChange = new vscode.EventEmitter<vscode.Uri>();
+    public onDidDelete = new vscode.EventEmitter<vscode.Uri>();
 
     constructor(private readonly loggingService: LoggingService) {}
 
@@ -24,6 +34,11 @@ export class TreeFileWatcher implements vscode.Disposable {
         vscode.workspace.onDidRenameFiles((event) => {
             event.files.forEach((file) => {
                 console.log(`${file.oldUri} -> ${file.newUri}`);
+
+                this.onDidRenameFiles.fire({
+                    oldUrl: file.oldUri,
+                    newUrl: file.newUri,
+                });
             });
         });
 
@@ -34,6 +49,11 @@ export class TreeFileWatcher implements vscode.Disposable {
             this.loggingService.info(
                 `[file ${LoggingMarker.CREATED}] ${JSON.stringify(event)}`
             );
+
+            this.onDidCreate.fire(event);
+
+            // 트리를 info.txt로부터 다시 그릴 필요는 없지만, 기존 트리에 새로운 파일의 경로 값으로 데이터를 추가해야 한다.
+            // 이때, Main.rb의 위쪽 또는 현재 선택된 파일의 아래쪽에 추가해야 한다.
         });
 
         /**
@@ -43,6 +63,9 @@ export class TreeFileWatcher implements vscode.Disposable {
             this.loggingService.info(
                 `[file ${LoggingMarker.CHANGED}] ${JSON.stringify(event)}`
             );
+
+            // 트리 변경의 필요성이 있는지 검토해야 한다.
+            this.onDidChange.fire(event);
         });
 
         /**
@@ -52,6 +75,9 @@ export class TreeFileWatcher implements vscode.Disposable {
             this.loggingService.info(
                 `[file ${LoggingMarker.DELETED}] ${JSON.stringify(event)}`
             );
+
+            // 트리를 info.txt로부터 다시 그릴 필요는 없지만, 기존 트리에서 파일의 경로 값으로 데이터를 찾아 삭제 처리를 해야 한다.
+            this.onDidDelete.fire(event);
         });
     }
 
