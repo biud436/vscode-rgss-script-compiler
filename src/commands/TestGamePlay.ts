@@ -15,64 +15,64 @@ const execPromise = promisify(exec);
  * @param error
  */
 function showWarnMessage(loggingService: LoggingService): void {
-  const platform = <NodeJS.Platform>process.platform;
+    const platform = <NodeJS.Platform>process.platform;
 
-  loggingService.info(`${platform} is not supported yet.`);
+    loggingService.info(`${platform} is not supported yet.`);
 }
 
 export class GamePlayService extends RubyScriptService {
-  constructor(
-    protected readonly configService: ConfigService,
-    protected readonly loggingService: LoggingService
-  ) {
-    super(
-      configService,
-      loggingService,
-      {
-        scriptFile: "",
-        vscodeWorkspaceFolder: "",
-      },
-      () => {
-        this.loggingService.info("done");
-      }
-    );
-  }
-
-  /**
-   * This function is responsible for making the command line options.
-   */
-  makeCommand() {
-    this._args = [];
-  }
-
-  /**
-   * Executes the ruby script using the ruby interpreter is installed on your system.
-   * if the ruby interpreter is not installed, it can't be executed.
-   */
-  run(): void | this {
-    this._process = cp.execFile(
-      `Game.exe`,
-      this._args,
-      {
-        encoding: "utf8",
-        maxBuffer: 1024 * 1024,
-        cwd: Path.resolve(this.configService.getMainGameFolder()),
-        shell: true,
-      },
-      this._callback
-    );
-    if (!this._process) {
-      return;
+    constructor(
+        protected readonly configService: ConfigService,
+        protected readonly loggingService: LoggingService
+    ) {
+        super(
+            configService,
+            loggingService,
+            {
+                scriptFile: "",
+                vscodeWorkspaceFolder: "",
+            },
+            () => {
+                this.loggingService.info("done");
+            }
+        );
     }
-    this._process.stdout!.on("data", (data: any) => {
-      this.loggingService.info(data);
-    });
-    this._process.stdout!.on("end", (data: any) => {
-      this.loggingService.info(data);
-    });
-    this._process.stdin!.end();
-    return this;
-  }
+
+    /**
+     * This function is responsible for making the command line options.
+     */
+    makeCommand() {
+        this._args = [];
+    }
+
+    /**
+     * Executes the ruby script using the ruby interpreter is installed on your system.
+     * if the ruby interpreter is not installed, it can't be executed.
+     */
+    run(): void | this {
+        this._process = cp.execFile(
+            `Game.exe`,
+            this._args,
+            {
+                encoding: "utf8",
+                maxBuffer: 1024 * 1024,
+                cwd: Path.resolve(this.configService.getMainGameFolder()),
+                shell: true,
+            },
+            this._callback
+        );
+        if (!this._process) {
+            return;
+        }
+        this._process.stdout!.on("data", (data: any) => {
+            this.loggingService.info(data);
+        });
+        this._process.stdout!.on("end", (data: any) => {
+            this.loggingService.info(data);
+        });
+        this._process.stdin!.end();
+        return this;
+    }
 }
 
 /**
@@ -82,18 +82,18 @@ export class GamePlayService extends RubyScriptService {
  * @param rubyScriptService
  */
 export function handleTestPlay<T extends GamePlayService = GamePlayService>(
-  loggingService: LoggingService,
-  gamePlayService: T
+    loggingService: LoggingService,
+    gamePlayService: T
 ): void {
-  const platform = process.platform;
+    const platform = process.platform;
 
-  if (platform !== "win32") {
-    showWarnMessage(loggingService);
-    return;
-  }
+    if (platform !== "win32") {
+        showWarnMessage(loggingService);
+        return;
+    }
 
-  gamePlayService.run()!.onExit((code: number, signal: any) => {
-    loggingService.info(`${code} Game.exe file is executed completely.`);
-  });
-  gamePlayService.pendingTerminate();
+    gamePlayService.run()!.onExit((code: number, signal: any) => {
+        loggingService.info(`${code} Game.exe file is executed completely.`);
+    });
+    gamePlayService.pendingTerminate();
 }

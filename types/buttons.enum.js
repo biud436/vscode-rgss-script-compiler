@@ -4,5 +4,5 @@ exports.Buttons = void 0;
 var Buttons;
 (function (Buttons) {
     Buttons["OK"] = "OK";
-})(Buttons = exports.Buttons || (exports.Buttons = {}));
+})((Buttons = exports.Buttons || (exports.Buttons = {})));
 //# sourceMappingURL=buttons.enum.js.map
