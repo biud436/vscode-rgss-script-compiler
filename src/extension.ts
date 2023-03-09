@@ -28,7 +28,9 @@ namespace Helper {
         constructor(
             private readonly configService: ConfigService,
             private readonly loggingService: LoggingService
-        ) {}
+        ) {
+            this.updateConfiguration();
+        }
 
         setScriptProvider(scriptProvider: ScriptExplorerProvider) {
             this.scriptProvider = scriptProvider;
@@ -36,6 +38,15 @@ namespace Helper {
 
         getScriptProvider() {
             return this.scriptProvider;
+        }
+
+        async updateConfiguration() {
+            const config =
+                vscode.workspace.getConfiguration("rgssScriptCompiler");
+
+            if (!config.has("showStatusBar")) {
+                await config.update("showStatusBar", false);
+            }
         }
 
         setGamePathCommand() {
@@ -246,12 +257,16 @@ namespace Helper {
     };
 }
 
-let statusBarItems: vscode.StatusBarItem[] = [
-    // Helper.StatusBarProvider.getGameFolderOpenStatusBarItem(),
-    // Helper.StatusBarProvider.getUnpackStatusBarItem(),
-    // Helper.StatusBarProvider.getCompileStatusBarItem(),
-    // Helper.StatusBarProvider.getOpenGameFolderButtonItem(),
-];
+let statusBarItems: vscode.StatusBarItem[] = vscode.workspace
+    .getConfiguration()
+    .get("rgssScriptCompiler.showStatusBar")
+    ? [
+          Helper.StatusBarProvider.getGameFolderOpenStatusBarItem(),
+          Helper.StatusBarProvider.getUnpackStatusBarItem(),
+          Helper.StatusBarProvider.getCompileStatusBarItem(),
+          Helper.StatusBarProvider.getOpenGameFolderButtonItem(),
+      ]
+    : [];
 
 let gameFolderPathWather: vscode.StatusBarItem | undefined;
 
@@ -265,7 +280,14 @@ function showGamePathWatcher(
             config.mainGameFolder!
         );
     context.subscriptions.push(gameFolderPathWather);
-    gameFolderPathWather.show();
+
+    if (
+        vscode.workspace
+            .getConfiguration()
+            .get("rgssScriptCompiler.showStatusBar")
+    ) {
+        gameFolderPathWather.show();
+    }
 }
 
 /**
