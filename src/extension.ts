@@ -346,6 +346,38 @@ export function activate(context: vscode.ExtensionContext) {
 
     loggingService.info("RGSS Script Compiler has executed successfully");
 
+    context.subscriptions.push(
+        vscode.workspace.onDidChangeConfiguration((e) => {
+            if (e.affectsConfiguration("rgssScriptCompiler.showStatusBar")) {
+                const config = vscode.workspace
+                    .getConfiguration()
+                    .get("rgssScriptCompiler.showStatusBar");
+
+                if (config) {
+                    if (statusBarItems.length === 0) {
+                        statusBarItems = [
+                            Helper.StatusBarProvider.getGameFolderOpenStatusBarItem(),
+                            Helper.StatusBarProvider.getUnpackStatusBarItem(),
+                            Helper.StatusBarProvider.getCompileStatusBarItem(),
+                            Helper.StatusBarProvider.getOpenGameFolderButtonItem(),
+                        ];
+                    }
+
+                    statusBarItems.forEach((e) => {
+                        e.show();
+                    });
+
+                    gameFolderPathWather?.show();
+                } else {
+                    statusBarItems.forEach((e) => {
+                        e.hide();
+                    });
+                    gameFolderPathWather?.hide();
+                }
+            }
+        })
+    );
+
     // Load configuration file.
     configService
         .loadConfig(loggingService)
