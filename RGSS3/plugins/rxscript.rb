@@ -83,8 +83,8 @@ module RXDATA
     end
 
     def ExtractScript(outdir, rxdata)
-        return unless File.exists? rxdata
-        Dir.mkdir(outdir) unless File.exists? outdir
+        return unless File.exist? rxdata
+        Dir.mkdir(outdir) unless File.exist? outdir
 
         input = File.open(rxdata, 'rb')
         scripts = Marshal.load(input.read)
@@ -129,10 +129,10 @@ module RXDATA
     end
 
     def CompressScript(indir, rxdata)
-        return unless File.exists? indir
+        return unless File.exist? indir
 
         files = []
-        if File.exists? File.join(indir, 'info.txt')
+        if File.exist? File.join(indir, 'info.txt')
             input = File.open(File.join(indir, 'info.txt'), 'rb')
             input.read.each_line do |line|
                 filename = line.gsub("\n", '')
