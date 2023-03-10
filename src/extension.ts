@@ -1,335 +1,31 @@
 import * as vscode from "vscode";
-import { Path } from "./utils/Path";
-import { setGamePath } from "./commands/SetGamePath";
 import { ConfigService } from "./ConfigService";
 import { LoggingService } from "./LoggingService";
-import { Packer } from "./Packer";
-import { Unpacker } from "./Unpacker";
 import path = require("path");
-import { openGameFolder } from "./commands/OpenGameFolder";
-import { GamePlayService } from "./commands/TestGamePlay";
-import { ScriptExplorerProvider } from "./providers/ScriptViewer";
 import { Buttons } from "./buttons.enum";
 import { RGSSScriptSection } from "./providers/RGSSScriptSection";
 import { isInstalledRuby } from "./commands/CheckRuby";
+import { Helper } from "./Helper";
+import { StatusbarProvider } from "./providers/StatusbarProvider";
+
+let statusbarProvider: StatusbarProvider;
 
 /**
- * @namespace Helper
- * @description
- * Helper provides commands that can be helpfuled in visual studio code extension.
+ * Entry point of the extension.
+ *
+ * @param context
  */
-namespace Helper {
-    /**
-     * @class Extension
-     */
-    export class Extension {
-        private scriptProvider?: ScriptExplorerProvider;
-
-        constructor(
-            private readonly configService: ConfigService,
-            private readonly loggingService: LoggingService
-        ) {
-            this.updateConfiguration();
-        }
-
-        setScriptProvider(scriptProvider: ScriptExplorerProvider) {
-            this.scriptProvider = scriptProvider;
-        }
-
-        getScriptProvider() {
-            return this.scriptProvider;
-        }
-
-        async updateConfiguration() {
-            const config =
-                vscode.workspace.getConfiguration("rgssScriptCompiler");
-
-            if (!config.has("showStatusBar")) {
-                await config.update("showStatusBar", false);
-            }
-        }
-
-        setGamePathCommand() {
-            return vscode.commands.registerCommand(
-                "rgss-script-compiler.setGamePath",
-                async () => {
-                    await setGamePath(this.configService, this.loggingService);
-                    this.configService.ON_LOAD_GAME_FOLDER.event(
-                        (gameFolder) => {
-                            this.loggingService.info(
-                                `Game folder is changed to ${gameFolder}`
-                            );
-                            updateStatusBarItem();
-                        }
-                    );
-                }
-            );
-        }
-
-        saveCommand() {
-            return vscode.commands.registerCommand(
-                "rgss-script-compiler.save",
-                async () => {
-                    this.loggingService.info("save");
-                    await this.configService.detectRGSSVersion();
-                    await vscode.commands.executeCommand(
-                        "workbench.action.files.save"
-                    );
-                    await vscode.commands.executeCommand(
-                        "rgss-script-compiler.compile"
-                    );
-                }
-            );
-        }
-
-        testPlayCommand() {
-            return vscode.commands.registerCommand(
-                "rgss-script-compiler.testPlay",
-                () => {
-                    const gamePlayService = new GamePlayService(
-                        this.configService,
-                        this.loggingService
-                    );
-                    gamePlayService.run();
-                }
-            );
-        }
-
-        unpackCommand() {
-            return vscode.commands.registerCommand(
-                "rgss-script-compiler.unpack",
-                () => {
-                    if (!this.configService) {
-                        this.loggingService.info(
-                            "There is no workspace folder."
-                        );
-                        return;
-                    }
-
-                    const unpacker = new Unpacker(
-                        this.configService,
-                        this.loggingService
-                    );
-                    unpacker.unpack();
-                }
-            );
-        }
-
-        compileCommand() {
-            return vscode.commands.registerCommand(
-                "rgss-script-compiler.compile",
-                () => {
-                    if (!this.configService) {
-                        this.loggingService.info(
-                            "There is no workspace folder."
-                        );
-                        return;
-                    }
-
-                    const bundler = new Packer(
-                        this.configService,
-                        this.loggingService
-                    );
-                    bundler.pack();
-                }
-            );
-        }
-
-        /**
-         * Opens the game folder on Windows or MacOS.
-         *
-         */
-        openGameFolderCommand() {
-            return vscode.commands.registerCommand(
-                "rgss-script-compiler.openGameFolder",
-                () => {
-                    openGameFolder(this.configService, this.loggingService);
-                }
-            );
-        }
-
-        openScriptFileCommand() {
-            return vscode.commands.registerCommand(
-                "rgss-script-compiler.openScript",
-                (scriptFile: vscode.Uri) => {
-                    vscode.window.showTextDocument(scriptFile);
-                }
-            );
-        }
-
-        /**
-         * Gets command elements.
-         * @returns
-         */
-        getCommands() {
-            return [
-                this.setGamePathCommand(),
-                this.unpackCommand(),
-                this.compileCommand(),
-                this.openGameFolderCommand(),
-                this.testPlayCommand(),
-                this.saveCommand(),
-                this.openScriptFileCommand(),
-            ];
-        }
-    }
-
-    /**
-     * @class StatusBarProviderImpl
-     */
-    class StatusBarProviderImpl {
-        getGameFolderOpenStatusBarItem() {
-            const statusBarItem = vscode.window.createStatusBarItem(
-                vscode.StatusBarAlignment.Left
-            );
-            statusBarItem.text = `$(file-directory) RGSS: Set Game Folder`;
-            statusBarItem.command = "rgss-script-compiler.setGamePath";
-
-            return statusBarItem;
-        }
-
-        getUnpackStatusBarItem() {
-            const statusBarItem = vscode.window.createStatusBarItem(
-                vscode.StatusBarAlignment.Left
-            );
-            statusBarItem.text = `$(sync~spin) RGSS: Import`;
-            statusBarItem.command = "rgss-script-compiler.unpack";
-
-            return statusBarItem;
-        }
-
-        getCompileStatusBarItem() {
-            const statusBarItem = vscode.window.createStatusBarItem(
-                vscode.StatusBarAlignment.Left
-            );
-            statusBarItem.text = `$(sync) RGSS: Compile`;
-            statusBarItem.command = "rgss-script-compiler.compile";
-
-            return statusBarItem;
-        }
-
-        getGameFolderPathStatusBarItem(projectPath: vscode.Uri) {
-            const statusBarItem = vscode.window.createStatusBarItem(
-                vscode.StatusBarAlignment.Left
-            );
-            statusBarItem.text = `$(pulse) Game Path: ${projectPath.fsPath}`;
-            statusBarItem.backgroundColor = "yellow";
-
-            return statusBarItem;
-        }
-
-        getOpenGameFolderButtonItem() {
-            const statusBarItem = vscode.window.createStatusBarItem(
-                vscode.StatusBarAlignment.Left
-            );
-            statusBarItem.text = `$(folder) RGSS: Open Game Folder`;
-            statusBarItem.command = "rgss-script-compiler.openGameFolder";
-
-            return statusBarItem;
-        }
-    }
-
-    export const StatusBarProvider = new StatusBarProviderImpl();
-
-    export const createScriptProviderFunction = (
-        helper: Helper.Extension,
-        configService: ConfigService,
-        loggingService: LoggingService
-    ) => {
-        if (!helper.getScriptProvider()) {
-            loggingService.info("Importing the scripts....");
-
-            const scriptViewerPath = Path.resolve(
-                configService.getMainGameFolder()
-            );
-            const scriptProvider = new ScriptExplorerProvider(
-                scriptViewerPath,
-                loggingService
-            );
-
-            helper.setScriptProvider(scriptProvider);
-
-            vscode.window.registerTreeDataProvider(
-                "rgssScriptViewer",
-                scriptProvider
-            );
-        }
-    };
-}
-
-let statusBarItems: vscode.StatusBarItem[] = vscode.workspace
-    .getConfiguration()
-    .get("rgssScriptCompiler.showStatusBar")
-    ? [
-          Helper.StatusBarProvider.getGameFolderOpenStatusBarItem(),
-          Helper.StatusBarProvider.getUnpackStatusBarItem(),
-          Helper.StatusBarProvider.getCompileStatusBarItem(),
-          Helper.StatusBarProvider.getOpenGameFolderButtonItem(),
-      ]
-    : [];
-
-let gameFolderPathWather: vscode.StatusBarItem | undefined;
-
-function showGamePathWatcher(
-    context: vscode.ExtensionContext,
-    configService: ConfigService
-) {
-    const config = configService.getConfig();
-    gameFolderPathWather =
-        Helper.StatusBarProvider.getGameFolderPathStatusBarItem(
-            config.mainGameFolder!
-        );
-    context.subscriptions.push(gameFolderPathWather);
-
-    if (
-        vscode.workspace
-            .getConfiguration()
-            .get("rgssScriptCompiler.showStatusBar")
-    ) {
-        gameFolderPathWather.show();
-    }
-}
-
-/**
- * Check whether the ruby-cli is installed in your system.
- * if not, this extension will not work, so it is will be installed automatically from the ruby server.
- * in case of on Windows, You have to be installed manually, because some useful tools such as 'curl' or 'wget' are not supported on Windows.
- */
-function checkDependencies() {
-    const platform = process.platform;
-
-    if (!(["linux", "darwin"] as NodeJS.Platform[]).includes(platform)) {
-        vscode.window.showErrorMessage(
-            "it is not supported on Windows. Please install the Ruby CLI manually."
-        );
-        return;
-    }
-
-    vscode.window
-        .showInformationMessage(
-            "Ruby didn't install in your system, Do you want to install Ruby?",
-            {
-                modal: true,
-            },
-            Buttons.OK
-        )
-        .then((e) => {
-            if (e === Buttons.OK) {
-                // install ruby
-            } else {
-                vscode.window.showErrorMessage(
-                    "This extension will not work without Ruby."
-                );
-            }
-        });
-}
-
 export function activate(context: vscode.ExtensionContext) {
+    // ! Step 1: Logging Service
     const loggingService = new LoggingService();
+
+    // ! Step 2: Config Service
     const configService = new ConfigService(loggingService);
 
+    // ! Step 3: Ruby Check
     loggingService.info(`Ruby installed: ${isInstalledRuby()}`);
 
+    // ! Step 4: Set the workspace folder.
     // Set the extension context.
     configService.setExtensionContext(context);
 
@@ -341,48 +37,29 @@ export function activate(context: vscode.ExtensionContext) {
     const workspaces = vscode.workspace.workspaceFolders;
     configService.setVSCodeWorkSpace(workspaces[0].uri);
 
-    // Create a helper class.
-    const helper = new Helper.Extension(configService, loggingService);
+    statusbarProvider = new StatusbarProvider(
+        context,
+        loggingService,
+        configService
+    );
+
+    // ! Step 5 : Create a helper class and set the status bar provider.
+    const helper = new Helper.Extension(
+        configService,
+        loggingService,
+        statusbarProvider
+    );
 
     loggingService.info("RGSS Script Compiler has executed successfully");
 
-    context.subscriptions.push(
-        vscode.workspace.onDidChangeConfiguration((e) => {
-            if (e.affectsConfiguration("rgssScriptCompiler.showStatusBar")) {
-                const config = vscode.workspace
-                    .getConfiguration()
-                    .get("rgssScriptCompiler.showStatusBar");
-
-                if (config) {
-                    if (statusBarItems.length === 0) {
-                        statusBarItems = [
-                            Helper.StatusBarProvider.getGameFolderOpenStatusBarItem(),
-                            Helper.StatusBarProvider.getUnpackStatusBarItem(),
-                            Helper.StatusBarProvider.getCompileStatusBarItem(),
-                            Helper.StatusBarProvider.getOpenGameFolderButtonItem(),
-                        ];
-                    }
-
-                    statusBarItems.forEach((e) => {
-                        e.show();
-                    });
-
-                    gameFolderPathWather?.show();
-                } else {
-                    statusBarItems.forEach((e) => {
-                        e.hide();
-                    });
-                    gameFolderPathWather?.hide();
-                }
-            }
-        })
-    );
+    statusbarProvider.initializeWithItems();
+    statusbarProvider.onDidChangeConfiguration(context);
 
     // Load configuration file.
     configService
         .loadConfig(loggingService)
         .then((e) => {
-            showGamePathWatcher(context, configService);
+            statusbarProvider.initWithGamePath();
         })
         .then((e) => {
             Helper.createScriptProviderFunction(
@@ -392,9 +69,7 @@ export function activate(context: vscode.ExtensionContext) {
             );
         })
         .catch((e) => {
-            statusBarItems.slice(1).forEach((e) => {
-                e.hide();
-            });
+            statusbarProvider.hide();
         });
 
     loggingService.show();
@@ -405,78 +80,53 @@ export function activate(context: vscode.ExtensionContext) {
             configService,
             loggingService
         );
+        statusbarProvider.show();
     });
 
-    // checkDependencies();
-
     // Sets Subscriptions.
-    context.subscriptions.push(...statusBarItems);
     context.subscriptions.push(...helper.getCommands());
     context.subscriptions.push(
-        vscode.commands.registerCommand("rgssScriptViewer.refreshEntry", () =>
-            helper.getScriptProvider()?.refresh()
-        )
-    );
-
-    // Delete the script file.
-    context.subscriptions.push(
-        vscode.commands.registerCommand(
-            "rgss-script-compiler.deleteFile",
-            (item: RGSSScriptSection) => {
-                helper.getScriptProvider()?.deleteTreeItem(item);
-            }
-        )
-    );
-    context.subscriptions.push(
-        vscode.commands.registerCommand(
-            "rgss-script-compiler.newFile",
-            (item: RGSSScriptSection) => {
-                helper.getScriptProvider()?.addTreeItem(item);
-            }
-        )
-    );
-    context.subscriptions.push(
-        vscode.commands.registerCommand(
-            "rgss-script-compiler.refreshScriptExplorer",
-            () => {
-                helper.getScriptProvider()?.refreshExplorer();
-            }
-        )
-    );
-
-    context.subscriptions.push(
-        vscode.workspace.onDidDeleteFiles((e) => {
-            e.files.forEach((e) => {
-                if (path.posix.join(e.path).includes("rgss-compiler.json")) {
-                    loggingService.info("rgss-compiler.json is deleted.");
-
-                    hideStatusBarItem();
+        ...[
+            vscode.commands.registerCommand(
+                "rgssScriptViewer.refreshEntry",
+                () => helper.getScriptProvider()?.refresh()
+            ),
+            vscode.commands.registerCommand(
+                "rgss-script-compiler.deleteFile",
+                (item: RGSSScriptSection) => {
+                    helper.getScriptProvider()?.deleteTreeItem(item);
                 }
-            });
-        })
+            ),
+            vscode.commands.registerCommand(
+                "rgss-script-compiler.newFile",
+                (item: RGSSScriptSection) => {
+                    helper.getScriptProvider()?.addTreeItem(item);
+                }
+            ),
+            vscode.commands.registerCommand(
+                "rgss-script-compiler.refreshScriptExplorer",
+                () => {
+                    helper.getScriptProvider()?.refreshExplorer();
+                }
+            ),
+            vscode.workspace.onDidDeleteFiles((e) => {
+                e.files.forEach((e) => {
+                    if (
+                        path.posix.join(e.path).includes("rgss-compiler.json")
+                    ) {
+                        loggingService.info("rgss-compiler.json is deleted.");
+
+                        statusbarProvider.hide();
+                    }
+                });
+            }),
+        ]
     );
-
-    updateStatusBarItem();
-}
-
-/**
- * Shows up statusBarItems when activating the visual studio code extension.
- */
-function updateStatusBarItem(): void {
-    statusBarItems.forEach((e) => e.show());
-}
-
-/**
- * Hide the status bar excluding a one status bar called "Set the Game Folder".
- */
-function hideStatusBarItem(): void {
-    const bottomStatusBars = statusBarItems.slice(1);
-    bottomStatusBars.forEach((e) => e.hide());
 }
 
 /**
  * When deactivating the extension, this function calls.
  */
 export function deactivate() {
-    statusBarItems.forEach((item) => item.hide());
+    statusbarProvider.hide();
 }

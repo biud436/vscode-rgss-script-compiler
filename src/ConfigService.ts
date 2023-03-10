@@ -56,6 +56,12 @@ export class ConfigService {
         this.detectRGSSVersion();
     }
 
+    public static getWorkspaceValue(section: string) {
+        const config = vscode.workspace.getConfiguration();
+
+        return config.get(section);
+    }
+
     /**
      * Writes a file named "rgss-compiler.json" in the workspace folder.
      *
