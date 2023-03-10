@@ -48,7 +48,11 @@ export class StatusbarProvider
         context.subscriptions.push(this._gameFolderPath);
     }
 
-    onDidChangeConfiguration(context: vscode.ExtensionContext) {
+    onDidChangeConfiguration(context?: vscode.ExtensionContext) {
+        if (!context) {
+            context = this.context;
+        }
+
         context.subscriptions.push(
             vscode.workspace.onDidChangeConfiguration((e) => {
                 const provider = Helper.getStatusBarProvider();

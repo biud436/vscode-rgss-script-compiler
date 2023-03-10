@@ -1,8 +1,7 @@
 import * as vscode from "vscode";
 import { ConfigService } from "./ConfigService";
 import { LoggingService } from "./LoggingService";
-import path = require("path");
-import { Buttons } from "./buttons.enum";
+import * as path from "path";
 import { RGSSScriptSection } from "./providers/RGSSScriptSection";
 import { isInstalledRuby } from "./commands/CheckRuby";
 import { Helper } from "./Helper";
@@ -53,7 +52,7 @@ export function activate(context: vscode.ExtensionContext) {
     loggingService.info("RGSS Script Compiler has executed successfully");
 
     statusbarProvider.initializeWithItems();
-    statusbarProvider.onDidChangeConfiguration(context);
+    statusbarProvider.onDidChangeConfiguration();
 
     // Load configuration file.
     configService
