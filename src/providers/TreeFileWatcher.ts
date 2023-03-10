@@ -40,7 +40,12 @@ export class TreeFileWatcher implements vscode.Disposable {
      */
     public onDidDelete = new vscode.EventEmitter<vscode.Uri>();
 
-    constructor(private readonly loggingService: LoggingService) {}
+    constructor(
+        private readonly loggingService: LoggingService,
+        glob = "**/*.rb"
+    ) {
+        this._glob = glob;
+    }
 
     create() {
         this._watcher = vscode.workspace.createFileSystemWatcher(this._glob);

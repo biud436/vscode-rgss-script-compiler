@@ -10,7 +10,7 @@ import { generateUUID } from "../utils/uuid";
 import { Validator } from "../utils/Validator";
 import { TreeFileWatcher } from "./TreeFileWatcher";
 import { ScriptTree } from "./ScriptTree";
-import { platform } from "os";
+import { MessageHelper } from "../common/Message";
 
 export enum LoggingMarker {
     CREATED = "created",
@@ -24,6 +24,7 @@ export class ScriptExplorerProvider
 {
     private _scriptDirectory = "Scripts";
     private _watcher?: TreeFileWatcher;
+    private _scriptFolderRootWatcher?: TreeFileWatcher;
     private _tree?: ScriptTree<ScriptSection>;
 
     constructor(
@@ -31,6 +32,7 @@ export class ScriptExplorerProvider
         private readonly loggingService: LoggingService
     ) {
         this.initWithFileWatcher();
+        this.initWithScriptFolderWatcher();
         this._tree = new ScriptTree<ScriptSection>([]);
     }
 
@@ -46,6 +48,7 @@ export class ScriptExplorerProvider
      */
     initWithFileWatcher() {
         this._watcher = new TreeFileWatcher(this.loggingService);
+
         this._watcher.create();
 
         this._watcher.onDidRenameFiles.event(({ oldUrl, newUrl }) => {
@@ -62,11 +65,26 @@ export class ScriptExplorerProvider
         });
     }
 
+    initWithScriptFolderWatcher() {
+        this._scriptFolderRootWatcher = new TreeFileWatcher(
+            this.loggingService,
+            "**/Scripts"
+        );
+        this._scriptFolderRootWatcher.create();
+
+        this._scriptFolderRootWatcher.onDidDelete.event((uri) => {
+            this.loggingService.info(MessageHelper.INFO.RELOAD_LIST);
+
+            this.refreshExplorer();
+        });
+    }
+
     /**
      * Release the file watcher and other resources.
      */
     dispose() {
         this._watcher?.dispose();
+        this._scriptFolderRootWatcher?.dispose();
     }
 
     private onDidRenameFiles(oldUrl: vscode.Uri, newUrl: vscode.Uri) {
@@ -109,7 +127,7 @@ export class ScriptExplorerProvider
         );
 
         if (scriptSection) {
-            this.loggingService.info("삭제할 아이템을 찾았습니다.");
+            this.loggingService.info(MessageHelper.INFO.FOUND_NODE_BE_DELETED);
             this.deleteTreeItem(scriptSection);
         }
     }
@@ -171,7 +189,7 @@ export class ScriptExplorerProvider
     async addTreeItem(item: ScriptSection): Promise<void> {
         const result = await vscode.window.showInputBox({
             prompt: "Please a new script name.",
-            value: "Untitled",
+            value: MessageHelper.INFO.UNTITLED,
             validateInput: (value: string) => {
                 // 입력값이 없을 경우
                 if (!Validator.isStringOrNotEmpty(value)) {
@@ -212,7 +230,7 @@ export class ScriptExplorerProvider
             copiedItem.filePath = targetFilePath;
             copiedItem.command = {
                 command: "vscode.open",
-                title: "Open Script",
+                title: MessageHelper.INFO.OPEN_SCRIPT,
                 arguments: [vscode.Uri.file(targetFilePath).path],
             };
 
@@ -275,7 +293,7 @@ export class ScriptExplorerProvider
         // 이 경우에는 빈 배열을 반환합니다.
         if (!fs.existsSync(targetFilePath)) {
             vscode.window.showErrorMessage(
-                "Cannot find script list file. Please check the game folder. try to reset the game folder."
+                MessageHelper.ERROR.NOT_FOUND_LIST_FILE
             );
             return [];
         }
@@ -322,7 +340,7 @@ export class ScriptExplorerProvider
             scriptSection.id = generateUUID();
             scriptSection.command = {
                 command: "vscode.open",
-                title: "Open Script",
+                title: MessageHelper.INFO.OPEN_SCRIPT,
                 arguments: [scriptFilePath],
             };
             scriptSections.push(scriptSection);
