@@ -20,13 +20,12 @@ export function activate(context: vscode.ExtensionContext) {
 
     // ! Step 2: Config Service
     const configService = new ConfigService(loggingService);
+    configService.setExtensionContext(context);
 
     // ! Step 3: Ruby Check
     loggingService.info(`Ruby installed: ${isInstalledRuby()}`);
 
     // ! Step 4: Set the workspace folder.
-    // Set the extension context.
-    configService.setExtensionContext(context);
 
     if (!vscode.workspace.workspaceFolders) {
         loggingService.info("Workspace Folder is not specified.");
