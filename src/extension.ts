@@ -51,8 +51,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     loggingService.info("RGSS Script Compiler has executed successfully");
 
-    statusbarProvider.initializeWithItems();
-    statusbarProvider.onDidChangeConfiguration();
+    statusbarProvider.create();
 
     // Load configuration file.
     configService

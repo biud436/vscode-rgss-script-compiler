@@ -21,6 +21,11 @@ export class StatusbarProvider
         private readonly configService: ConfigService
     ) {}
 
+    create() {
+        this.initializeWithItems();
+        this.onDidChangeConfiguration();
+    }
+
     initializeWithItems() {
         const { context } = this;
 
