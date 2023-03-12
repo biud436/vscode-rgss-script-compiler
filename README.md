@@ -1,64 +1,63 @@
 # Introduction
 
-This extension allows you to edit scripts directly in Visual Studio Code without using the script editor of RPG Maker VX Ace or RPG Maker XP.
+This extension allows you to edit scripts directly in Visual Studio Code without using the script editor of `RPG Maker VX Ace` or `RPG Maker XP`.
+
+## Features
+
+-   **Automatic Saving and Compilation**: Pressing CTRL + S saves your files and compiles your code automatically, so you don't have to worry about losing your progress.
+
+-   **Test Play (Windows Only)**: Pressing F5 allows you to quickly test your code on Windows without having to run any additional commands.
+
+## Screenshots
 
 ![rgss-compiler-preview](https://user-images.githubusercontent.com/13586185/186309563-f5d00d1c-c9bb-4b93-8bb1-e98f888d705c.gif)
 ![rgss-compiler-preview2](https://user-images.githubusercontent.com/13586185/223461482-994b2186-7f37-4e87-a398-333bf6ce4cff.gif)
 
 This extension is a beta version that has not been tested elaborately. We have secured stability by correcting problems such as third-party scripts, but please back up the scripts in advance.
 
-## Feature
+# System Requirements
 
-> `CTRL + S` : Save files and compile automatically
+-   Ruby version 2.6.8 or higher must be installed on your system.
 
-> `F5` : Test Play (Windows Only)
+# Change Log
 
-## Marketplace Link
+## 0.1.0
+
+### New Features
+
+-   Added a Script Explorer that allows users to add, remove, and refresh script files.
+-   Added a feature to hide the status bar.
+
+# Marketplace Link
 
 -   [https://marketplace.visualstudio.com/items?itemName=biud436.rgss-script-compiler](https://marketplace.visualstudio.com/items?itemName=biud436.rgss-script-compiler)
 
-## Caution
+# Caution
 
--   There must be only one parent folder in the workspace (if there are more than one, the top folder is recognized only)
--   The workspace is not automatically set to the initial game folder(This is because workspace and game folders may be different)
--   This extension is not always active. Game.ini file must be in the root game folder to be activated.
--   This extension activates the rest of the buttons only when selecting the game folder. However, if the rgss-compiler.json file exists, it is automatically activated. When VS Code is started up, the Import or Compile button is automatically activated when this file is existed.
--   You should not compile scripts while RPG Maker XP or RPG Maker VX Ace is on. the script information in RPG Maker exists in the state of a global variable in memory based on the initial imported file content (Scripts.rvdata2), and does not detect that the file has been changed. To manipulate memory based on the contents of the file, it is beyond this extension because it requires heap memory manipulation in the tool, such as CreateRemoteThread or DLL Injection to directly penetrate the target process and implement a kind of Hack, such as the RPG Maker tool's Virtual Memory. When loaded with RGSS301.dll, etc. using CreateRemoteThread, one thread is executed, and if you hang a specific script at that time, you can implement Hack like as cheat engine.
+-   Only one parent folder is allowed in the workspace. If there are multiple folders, only the top-level folder will be recognized.
+-   The workspace is not automatically set to the initial game folder. This is because the workspace and game folders may be different.
+-   This extension is not always active. The Game.ini file must be located in the root game folder to activate it.
+-   The extension will activate the remaining buttons only when a game folder is selected. However, if the rgss-compiler.json file exists, it will be automatically activated. When VS Code starts up, the Import or Compile button will be automatically activated if this file exists.
+-   Do not compile scripts while RPG Maker XP or RPG Maker VX Ace is running. The script information in RPG Maker exists in the form of a global variable in memory based on the initial imported file content (Scripts.rvdata2), and does not detect changes made to the file. Manipulating memory based on the contents of the file requires heap memory manipulation in the tool, such as CreateRemoteThread or DLL Injection to directly penetrate the target process and implement a kind of hack, such as the RPG Maker tool's Virtual Memory. When loaded with RGSS301.dll, etc. using CreateRemoteThread, one thread is executed, and if you attach a specific script at that time, you can implement a hack like a cheat engine.
 
-## Known Issues
-
-This is a list of bugs that we know but have not solved.
-
--   In some cases, the rest of the buttons are activated only when the game folder setting button is pressed more than once. (In some cases, RGSS version identification and game folder setting information are reflected in the setting file are executed separately.
-
-This bug occurred by changing the synchronization function to an asynchronous function.
-
-## Supported tools
+# Supported tools
 
 -   RPG Maker XP
 -   RPG Maker VX Ace
 
-## Usage
+# Usage
 
-This extension is designed for use in macOS and Windows 11. Before starting this extension, first up, Please you must install Ruby v2.6.8 or above on you local machine. Here's how to check if Ruby is installed on your computer.
+This extension is designed for use on macOS and Windows 11. Before using this extension, you must first install `Ruby v2.6.8` or higher on your local machine. Here's how to check if Ruby is already installed:
 
-To run this extension, Ruby must be installed on your computer (Mac is in the default installation state, so you can ignore it). I tried using a node module such as `marshal` or a WASM-based ruby. because I don't want a ruby installation. but they were not stable.
+To use this extension, you must have Ruby installed on your computer (Ruby comes pre-installed on Mac, so you can ignore this step if you're on a Mac). I tried using a Node module like `Marshal` or a WASM-based Ruby because I didn't want to require a Ruby installation, but they were not stable.
 
-Try this command on your terminal or command prompt.
+To check if Ruby is installed on your computer, run this command in your terminal or command prompt:
 
 ```bash
 ruby -v
 ```
 
-You call the command above to see if the ruby version is output normally like as `v2.6.8`
-
-# Change Log
-
-## 0.0.15 - 24.08.2022
-
-### New Features
-
--   Added a new feature that can open the script file using script explorer on Windows or MacOS
+If Ruby is installed properly, you should see the version number displayed (e.g., `v2.6.8`).
 
 # Maintainer and Contributors
 
