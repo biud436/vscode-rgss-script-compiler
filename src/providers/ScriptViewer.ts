@@ -94,11 +94,12 @@ export class ScriptExplorerProvider
             )} -> ${JSON.stringify(newUrl)}`
         );
 
-        const oldScriptSection = this._tree?.find(
-            (item) =>
+        const oldScriptSection = this._tree?.find((item) => {
+            return (
                 Path.getFileName(item.filePath) ===
                 Path.getFileName(oldUrl.fsPath)
-        );
+            );
+        });
 
         if (oldScriptSection) {
             this.renameTreeItem(oldScriptSection, newUrl);
@@ -108,28 +109,33 @@ export class ScriptExplorerProvider
     private renameTreeItem(oldItem: ScriptSection, newUrl: vscode.Uri) {
         const label = Path.getFileName(newUrl.fsPath, Path.defaultExt);
 
-        // Create a new tree item
-        const newScriptSection = new ScriptSection(
-            label,
-            vscode.TreeItemCollapsibleState.None,
-            newUrl.fsPath
+        const targetFilePath = path.posix.join(
+            this.workspaceRoot,
+            this._scriptDirectory,
+            label + Path.defaultExt
         );
-        newScriptSection.id = oldItem.id;
+
+        // Create a new tree item
+        const newScriptSection = {
+            ...oldItem,
+        };
+
+        newScriptSection.id = generateUUID();
+        newScriptSection.label = label;
+        newScriptSection.filePath = targetFilePath;
         newScriptSection.command = {
             command: "vscode.open",
             title: MessageHelper.INFO.OPEN_SCRIPT,
-            arguments: [vscode.Uri.file(newUrl.fsPath)],
+            arguments: [vscode.Uri.file(targetFilePath).path],
         };
 
         // Replace the target index as new item in the tree
         this._tree = this._tree?.replaceTree(oldItem.id, newScriptSection);
+
+        this.refresh();
+        this.refreshListFile();
     }
 
-    /**
-     * 최악의 상황으로는 두 번 실행될 수 있다.
-     *
-     * @param url
-     */
     private onDidCreate(url: vscode.Uri) {
         this.loggingService.info(
             `[file ${LoggingMarker.CREATED}] ${JSON.stringify(url)}`
@@ -276,7 +282,7 @@ export class ScriptExplorerProvider
                 arguments: [vscode.Uri.file(targetFilePath).path],
             };
 
-            this._tree?.splice(targetIndex!, 0, copiedItem);
+            this._tree = this._tree?.splice(targetIndex!, 0, copiedItem);
 
             this.refresh();
             this.refreshListFile();
