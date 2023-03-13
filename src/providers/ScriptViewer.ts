@@ -95,6 +95,11 @@ export class ScriptExplorerProvider
         );
     }
 
+    /**
+     * 최악의 상황으로는 두 번 실행될 수 있다.
+     *
+     * @param url
+     */
     private onDidCreate(url: vscode.Uri) {
         this.loggingService.info(
             `[file ${LoggingMarker.CREATED}] ${JSON.stringify(url)}`
@@ -179,9 +184,11 @@ export class ScriptExplorerProvider
             Path.getFileName(item.filePath)
         );
 
-        if (fs.existsSync(targetFilePath)) {
-            fs.unlinkSync(targetFilePath);
-        }
+        this._watcher?.executeFileAction("onDidDelete", () => {
+            if (fs.existsSync(targetFilePath)) {
+                fs.unlinkSync(targetFilePath);
+            }
+        });
 
         this.refresh();
         this.refreshListFile();
@@ -216,9 +223,11 @@ export class ScriptExplorerProvider
                 result + Path.defaultExt
             );
 
-            if (!fs.existsSync(targetFilePath)) {
-                fs.writeFileSync(targetFilePath, "", "utf8");
-            }
+            this._watcher?.executeFileAction("onDidCreate", () => {
+                if (!fs.existsSync(targetFilePath)) {
+                    fs.writeFileSync(targetFilePath, "", "utf8");
+                }
+            });
 
             const targetIndex = this._tree?.findIndex(
                 (treeItem) => treeItem.id === item.id

@@ -8,9 +8,16 @@ export type OnDidRenameFilesProps = {
     newUrl: vscode.Uri;
 };
 
+export type TreeFileWatcherEventKey = "onDidCreate" | "onDidDelete";
+
 export class TreeFileWatcher implements vscode.Disposable {
     private _glob = "**/*.rb";
     private _watcher?: vscode.FileSystemWatcher;
+
+    private _valid: Record<TreeFileWatcherEventKey, boolean> = {
+        onDidCreate: true,
+        onDidDelete: true,
+    };
 
     /**
      * 이벤트 드리븐 방식의 디커플링 패턴
@@ -67,9 +74,31 @@ export class TreeFileWatcher implements vscode.Disposable {
             });
         });
 
-        this._watcher?.onDidCreate((event) => this.onDidCreate.fire(event));
+        this._watcher?.onDidCreate((event) => {
+            if (this._valid.onDidCreate) {
+                this.onDidCreate.fire(event);
+            }
+        });
+
         this._watcher?.onDidChange((event) => this.onDidChange.fire(event));
-        this._watcher?.onDidDelete((event) => this.onDidDelete.fire(event));
+
+        this._watcher?.onDidDelete((event) => {
+            if (this._valid.onDidDelete) {
+                this.onDidDelete.fire(event);
+            }
+        });
+    }
+
+    /**
+     * execute the file action and ignore the watcher event when the file is created or deleted.
+     *
+     * @param key
+     * @param callback
+     */
+    executeFileAction(key: TreeFileWatcherEventKey, callback: () => void) {
+        this._valid[key] = false;
+        callback();
+        this._valid[key] = true;
     }
 
     dispose() {
