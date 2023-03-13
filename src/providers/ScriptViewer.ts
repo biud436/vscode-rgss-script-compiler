@@ -137,6 +137,8 @@ export class ScriptExplorerProvider
         // Replace the target index as new item in the tree
         // this._tree = this._tree?.replaceTree(oldItem.id, newScriptSection);
 
+        this.replaceLineByFilename(oldItem.label, label);
+
         this.refresh();
         this.refreshListFile();
     }
@@ -295,6 +297,56 @@ export class ScriptExplorerProvider
         }
     }
 
+    replaceLineByFilename(label: string, newLabel: string) {
+        // 리스트 파일을 읽습니다.
+        const targetFilePath = path.posix.join(
+            this.workspaceRoot,
+            this._scriptDirectory,
+            ConfigService.TARGET_SCRIPT_LIST_FILE_NAME
+        );
+
+        if (!fs.existsSync(targetFilePath)) {
+            vscode.window.showErrorMessage(
+                MessageHelper.ERROR.NOT_FOUND_LIST_FILE
+            );
+            return [];
+        }
+
+        const raw = fs.readFileSync(targetFilePath, "utf8");
+        const IGNORE_BLACK_LIST_REGEXP = /(?:Untitled)\_[\d]+/gi;
+        const lines = raw.split("\n");
+
+        let lineIndex = -1;
+
+        for (const line of lines) {
+            lineIndex++;
+            if (line.match(IGNORE_BLACK_LIST_REGEXP)) {
+                continue;
+            }
+
+            let targetScriptSection = "";
+
+            if (line.endsWith(Path.defaultExt)) {
+                targetScriptSection = line.replace(Path.defaultExt, "");
+            }
+
+            if (targetScriptSection === label) {
+                break;
+            }
+        }
+
+        const temp = lines[lineIndex];
+        if (lines[lineIndex]) {
+            lines[lineIndex] = newLabel;
+        }
+
+        this.loggingService.info(
+            `FOUND [${lineIndex}] ${temp} => ${lines[lineIndex]} `
+        );
+
+        return lines;
+    }
+
     /**
      * Creates the text file called info.txt, which contains the script title.
      * This file is used to display the script title in the script explorer.
@@ -319,7 +371,7 @@ export class ScriptExplorerProvider
 
         for (const { filePath } of this._tree!) {
             // 파일명만 추출 (확장자 포함)
-            const filename = Path.getFileName(filePath);
+            const filename = Path.getFileName(decodeURIComponent(filePath));
 
             if (filename === Path.defaultExt) {
                 continue;
