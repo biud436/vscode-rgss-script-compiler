@@ -210,4 +210,8 @@ export class ScriptListFile {
 
         await fs.promises.writeFile(targetFilePath, raw, "utf8");
     }
+
+    clear() {
+        this._lines = [];
+    }
 }
