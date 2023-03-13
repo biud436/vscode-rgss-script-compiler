@@ -73,6 +73,7 @@ export class ScriptListFile {
 
     replaceLineByFilename(currentLine: string, newLine: string) {
         const lines = this.lines.slice(0);
+        const { defaultExt: ext } = Path;
 
         let lineIndex = -1;
 
@@ -85,8 +86,8 @@ export class ScriptListFile {
 
             let targetScriptSection = "";
 
-            if (line.endsWith(Path.defaultExt)) {
-                targetScriptSection = line.replace(Path.defaultExt, "");
+            if (line.endsWith(ext)) {
+                targetScriptSection = line.replace(ext, "");
             }
 
             if (targetScriptSection === currentLine) {
@@ -106,10 +107,50 @@ export class ScriptListFile {
         return lines;
     }
 
-    refresh(tree?: RGSSScriptSection[]) {
+    async refresh(tree?: RGSSScriptSection[]) {
         if (!tree) {
             vscode.window.showErrorMessage("tree parameter is not passed.");
             return;
         }
+
+        const { filePath: targetFilePath } = this;
+
+        const lines = [];
+
+        const backupFileName = targetFilePath + ".bak";
+        if (fs.existsSync(backupFileName)) {
+            fs.unlinkSync(backupFileName);
+        }
+
+        await fs.promises.copyFile(targetFilePath, backupFileName);
+
+        for (const { filePath } of tree) {
+            // 파일명만 추출 (확장자 포함)
+            const filename = Path.getFileName(decodeURIComponent(filePath));
+
+            if (filename === Path.defaultExt) {
+                continue;
+            }
+
+            // ! FIXME 2023.03.13
+            // 파일이 존재하지 않을 때 저장 후 Unpack을 강제로 할 경우, 리스트 파일이 갱신되지 않으면서 모든 파일이 날아가게 된다.
+            const realFilePath = path.posix.join(
+                this.workspaceRoot,
+                this._scriptDirectory,
+                filename
+            );
+
+            // ! FIXME 2023.03.13
+            // 모든 파일에 대한 유효성 검증은 필요하지만, continue를 하면 버그 시, 리스트 파일이 비어있게 되므로 continue를 하지 않는다.
+            if (!fs.existsSync(realFilePath)) {
+                this.loggingService.info(`${filePath} not found. continue.`);
+            }
+
+            lines.push(decodeURIComponent(filename));
+        }
+
+        const raw = lines.join("\n");
+
+        await fs.promises.writeFile(targetFilePath, raw, "utf8");
     }
 }
