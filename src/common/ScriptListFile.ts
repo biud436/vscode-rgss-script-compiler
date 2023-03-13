@@ -52,6 +52,13 @@ export class ScriptListFile {
         return true;
     }
 
+    /**
+     * Read lines from the `info.txt` file.
+     *
+     * Note that this method skips the lines that start with `Untitled_.rb`.
+     *
+     * @returns
+     */
     read(): string[] {
         const targetFilePath = this.filePath;
 
@@ -68,7 +75,11 @@ export class ScriptListFile {
         return scriptList;
     }
 
-    readAll(): string[] {
+    readAll(skip?: boolean): string[] {
+        if (skip) {
+            return this.read();
+        }
+
         const targetFilePath = this.filePath;
         const raw = fs.readFileSync(targetFilePath, "utf8");
         const lines = raw.split("\n");
