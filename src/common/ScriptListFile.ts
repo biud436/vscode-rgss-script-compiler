@@ -6,6 +6,7 @@ import { LoggingService } from "../LoggingService";
 import { MessageHelper } from "./MessageHelper";
 import { Path } from "../utils/Path";
 import { RGSSScriptSection } from "../providers/RGSSScriptSection";
+import { generateUUID } from "../utils/uuid";
 
 const IGNORE_BLACK_LIST_REGEXP = /(?:Untitled)\_[\d]+/gi;
 
@@ -73,6 +74,54 @@ export class ScriptListFile {
         const lines = raw.split("\n");
 
         return lines;
+    }
+
+    createScriptSectionFromList<T extends RGSSScriptSection>(): T[] {
+        const scriptSections: RGSSScriptSection[] = [];
+        const COLLAPSED = vscode.TreeItemCollapsibleState.None;
+        const folderUri = vscode.workspace.workspaceFolders![0].uri;
+        const fileUri = folderUri.with({
+            path: path.posix.join(folderUri.path, this._scriptDirectory),
+        });
+        const lines = this.readAll();
+        const { defaultExt } = Path;
+
+        for (const line of lines) {
+            if (line.match(IGNORE_BLACK_LIST_REGEXP)) {
+                continue;
+            }
+
+            let targetScriptSection = "";
+
+            if (line.endsWith(defaultExt)) {
+                targetScriptSection = line.replace(defaultExt, "");
+            }
+
+            const scriptFilePath = fileUri
+                .with({
+                    path: path.posix.join(
+                        fileUri.path,
+                        targetScriptSection + defaultExt
+                    ),
+                })
+                .toString();
+
+            const scriptSection = new RGSSScriptSection(
+                targetScriptSection,
+                COLLAPSED,
+                scriptFilePath
+            );
+
+            scriptSection.id = generateUUID();
+            scriptSection.command = {
+                command: "vscode.open",
+                title: MessageHelper.INFO.OPEN_SCRIPT,
+                arguments: [scriptFilePath],
+            };
+            scriptSections.push(scriptSection);
+        }
+
+        return scriptSections as T[];
     }
 
     get lineCount(): number {
