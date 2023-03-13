@@ -191,6 +191,8 @@ export class ScriptExplorerProvider
      */
     refresh(): void {
         this._onDidChangeTreeData.fire();
+
+        this.loggingService.info(`uuid: ${this._tree?.uuid}`);
     }
 
     getTreeItem(

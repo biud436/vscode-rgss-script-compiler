@@ -1,12 +1,15 @@
+import { generateUUID } from "../utils/uuid";
 import { RGSSScriptSection } from "./RGSSScriptSection";
 
 type FilterPredicate<T> = (value: T, index: number, array: T[]) => boolean;
 
 export class ScriptTree<T extends RGSSScriptSection> {
     data: T[];
+    uuid: string;
 
     constructor(array: T[]) {
         this.data = array;
+        this.uuid = generateUUID();
     }
 
     public filter(callback: FilterPredicate<T>): ScriptTree<T> {
