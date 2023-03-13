@@ -67,6 +67,14 @@ export class ScriptListFile {
         return scriptList;
     }
 
+    readAll(): string[] {
+        const targetFilePath = this.filePath;
+        const raw = fs.readFileSync(targetFilePath, "utf8");
+        const lines = raw.split("\n");
+
+        return lines;
+    }
+
     get lineCount(): number {
         return this._lines.length ?? 0;
     }
