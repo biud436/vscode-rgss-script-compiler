@@ -139,7 +139,7 @@ export class ScriptListFile {
         return scriptSections as T[];
     }
 
-    replaceLineByFilename(currentLine: string, newLine: string) {
+    updateFilename(scriptFileName: string, newScriptFileName: string) {
         const lines = this.lines.slice(0);
         const { defaultExt: ext } = Path;
 
@@ -158,14 +158,14 @@ export class ScriptListFile {
                 targetScriptSection = line.replace(ext, "");
             }
 
-            if (targetScriptSection === currentLine) {
+            if (targetScriptSection === scriptFileName) {
                 break;
             }
         }
 
         const temp = lines[lineIndex];
         if (lines[lineIndex]) {
-            lines[lineIndex] = newLine;
+            lines[lineIndex] = newScriptFileName;
         }
 
         this.loggingService.info(
