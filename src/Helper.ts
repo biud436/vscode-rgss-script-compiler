@@ -51,6 +51,7 @@ export namespace Helper {
             return vscode.commands.registerCommand(
                 "rgss-script-compiler.setGamePath",
                 async () => {
+                    this.loggingService.info("[1]");
                     await setGamePath(this.configService, this.loggingService);
                     this.configService.ON_LOAD_GAME_FOLDER.event(
                         (gameFolder) => {
@@ -97,6 +98,7 @@ export namespace Helper {
             return vscode.commands.registerCommand(
                 "rgss-script-compiler.unpack",
                 () => {
+                    this.loggingService.info("[2]");
                     if (!this.configService) {
                         this.loggingService.info(
                             "There is no workspace folder."
@@ -106,7 +108,16 @@ export namespace Helper {
 
                     const unpacker = new Unpacker(
                         this.configService,
-                        this.loggingService
+                        this.loggingService,
+                        () => {
+                            vscode.commands
+                                .executeCommand(
+                                    "rgss-script-compiler.refreshScriptExplorer"
+                                )
+                                .then(() => {
+                                    this.loggingService.info("refreshed");
+                                });
+                        }
                     );
                     unpacker.unpack();
                 }

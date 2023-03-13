@@ -200,10 +200,14 @@ export class RubyCompressScriptService extends RubyScriptService {
  */
 export function extractScriptFiles(
     loggingService: LoggingService,
-    rubyScriptService: RubyScriptService
+    rubyScriptService: RubyScriptService,
+    successCallback?: () => void
 ) {
     rubyScriptService.run()!.onExit((code: number, signal: any) => {
         loggingService.info(`${code} Script import is complete.`);
+        if (successCallback) {
+            successCallback();
+        }
     });
     rubyScriptService.pendingTerminate();
 }

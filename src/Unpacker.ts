@@ -17,7 +17,8 @@ namespace RGSS {
 
         constructor(
             protected readonly configService: ConfigService,
-            protected readonly loggingService: LoggingService
+            protected readonly loggingService: LoggingService,
+            protected readonly successCallback?: () => void
         ) {
             this._targetFile = "";
             this._isReady = false;
@@ -94,7 +95,11 @@ namespace RGSS {
                     }
                 );
 
-                extractScriptFiles(this.loggingService, rubyScriptService);
+                extractScriptFiles(
+                    this.loggingService,
+                    rubyScriptService,
+                    this.successCallback
+                );
             } catch (e) {
                 this.loggingService.info((<Error>e).message);
             }

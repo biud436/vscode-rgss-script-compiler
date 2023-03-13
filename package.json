@@ -135,11 +135,6 @@
                     "group": "navigation"
                 },
                 {
-                    "command": "rgss-script-compiler.openGameFolder",
-                    "when": "view == rgssScriptViewer",
-                    "group": "navigation"
-                },
-                {
                     "command": "rgss-script-compiler.refreshScriptExplorer",
                     "when": "view == rgssScriptViewer",
                     "group": "navigation"
@@ -174,7 +169,7 @@
         "viewsWelcome": [
             {
                 "view": "rgssScriptViewer",
-                "contents": "Welcome to the Script Editor. You can use this extension to edit the script files of RPG Maker XP, VX, and VX Ace.\n\n[1. Set Game Path](command:rgss-script-compiler.importAuto)\n\n[2. Refresh](command:rgss-script-compiler.refreshScriptExplorer)"
+                "contents": "Welcome to the Script Editor. You can use this extension to edit the script files of RPG Maker XP, VX, and VX Ace.\n\n[Import Project](command:rgss-script-compiler.importAuto)\n\n"
             }
         ]
     },

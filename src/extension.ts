@@ -103,23 +103,8 @@ export function activate(context: vscode.ExtensionContext) {
             vscode.commands.registerCommand(
                 "rgss-script-compiler.refreshScriptExplorer",
                 () => {
+                    loggingService.info("[3]");
                     helper.getScriptProvider()?.refreshExplorer();
-                }
-            ),
-            vscode.commands.registerCommand(
-                "rgss-script-compiler.importAuto",
-                () => {
-                    Promise.all([
-                        vscode.commands.executeCommand(
-                            "rgss-script-compiler.setGamePath"
-                        ),
-                        vscode.commands.executeCommand(
-                            "rgss-script-compiler.unpack"
-                        ),
-                        vscode.commands.executeCommand(
-                            "rgss-script-compiler.refreshScriptExplorer"
-                        ),
-                    ]);
                 }
             ),
             vscode.workspace.onDidDeleteFiles((e) => {
@@ -133,6 +118,23 @@ export function activate(context: vscode.ExtensionContext) {
                     }
                 });
             }),
+        ]
+    );
+    context.subscriptions.push(
+        ...[
+            vscode.commands.registerCommand(
+                "rgss-script-compiler.importAuto",
+                () => {
+                    vscode.commands
+                        .executeCommand("rgss-script-compiler.setGamePath")
+                        .then((_) => {
+                            return vscode.commands.executeCommand(
+                                "rgss-script-compiler.unpack",
+                                () => {}
+                            );
+                        });
+                }
+            ),
         ]
     );
 }
