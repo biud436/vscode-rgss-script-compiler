@@ -28,8 +28,8 @@ class PathImpl {
         }
     }
 
-    getFileName(filePath: string) {
-        return path.basename(filePath);
+    getFileName(filePath: string, ext?: string | undefined) {
+        return path.basename(filePath, ext);
     }
 
     getParentDirectory(filePath: string) {

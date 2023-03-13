@@ -54,12 +54,11 @@ export class TreeFileWatcher implements vscode.Disposable {
     }
 
     async initWithEvents() {
-        /**
-         * 파일 이름 변경 이벤트
-         */
         vscode.workspace.onDidRenameFiles((event) => {
             event.files.forEach((file) => {
-                console.log(`${file.oldUri} -> ${file.newUri}`);
+                this.loggingService.info(
+                    `[INFO] change filename : ${file.oldUri} -> ${file.newUri}`
+                );
 
                 this.onDidRenameFiles.fire({
                     oldUrl: file.oldUri,
@@ -68,26 +67,9 @@ export class TreeFileWatcher implements vscode.Disposable {
             });
         });
 
-        /**
-         * 파일 생성 이벤트
-         */
-        this._watcher?.onDidCreate((event) => {
-            this.onDidCreate.fire(event);
-        });
-
-        /**
-         * 파일 변경 이벤트
-         */
-        this._watcher?.onDidChange((event) => {
-            this.onDidChange.fire(event);
-        });
-
-        /**
-         * 파일 삭제 이벤트
-         */
-        this._watcher?.onDidDelete((event) => {
-            this.onDidDelete.fire(event);
-        });
+        this._watcher?.onDidCreate((event) => this.onDidCreate.fire(event));
+        this._watcher?.onDidChange((event) => this.onDidChange.fire(event));
+        this._watcher?.onDidDelete((event) => this.onDidDelete.fire(event));
     }
 
     dispose() {

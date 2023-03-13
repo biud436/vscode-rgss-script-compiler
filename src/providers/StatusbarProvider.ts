@@ -29,7 +29,6 @@ export class StatusbarProvider
     initializeWithItems() {
         const { context } = this;
 
-        // Create the status bar items.
         this._items = ConfigService.getWorkspaceValue(
             "rgssScriptCompiler.showStatusBar"
         )
@@ -45,7 +44,6 @@ export class StatusbarProvider
 
         const config = this.configService.getConfig();
 
-        // Create the game path text
         this._gameFolderPath = provider.getGameFolderPathStatusBarItem(
             config.mainGameFolder!
         );

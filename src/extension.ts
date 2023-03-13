@@ -106,6 +106,22 @@ export function activate(context: vscode.ExtensionContext) {
                     helper.getScriptProvider()?.refreshExplorer();
                 }
             ),
+            vscode.commands.registerCommand(
+                "rgss-script-compiler.importAuto",
+                () => {
+                    Promise.all([
+                        vscode.commands.executeCommand(
+                            "rgss-script-compiler.setGamePath"
+                        ),
+                        vscode.commands.executeCommand(
+                            "rgss-script-compiler.unpack"
+                        ),
+                        vscode.commands.executeCommand(
+                            "rgss-script-compiler.refreshScriptExplorer"
+                        ),
+                    ]);
+                }
+            ),
             vscode.workspace.onDidDeleteFiles((e) => {
                 e.files.forEach((e) => {
                     if (

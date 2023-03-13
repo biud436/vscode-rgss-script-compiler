@@ -10,7 +10,7 @@ import { generateUUID } from "../utils/uuid";
 import { Validator } from "../utils/Validator";
 import { TreeFileWatcher } from "./TreeFileWatcher";
 import { ScriptTree } from "./ScriptTree";
-import { MessageHelper } from "../common/Message";
+import { MessageHelper } from "../common/MessageHelper";
 
 export enum LoggingMarker {
     CREATED = "created",
@@ -99,6 +99,18 @@ export class ScriptExplorerProvider
         this.loggingService.info(
             `[file ${LoggingMarker.CREATED}] ${JSON.stringify(url)}`
         );
+
+        const COLLAPSED = vscode.TreeItemCollapsibleState.None;
+
+        const name = Path.getFileName(url.fsPath, Path.defaultExt);
+        const section = new ScriptSection(name, COLLAPSED, url.fsPath);
+
+        section.id = generateUUID();
+        section.command = {
+            command: "vscode.open",
+            title: MessageHelper.INFO.OPEN_SCRIPT,
+            arguments: [vscode.Uri.file(url.fsPath)],
+        };
     }
 
     private onDidChange(url: vscode.Uri) {
@@ -108,19 +120,13 @@ export class ScriptExplorerProvider
     }
 
     /**
-     * 삭제된 아이템을 반영하여 트리를 갱신한다.
-     * 이때 아이템은 파일 주소만 반환된다.
-     * Windows는 중복된 파일명을 허용하지 않으므로 파일명으로 트리에서 아이템을 찾을 수 있다.
-     *
-     * @param url
+     * Refresh the script explorer after applying the changes.
      */
     private onDidDelete(url: vscode.Uri) {
         this.loggingService.info(
             `[file ${LoggingMarker.DELETED}] ${JSON.stringify(url)}`
         );
 
-        // 파일명은 같지만 프로토콜이 다를 수 있다.
-        // 따라서 파일명만 추출하여 트리에서 아이템을 찾는다.
         const scriptSection = this._tree?.find(
             (item) =>
                 Path.getFileName(item.filePath) === Path.getFileName(url.fsPath)
@@ -191,7 +197,6 @@ export class ScriptExplorerProvider
             prompt: "Please a new script name.",
             value: MessageHelper.INFO.UNTITLED,
             validateInput: (value: string) => {
-                // 입력값이 없을 경우
                 if (!Validator.isStringOrNotEmpty(value)) {
                     return Validator.PLASE_INPUT_SCR_NAME;
                 }
@@ -211,7 +216,6 @@ export class ScriptExplorerProvider
                 result + Path.defaultExt
             );
 
-            // if the file is not exist, it creates a new file called '${result}.rb' to target folder
             if (!fs.existsSync(targetFilePath)) {
                 fs.writeFileSync(targetFilePath, "", "utf8");
             }
@@ -220,7 +224,6 @@ export class ScriptExplorerProvider
                 (treeItem) => treeItem.id === item.id
             );
 
-            // Copy the item and change the id, label, filePath, command object.
             const copiedItem = {
                 ...item,
             };
@@ -278,19 +281,15 @@ export class ScriptExplorerProvider
 
     /**
      * Parse each lines from a file called 'info.txt' and extract the script title.
-     * and then next this method will be created an each script tree data for [vscode.TreeDataProvider](https://code.visualstudio.com/api/references/vscode-api#TreeDataProvider).
+     * and then next this method will be created an each script tree data.
      */
     private parseScriptSectionFromList(): ScriptSection[] {
-        // 스크립트 Tree 데이터는 아래 파일에서 각 라인을 파싱하여 생성합니다.
-        // 아래 파일은 루비 인터프리터에서 스크립트 언패킹에 성공하면 생성됩니다.
         const targetFilePath = path.posix.join(
             this.workspaceRoot,
             this._scriptDirectory,
             ConfigService.TARGET_SCRIPT_LIST_FILE_NAME
         );
 
-        // 파일이 존재하지 않는 경우, 게임 폴더 경로 설정 작업부터 다시 진행해야 합니다.
-        // 이 경우에는 빈 배열을 반환합니다.
         if (!fs.existsSync(targetFilePath)) {
             vscode.window.showErrorMessage(
                 MessageHelper.ERROR.NOT_FOUND_LIST_FILE
