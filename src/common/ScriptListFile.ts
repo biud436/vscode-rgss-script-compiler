@@ -12,6 +12,7 @@ const IGNORE_BLACK_LIST_REGEXP = /(?:Untitled)\_[\d]+/gi;
 
 export class ScriptListFile {
     private _scriptDirectory = "Scripts";
+    private static _TMP = ".bak";
     private _lines: string[];
 
     constructor(
@@ -177,7 +178,7 @@ export class ScriptListFile {
 
     async createBackupFile() {
         const { filePath: targetFilePath } = this;
-        const backupFileName = targetFilePath + ".bak";
+        const backupFileName = targetFilePath + ScriptListFile._TMP;
         if (fs.existsSync(backupFileName)) {
             fs.unlinkSync(backupFileName);
         }
