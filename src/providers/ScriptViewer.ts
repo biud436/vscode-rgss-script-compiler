@@ -101,6 +101,7 @@ export class ScriptExplorerProvider
         );
 
         if (oldScriptSection) {
+            this.renameTreeItem(oldScriptSection, newUrl);
         }
     }
 
