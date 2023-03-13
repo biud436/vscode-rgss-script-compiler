@@ -105,7 +105,7 @@ export class ScriptExplorerProvider
         }
     }
 
-    renameTreeItem(oldItem: ScriptSection, newUrl: vscode.Uri) {
+    private renameTreeItem(oldItem: ScriptSection, newUrl: vscode.Uri) {
         const label = Path.getFileName(newUrl.fsPath, Path.defaultExt);
 
         // Create a new tree item
