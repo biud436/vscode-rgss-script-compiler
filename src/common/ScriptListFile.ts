@@ -175,6 +175,16 @@ export class ScriptListFile {
         return lines;
     }
 
+    async createBackupFile() {
+        const { filePath: targetFilePath } = this;
+        const backupFileName = targetFilePath + ".bak";
+        if (fs.existsSync(backupFileName)) {
+            fs.unlinkSync(backupFileName);
+        }
+
+        await fs.promises.copyFile(targetFilePath, backupFileName);
+    }
+
     async refresh(tree?: RGSSScriptSection[]) {
         if (!tree) {
             vscode.window.showErrorMessage("tree parameter is not passed.");
@@ -185,12 +195,7 @@ export class ScriptListFile {
 
         const lines = [];
 
-        const backupFileName = targetFilePath + ".bak";
-        if (fs.existsSync(backupFileName)) {
-            fs.unlinkSync(backupFileName);
-        }
-
-        await fs.promises.copyFile(targetFilePath, backupFileName);
+        await this.createBackupFile();
 
         for (const { filePath } of tree) {
             // 파일명만 추출 (확장자 포함)
