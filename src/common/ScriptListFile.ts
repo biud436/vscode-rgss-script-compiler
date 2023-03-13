@@ -36,6 +36,10 @@ export class ScriptListFile {
         return this._lines;
     }
 
+    get lineCount(): number {
+        return this._lines.length ?? 0;
+    }
+
     /**
      * Check whether the script list file exists.
      *
@@ -133,10 +137,6 @@ export class ScriptListFile {
         }
 
         return scriptSections as T[];
-    }
-
-    get lineCount(): number {
-        return this._lines.length ?? 0;
     }
 
     replaceLineByFilename(currentLine: string, newLine: string) {
