@@ -96,10 +96,15 @@ export class ScriptExplorerProvider
 
         const oldScriptSection = this._tree?.find((item) => {
             return (
-                Path.getFileName(item.filePath) ===
+                Path.getFileName(item.label) + ".rb" ===
                 Path.getFileName(oldUrl.fsPath)
             );
         });
+
+        if (!oldScriptSection) {
+            this.loggingService.info(`[INFO] oldScriptSection not found!`);
+            return;
+        }
 
         if (oldScriptSection) {
             this.renameTreeItem(oldScriptSection, newUrl);
@@ -130,7 +135,7 @@ export class ScriptExplorerProvider
         };
 
         // Replace the target index as new item in the tree
-        this._tree = this._tree?.replaceTree(oldItem.id, newScriptSection);
+        // this._tree = this._tree?.replaceTree(oldItem.id, newScriptSection);
 
         this.refresh();
         this.refreshListFile();
@@ -259,11 +264,11 @@ export class ScriptExplorerProvider
                 result + Path.defaultExt
             );
 
-            this._watcher?.executeFileAction("onDidCreate", () => {
-                if (!fs.existsSync(targetFilePath)) {
-                    fs.writeFileSync(targetFilePath, "", "utf8");
-                }
-            });
+            this._watcher?.executeFileAction("onDidCreate", () => {});
+
+            if (!fs.existsSync(targetFilePath)) {
+                fs.writeFileSync(targetFilePath, "", "utf8");
+            }
 
             const targetIndex = this._tree?.findIndex(
                 (treeItem) => treeItem.id === item.id
@@ -282,7 +287,8 @@ export class ScriptExplorerProvider
                 arguments: [vscode.Uri.file(targetFilePath).path],
             };
 
-            this._tree = this._tree?.splice(targetIndex!, 0, copiedItem);
+            // this._tree = this._tree?.splice(targetIndex!, 0, copiedItem); 은 오류 발생 코드이다.
+            this._tree?.splice(targetIndex!, 0, copiedItem);
 
             this.refresh();
             this.refreshListFile();
@@ -303,11 +309,34 @@ export class ScriptExplorerProvider
 
         const lines = [];
 
+        // 기존 백업 파일이 이미 존재할 경우, 제거합니다.
+        const backupFileName = targetFilePath + ".bak";
+        if (fs.existsSync(backupFileName)) {
+            fs.unlinkSync(backupFileName);
+        }
+
+        await fs.promises.copyFile(targetFilePath, backupFileName);
+
         for (const { filePath } of this._tree!) {
+            // 파일명만 추출 (확장자 포함)
             const filename = Path.getFileName(filePath);
 
             if (filename === Path.defaultExt) {
                 continue;
+            }
+
+            // ! FIXME 2023.03.13
+            // 파일이 존재하지 않을 때 저장 후 Unpack을 강제로 할 경우, 리스트 파일이 갱신되지 않으면서 모든 파일이 날아가게 된다.
+            const realFilePath = path.posix.join(
+                this.workspaceRoot,
+                this._scriptDirectory,
+                filename
+            );
+
+            // ! FIXME 2023.03.13
+            // 모든 파일에 대한 유효성 검증은 필요하지만, continue를 하면 버그 시, 리스트 파일이 비어있게 되므로 continue를 하지 않는다.
+            if (!fs.existsSync(realFilePath)) {
+                this.loggingService.info(`${filePath} not found. continue.`);
             }
 
             lines.push(decodeURIComponent(filename));
