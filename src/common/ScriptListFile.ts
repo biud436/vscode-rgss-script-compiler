@@ -185,7 +185,7 @@ export class ScriptListFile {
         await fs.promises.copyFile(targetFilePath, backupFileName);
     }
 
-    async refresh(tree?: RGSSScriptSection[]) {
+    async refresh<T extends RGSSScriptSection>(tree?: T[]) {
         if (!tree) {
             vscode.window.showErrorMessage("tree parameter is not passed.");
             return;
