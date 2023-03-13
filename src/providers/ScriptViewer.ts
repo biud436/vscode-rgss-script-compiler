@@ -93,6 +93,35 @@ export class ScriptExplorerProvider
                 oldUrl
             )} -> ${JSON.stringify(newUrl)}`
         );
+
+        const oldScriptSection = this._tree?.find(
+            (item) =>
+                Path.getFileName(item.filePath) ===
+                Path.getFileName(oldUrl.fsPath)
+        );
+
+        if (oldScriptSection) {
+        }
+    }
+
+    renameTreeItem(oldItem: ScriptSection, newUrl: vscode.Uri) {
+        const label = Path.getFileName(newUrl.fsPath, Path.defaultExt);
+
+        // Create a new tree item
+        const newScriptSection = new ScriptSection(
+            label,
+            vscode.TreeItemCollapsibleState.None,
+            newUrl.fsPath
+        );
+        newScriptSection.id = oldItem.id;
+        newScriptSection.command = {
+            command: "vscode.open",
+            title: MessageHelper.INFO.OPEN_SCRIPT,
+            arguments: [vscode.Uri.file(newUrl.fsPath)],
+        };
+
+        // Replace the target index as new item in the tree
+        this._tree = this._tree?.replaceTree(oldItem.id, newScriptSection);
     }
 
     /**

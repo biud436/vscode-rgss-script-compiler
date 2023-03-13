@@ -1,6 +1,8 @@
+import { RGSSScriptSection } from "./RGSSScriptSection";
+
 type FilterPredicate<T> = (value: T, index: number, array: T[]) => boolean;
 
-export class ScriptTree<T> {
+export class ScriptTree<T extends RGSSScriptSection> {
     data: T[];
 
     constructor(array: T[]) {
@@ -25,6 +27,11 @@ export class ScriptTree<T> {
 
     public find(callback: FilterPredicate<T>): T | undefined {
         return this.data.find(callback);
+    }
+
+    public replaceTree(id: string | undefined, newItem: T): ScriptTree<T> {
+        const index = this.findIndex((item) => item.id === id);
+        return this.splice(index, 1, newItem);
     }
 
     get length(): number {
