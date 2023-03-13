@@ -192,6 +192,7 @@ export class ScriptListFile {
         }
 
         const { filePath: targetFilePath } = this;
+        const { getFileName, defaultExt } = Path;
 
         const lines = [];
 
@@ -199,9 +200,9 @@ export class ScriptListFile {
 
         for (const { filePath } of tree) {
             // 파일명만 추출 (확장자 포함)
-            const filename = Path.getFileName(decodeURIComponent(filePath));
+            const filename = getFileName(decodeURIComponent(filePath));
 
-            if (filename === Path.defaultExt) {
+            if (filename === defaultExt) {
                 continue;
             }
 
