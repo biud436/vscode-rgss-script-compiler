@@ -54,13 +54,13 @@ export class TreeFileWatcher implements vscode.Disposable {
         this._glob = glob;
     }
 
-    create() {
+    create(): void {
         this._watcher = vscode.workspace.createFileSystemWatcher(this._glob);
 
         this.initWithEvents();
     }
 
-    async initWithEvents() {
+    async initWithEvents(): Promise<void> {
         vscode.workspace.onDidRenameFiles((event) => {
             event.files.forEach((file) => {
                 this.loggingService.info(
@@ -95,13 +95,16 @@ export class TreeFileWatcher implements vscode.Disposable {
      * @param key
      * @param callback
      */
-    executeFileAction(key: TreeFileWatcherEventKey, callback: () => void) {
+    executeFileAction(
+        key: TreeFileWatcherEventKey,
+        callback: () => void
+    ): void {
         this._valid[key] = false;
         callback();
         this._valid[key] = true;
     }
 
-    dispose() {
+    dispose(): void {
         this.onDidRenameFiles.dispose();
         this.onDidCreate.dispose();
         this.onDidChange.dispose();

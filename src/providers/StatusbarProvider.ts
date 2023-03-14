@@ -21,12 +21,12 @@ export class StatusbarProvider
         private readonly configService: ConfigService
     ) {}
 
-    create() {
+    create(): void {
         this.initializeWithItems();
         this.onDidChangeConfiguration();
     }
 
-    initializeWithItems() {
+    initializeWithItems(): void {
         const { context } = this;
 
         this._items = ConfigService.getWorkspaceValue(
@@ -38,7 +38,7 @@ export class StatusbarProvider
         context.subscriptions.push(...this._items);
     }
 
-    initWithGamePath() {
+    initWithGamePath(): void {
         const { context } = this;
         const provider = Helper.StatusBarProvider;
 
@@ -51,21 +51,21 @@ export class StatusbarProvider
         context.subscriptions.push(this._gameFolderPath);
     }
 
-    onDidChangeConfiguration(context?: vscode.ExtensionContext) {
+    onDidChangeConfiguration(context?: vscode.ExtensionContext): void {
         if (!context) {
             context = this.context;
         }
+
+        const sectionKey = "rgssScriptCompiler.showStatusBar";
 
         context.subscriptions.push(
             vscode.workspace.onDidChangeConfiguration((e) => {
                 const provider = Helper.getStatusBarProvider();
 
-                if (
-                    e.affectsConfiguration("rgssScriptCompiler.showStatusBar")
-                ) {
+                if (e.affectsConfiguration(sectionKey)) {
                     const config = vscode.workspace
                         .getConfiguration()
-                        .get("rgssScriptCompiler.showStatusBar");
+                        .get(sectionKey);
 
                     this.loggingService.info(
                         `Status bar items visibility changed to: ${config}`
@@ -89,27 +89,27 @@ export class StatusbarProvider
         );
     }
 
-    dispose() {}
+    dispose(): void {}
 
-    show() {
+    show(): void {
         this._items?.forEach((item) => item.show());
         this._gameFolderPath?.show();
     }
 
-    hide() {
+    hide(): void {
         this._items?.forEach((item) => item.hide());
         this._gameFolderPath?.hide();
     }
 
-    showGamePath() {
+    showGamePath(): void {
         this._gameFolderPath?.show();
     }
 
-    hideGamePath() {
+    hideGamePath(): void {
         this._gameFolderPath?.hide();
     }
 
-    isInValid() {
+    isInValid(): boolean {
         if (!this._items) return true;
         return this._items.length === 0;
     }
