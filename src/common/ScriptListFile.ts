@@ -59,8 +59,10 @@ export class ScriptListFile {
     }
 
     /**
-     * Read lines from the `info.txt` file.
+     * 텍스트 파일을 읽어서 각 라인을 배열로 반환합니다.
+     * `Untitled_*.rb`로 시작하는 라인은 포함되지 않습니다.
      *
+     * Read lines from the `info.txt` file.
      * Note that this method skips the lines that start with `Untitled_.rb`.
      *
      * @returns
@@ -81,6 +83,12 @@ export class ScriptListFile {
         return scriptList;
     }
 
+    /**
+     * 텍스트 파일을 읽어서 각 라인을 배열로 반환합니다.
+     *
+     * @param skip
+     * @returns
+     */
     readAll(skip?: boolean): string[] {
         if (skip) {
             return this.read();
@@ -93,6 +101,10 @@ export class ScriptListFile {
         return lines;
     }
 
+    /**
+     * 리스트 파일을 라인 별로 읽고 새로운 트리를 생성합니다.
+     * `Untitled_*.rb`로 시작하는 라인은 포함되지 않습니다.
+     */
     createScriptSectionFromList<T extends RGSSScriptSection>(): T[] {
         const scriptSections: RGSSScriptSection[] = [];
         const COLLAPSED = vscode.TreeItemCollapsibleState.None;
