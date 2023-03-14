@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { ConfigService } from "../ConfigService";
 import * as vscode from "vscode";
 import * as fs from "fs";
@@ -140,7 +141,10 @@ export class ScriptListFile {
         return scriptSections as T[];
     }
 
-    updateFilename(scriptFileName: string, newScriptFileName: string) {
+    updateFilename(
+        scriptFileName: string,
+        newScriptFileName: string
+    ): string[] {
         const lines = this.lines.slice(0);
         const { defaultExt: ext } = Path;
 
@@ -176,7 +180,7 @@ export class ScriptListFile {
         return lines;
     }
 
-    async createBackupFile() {
+    async createBackupFile(): Promise<void> {
         const { filePath: targetFilePath } = this;
         const backupFileName = targetFilePath + ScriptListFile._TMP;
         if (fs.existsSync(backupFileName)) {
@@ -186,7 +190,7 @@ export class ScriptListFile {
         await fs.promises.copyFile(targetFilePath, backupFileName);
     }
 
-    async refresh<T extends RGSSScriptSection>(tree?: T[]) {
+    async refresh<T extends RGSSScriptSection>(tree?: T[]): Promise<void> {
         if (!tree) {
             vscode.window.showErrorMessage("tree parameter is not passed.");
             return;
@@ -229,7 +233,7 @@ export class ScriptListFile {
         await fs.promises.writeFile(targetFilePath, raw, "utf8");
     }
 
-    clear() {
+    clear(): void {
         this._lines = [];
     }
 }
