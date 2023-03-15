@@ -48,7 +48,7 @@ This extension is a beta version that has not been tested elaborately. We have s
 
 # Usage
 
-This extension is designed for use on macOS and Windows 11. Before using this extension, you must first install `Ruby v2.6.8` or higher on your local machine. Here's how to check if Ruby is already installed:
+This extension is designed for use on macOS and Windows 11. Before using this extension, you must first install `ruby 2.6.8` or higher on your local machine. Here's how to check if Ruby is already installed:
 
 To use this extension, you must have Ruby installed on your computer (Ruby comes pre-installed on Mac, so you can ignore this step if you're on a Mac). I tried using a Node module like `Marshal` or a WASM-based Ruby because I didn't want to require a Ruby installation, but they were not stable.
 
@@ -58,7 +58,7 @@ To check if Ruby is installed on your computer, run this command in your termina
 ruby -v
 ```
 
-If Ruby is installed properly, you should see the version number displayed (e.g., `v2.6.8`).
+If Ruby is installed properly, you should see the version number displayed (e.g., `ruby 3.2.1`).
 
 # Maintainer and Contributors
 
