@@ -152,12 +152,16 @@ export class RubyScriptService {
     }
 
     pendingTerminate() {
-        if (!this._process) return;
+        if (!this._process) {
+            return;
+        }
         this._process.on("beforeExit", () => this._process!.kill());
     }
 
     onExit(callback: RubyProcessOnExitCallback) {
-        if (!this._process) return;
+        if (!this._process) {
+            return;
+        }
         this._process.on("exit", callback);
     }
 }

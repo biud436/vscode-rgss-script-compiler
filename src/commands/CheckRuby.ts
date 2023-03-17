@@ -1,7 +1,5 @@
 import { execSync } from "child_process";
-import { promisify } from "util";
 
-// const execPromise = promisify(exec);
 const COMMAND = "ruby -v";
 
 export function isInstalledRuby(): boolean {
