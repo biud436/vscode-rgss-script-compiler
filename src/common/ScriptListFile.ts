@@ -116,8 +116,11 @@ export class ScriptListFile {
         const { defaultExt } = Path;
 
         for (const line of lines) {
+            let isBlankName = false;
+            let isEmptyContent = false;
+
             if (line.match(IGNORE_BLACK_LIST_REGEXP)) {
-                continue;
+                isBlankName = true;
             }
 
             let targetScriptSection = "";
@@ -135,8 +138,20 @@ export class ScriptListFile {
                 })
                 .toString();
 
+            const stat = fs.statSync(
+                fileUri.with({
+                    path: Path.join(
+                        fileUri.path,
+                        targetScriptSection + Path.defaultExt
+                    ),
+                }).fsPath
+            );
+            if (stat.size === 0) {
+                isEmptyContent = true;
+            }
+
             const scriptSection = new RGSSScriptSection(
-                targetScriptSection,
+                isEmptyContent ? "" : targetScriptSection,
                 COLLAPSED,
                 scriptFilePath
             );

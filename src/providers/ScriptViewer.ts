@@ -439,8 +439,11 @@ export class ScriptExplorerProvider
         });
 
         for (const line of lines) {
+            let isBlankName = false;
+            let isEmptyContent = false;
+
             if (line.match(IGNORE_BLACK_LIST_REGEXP)) {
-                continue;
+                isBlankName = true;
             }
 
             let targetScriptSection = "";
@@ -458,8 +461,20 @@ export class ScriptExplorerProvider
                 })
                 .toString();
 
+            const stat = fs.statSync(
+                fileUri.with({
+                    path: Path.join(
+                        fileUri.path,
+                        targetScriptSection + Path.defaultExt
+                    ),
+                }).fsPath
+            );
+            if (stat.size === 0) {
+                isEmptyContent = true;
+            }
+
             const scriptSection = new ScriptSection(
-                targetScriptSection,
+                isEmptyContent ? "" : targetScriptSection,
                 COLLAPSED,
                 scriptFilePath
             );
