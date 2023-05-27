@@ -300,7 +300,7 @@ export class ScriptExplorerProvider
     }
 
     replaceLineByFilename(label: string, newLabel: string) {
-        // 리스트 파일을 읽습니다.
+        // read the list file
         const targetFilePath = path.posix.join(
             this.workspaceRoot,
             this._scriptDirectory,
@@ -363,7 +363,7 @@ export class ScriptExplorerProvider
 
         const lines = [];
 
-        // 기존 백업 파일이 이미 존재할 경우, 제거합니다.
+        // remove the backup file if it already exists.
         const backupFileName = targetFilePath + ".bak";
         if (fs.existsSync(backupFileName)) {
             fs.unlinkSync(backupFileName);
@@ -372,7 +372,7 @@ export class ScriptExplorerProvider
         await fs.promises.copyFile(targetFilePath, backupFileName);
 
         for (const { filePath } of this._tree!) {
-            // 파일명만 추출 (확장자 포함)
+            // Extract only the file name (including the extension)
             const filename = Path.getFileName(decodeURIComponent(filePath));
 
             if (filename === Path.defaultExt) {

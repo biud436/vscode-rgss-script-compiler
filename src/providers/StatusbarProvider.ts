@@ -3,6 +3,7 @@ import * as vscode from "vscode";
 import { ConfigService } from "../ConfigService";
 import { Helper } from "../Helper";
 import { LoggingService } from "../LoggingService";
+import { WorkspaceValue } from "../common/WorkspaceValue";
 
 interface IStatusbarProvider {
     show(): void;
@@ -29,8 +30,8 @@ export class StatusbarProvider
     initializeWithItems(): void {
         const { context } = this;
 
-        this._items = ConfigService.getWorkspaceValue(
-            "rgssScriptCompiler.showStatusBar"
+        this._items = ConfigService.getWorkspaceValue<boolean>(
+            WorkspaceValue.showStatusBar
         )
             ? Helper.getStatusBarItems()
             : [];
@@ -56,7 +57,7 @@ export class StatusbarProvider
             context = this.context;
         }
 
-        const sectionKey = "rgssScriptCompiler.showStatusBar";
+        const sectionKey = WorkspaceValue.showStatusBar;
 
         context.subscriptions.push(
             vscode.workspace.onDidChangeConfiguration((e) => {
@@ -65,7 +66,7 @@ export class StatusbarProvider
                 if (e.affectsConfiguration(sectionKey)) {
                     const config = vscode.workspace
                         .getConfiguration()
-                        .get(sectionKey);
+                        .get<boolean>(sectionKey);
 
                     this.loggingService.info(
                         `Status bar items visibility changed to: ${config}`

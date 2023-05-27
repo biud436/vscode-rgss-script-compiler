@@ -56,10 +56,10 @@ export class ConfigService {
         this.detectRGSSVersion();
     }
 
-    public static getWorkspaceValue(section: string) {
+    public static getWorkspaceValue<T = any>(section: string) {
         const config = vscode.workspace.getConfiguration();
 
-        return config.get(section);
+        return config.get<T>(section);
     }
 
     /**

@@ -162,6 +162,21 @@
                         "type": "boolean",
                         "default": false,
                         "description": "Show Status Bar"
+                    },
+                    "rgssScriptCompiler.isRemoteGamePlay": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "Remote Game Play (MacOS Only)"
+                    },
+                    "rgssScriptCompiler.remoteGamePlayPort": {
+                        "type": "number",
+                        "default": 6000,
+                        "description": "Remote Game Play Port (MacOS Only)"
+                    },
+                    "rgssScriptCompiler.remoteGamePlayHost": {
+                        "type": "string",
+                        "default": "localhost",
+                        "description": "Remote Game Play Host (MacOS Only)"
                     }
                 }
             }
