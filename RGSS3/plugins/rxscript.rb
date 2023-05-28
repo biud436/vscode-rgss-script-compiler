@@ -139,6 +139,8 @@ module RXDATA
             input = File.open(File.join(indir, 'info.txt'), 'rb')
             input.read.each_line do |line|
                 filename = line.gsub("\n", '')
+
+                #
                 files.push(File.join(indir, filename))
             end
             input.close
@@ -151,7 +153,13 @@ module RXDATA
             input = File.open(rb, 'r')
             section = RXDATA.GetRandomSection
             title = File.basename(rb, '.rb')
-            title = '' if title =~ /^(?:Untitled)\_[\d]+$/
+
+            find_line_regexp = /^[\d]{3}\-[.]*/i
+            if title.start_with?(find_line_regexp)
+                title = title.gsub!(find_line_regexp, '')
+            end
+
+            title = '' if title =~ /^[\d]{3}\-(?:Untitled)\_[\d]+$/
             text = input.read
             text = text.force_encoding('utf-8')
             text = RXDATA.ZlibDeflate(text)
