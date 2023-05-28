@@ -108,8 +108,11 @@ module RXDATA
             identifier = ScriptIdentifier.new(script_index, data.title)
             script_identifier[identifier.uuid] = identifier
 
-            title = data.title
-            title = "Untitled_#{script_index}" if title.empty?
+            # add index prefix like as "001" to title
+            prefix = script_index.to_s.rjust(3, '0')
+
+            title = "#{prefix}-#{data.title}"
+            title = "#{prefix}-Untitled_#{script_index}" if title.empty?
 
             filename = title + '.rb'
             info += filename + "\n"
