@@ -315,7 +315,7 @@ export class ScriptExplorerProvider
         }
 
         const raw = fs.readFileSync(targetFilePath, "utf8");
-        const IGNORE_BLACK_LIST_REGEXP = /(?:Untitled)\_[\d]+/gi;
+        const IGNORE_BLACK_LIST_REGEXP = /^[\d]{3}\-(?:Untitled)\_[\d]+/gi;
         const lines = raw.split("\n");
 
         let lineIndex = -1;
@@ -427,7 +427,7 @@ export class ScriptExplorerProvider
 
         const raw = fs.readFileSync(targetFilePath, "utf8");
 
-        const IGNORE_BLACK_LIST_REGEXP = /(?:Untitled)\_[\d]+/gi;
+        const IGNORE_BLACK_LIST_REGEXP = /^[\d]{3}\-(?:Untitled)\_[\d]+/gi;
         const lines = raw.split("\n");
         const scriptSections: ScriptSection[] = [];
 
@@ -447,6 +447,10 @@ export class ScriptExplorerProvider
             }
 
             let targetScriptSection = "";
+
+            if (line.trim() === "") {
+                continue;
+            }
 
             if (line.endsWith(Path.defaultExt)) {
                 targetScriptSection = line.replace(Path.defaultExt, "");
@@ -474,7 +478,12 @@ export class ScriptExplorerProvider
             }
 
             const scriptSection = new ScriptSection(
-                isEmptyContent ? "" : targetScriptSection,
+                // isEmptyContent
+                //     ? ""
+                //     : targetScriptSection.replace(/^[\d]{3}\-/, ""),
+                targetScriptSection.match(/^[\d]{3}\-(?:Untitled)/g)
+                    ? ""
+                    : targetScriptSection.replace(/^[\d]{3}\-/, ""),
                 COLLAPSED,
                 scriptFilePath
             );

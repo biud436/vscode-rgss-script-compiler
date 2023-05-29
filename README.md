@@ -10,9 +10,13 @@ This extension allows you to edit scripts directly in Visual Studio Code without
 
 ## Screenshots
 
+<p align="center">
+
+<img width="1041" alt="image" src="https://github.com/biud436/vscode-rgss-script-compiler/assets/13586185/d64945cd-6479-40e7-9d12-e5edc9c85cd0">
+
+</p>
+
 ![rgss-compiler-preview](https://user-images.githubusercontent.com/13586185/186309563-f5d00d1c-c9bb-4b93-8bb1-e98f888d705c.gif)
-![rgss-compiler-preview2](https://user-images.githubusercontent.com/13586185/223461482-994b2186-7f37-4e87-a398-333bf6ce4cff.gif)
-![rgss-compiler-preview3](https://user-images.githubusercontent.com/13586185/224608399-57443456-a0d3-4936-a121-788dade6b36b.png)
 
 This extension is a beta version that has not been tested elaborately. We have secured stability by correcting problems such as third-party scripts, but please back up the scripts in advance.
 

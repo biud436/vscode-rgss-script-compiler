@@ -111,8 +111,12 @@ module RXDATA
             # add index prefix like as "001" to title
             prefix = script_index.to_s.rjust(3, '0')
 
-            title = "#{prefix}-#{data.title}"
-            title = "#{prefix}-Untitled_#{script_index}" if title.empty?
+            title =
+                if data.title.empty?
+                    "#{prefix}-Untitled"
+                else
+                    "#{prefix}-#{data.title}"
+                end
 
             filename = title + '.rb'
             info += filename + "\n"
@@ -159,7 +163,7 @@ module RXDATA
                 title = title.gsub!(find_line_regexp, '')
             end
 
-            title = '' if title =~ /^[\d]{3}\-(?:Untitled)\_[\d]+$/
+            title = '' if title =~ /^(?:Untitled)$/
             text = input.read
             text = text.force_encoding('utf-8')
             text = RXDATA.ZlibDeflate(text)
