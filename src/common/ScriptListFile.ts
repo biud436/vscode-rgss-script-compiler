@@ -48,6 +48,7 @@ export class ScriptListFile {
      * @returns
      */
     public isValid(): boolean {
+        this.loggingService.info(`ScriptListFile: ${this.filePath}`);
         if (!fs.existsSync(this.filePath)) {
             vscode.window.showErrorMessage(
                 MessageHelper.ERROR.NOT_FOUND_LIST_FILE
