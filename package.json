@@ -100,7 +100,7 @@
                 "command": "rgss-script-compiler.testPlay",
                 "key": "f5",
                 "when": "editorTextFocus && resourceExtname == .rb",
-                "mac": "cmd+f5"
+                "mac": "f5"
             }
         ],
         "viewsContainers": {
@@ -163,20 +163,10 @@
                         "default": false,
                         "description": "Show Status Bar"
                     },
-                    "rgssScriptCompiler.isRemoteGamePlay": {
-                        "type": "boolean",
-                        "default": false,
-                        "description": "Remote Game Play (MacOS Only)"
-                    },
-                    "rgssScriptCompiler.remoteGamePlayPort": {
-                        "type": "number",
-                        "default": 6000,
-                        "description": "Remote Game Play Port (MacOS Only)"
-                    },
-                    "rgssScriptCompiler.remoteGamePlayHost": {
+                    "rgssScriptCompiler.macOsGamePath": {
                         "type": "string",
-                        "default": "localhost",
-                        "description": "Remote Game Play Host (MacOS Only)"
+                        "default": "",
+                        "description": "MacOS MKXP-Z Game Directory"
                     }
                 }
             }

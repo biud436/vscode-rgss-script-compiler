@@ -6,8 +6,15 @@ import { exec } from "child_process";
 import * as path from "path";
 import { RubyScriptService } from "./ExtractScriptFiles";
 import * as cp from "child_process";
+import { WorkspaceValue } from "../common/WorkspaceValue";
 
 const execPromise = promisify(exec);
+
+export interface GamePlayServiceOptions {
+    gamePath: string;
+    cwd: string;
+    args: string[];
+}
 
 /**
  * Show up the error message on the bottom of the screen.
@@ -32,7 +39,10 @@ export class GamePlayService extends RubyScriptService {
                 scriptFile: "",
                 vscodeWorkspaceFolder: "",
             },
-            () => {
+            (err: any) => {
+                if (err) {
+                    this.loggingService.info(err);
+                }
                 this.loggingService.info("done");
             }
         );
@@ -42,7 +52,15 @@ export class GamePlayService extends RubyScriptService {
      * This function is responsible for making the command line options.
      */
     makeCommand() {
-        this._args = [];
+        const version = this.configService.getRGSSVersion();
+        const platform = process.platform;
+
+        if (platform !== "win32") {
+            this._args = [];
+            return;
+        }
+
+        this._args = version === "RGSS3" ? ["console", "test"] : [];
     }
 
     /**
@@ -50,13 +68,44 @@ export class GamePlayService extends RubyScriptService {
      * if the ruby interpreter is not installed, it can't be executed.
      */
     run(): void | this {
+        const platform = <NodeJS.Platform>process.platform;
+        let target = <GamePlayServiceOptions>{
+            gamePath: "",
+            cwd: "",
+            args: [],
+        };
+
+        switch (platform) {
+            case "win32":
+                target.gamePath = "Game.exe";
+                target.args = this._args!;
+                target.cwd = Path.resolve(
+                    this.configService.getMainGameFolder()
+                );
+                break;
+            case "darwin": // MKXP-Z supported
+                target.gamePath = "open";
+                target.args = [
+                    "-b",
+                    "org.struma.mkxp-z",
+                    Path.join(
+                        ConfigService.getWorkspaceValue(
+                            WorkspaceValue.macOsGamePath
+                        )!,
+                        ".."
+                    ),
+                ];
+                target.cwd = "";
+                break;
+        }
+
         this._process = cp.execFile(
-            `Game.exe`,
-            this._args,
+            target.gamePath,
+            target.args,
             {
                 encoding: "utf8",
                 maxBuffer: 1024 * 1024,
-                cwd: Path.resolve(this.configService.getMainGameFolder()),
+                cwd: target.cwd,
                 shell: true,
             },
             this._callback
