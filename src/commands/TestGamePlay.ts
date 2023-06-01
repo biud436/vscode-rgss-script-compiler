@@ -87,7 +87,9 @@ export class GamePlayService extends RubyScriptService {
                 target.gamePath = "open";
                 target.args = [
                     "-b",
-                    "org.struma.mkxp-z",
+                    ConfigService.getWorkspaceValue(
+                        WorkspaceValue.macOsBundleIdentifier
+                    )!,
                     Path.join(
                         ConfigService.getWorkspaceValue(
                             WorkspaceValue.macOsGamePath
@@ -136,7 +138,7 @@ export function handleTestPlay<T extends GamePlayService = GamePlayService>(
 ): void {
     const platform = process.platform;
 
-    if (platform !== "win32") {
+    if (!["win32", "darwin"].includes(platform)) {
         showWarnMessage(loggingService);
         return;
     }

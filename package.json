@@ -167,6 +167,11 @@
                         "type": "string",
                         "default": "",
                         "description": "MacOS MKXP-Z Game Directory"
+                    },
+                    "rgssScriptCompiler.macOsBundleIdentifier": {
+                        "type": "string",
+                        "default": "org.struma.mkxp-z",
+                        "description": "MacOS MKXP-Z Bundle Identifier"
                     }
                 }
             }
