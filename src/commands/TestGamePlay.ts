@@ -42,7 +42,7 @@ export class GamePlayService extends RubyScriptService {
      * This function is responsible for making the command line options.
      */
     makeCommand() {
-        this._args = [];
+        this._args = ["console", "test"];
     }
 
     /**
