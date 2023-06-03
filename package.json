@@ -160,7 +160,7 @@
                 "properties": {
                     "rgssScriptCompiler.showStatusBar": {
                         "type": "boolean",
-                        "default": false,
+                        "default": true,
                         "description": "Show Status Bar"
                     },
                     "rgssScriptCompiler.macOsGamePath": {
