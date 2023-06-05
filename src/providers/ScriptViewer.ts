@@ -11,6 +11,7 @@ import { Validator } from "../utils/Validator";
 import { TreeFileWatcher } from "./TreeFileWatcher";
 import { ScriptTree } from "./ScriptTree";
 import { MessageHelper } from "../common/MessageHelper";
+import { DataSourceFactory } from "../models/DataSourceFactory";
 
 export enum LoggingMarker {
     CREATED = "created",
@@ -26,6 +27,7 @@ export class ScriptExplorerProvider
     private _watcher?: TreeFileWatcher;
     private _scriptFolderRootWatcher?: TreeFileWatcher;
     private _tree?: ScriptTree<ScriptSection>;
+    private _dataSource?: DataSourceFactory;
 
     constructor(
         private workspaceRoot: string,
@@ -34,6 +36,8 @@ export class ScriptExplorerProvider
         this.initWithFileWatcher();
         this.initWithScriptFolderWatcher();
         this._tree = new ScriptTree<ScriptSection>([]);
+
+        this._dataSource = new DataSourceFactory(workspaceRoot);
     }
 
     private _onDidChangeTreeData: vscode.EventEmitter<
