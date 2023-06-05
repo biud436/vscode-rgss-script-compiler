@@ -12,6 +12,7 @@ import { TreeFileWatcher } from "./TreeFileWatcher";
 import { ScriptTree } from "./ScriptTree";
 import { MessageHelper } from "../common/MessageHelper";
 import { DataSourceFactory } from "../models/DataSourceFactory";
+import { Script } from "../models/Script";
 
 export enum LoggingMarker {
     CREATED = "created",
@@ -446,6 +447,8 @@ export class ScriptExplorerProvider
             path: path.posix.join(folderUri.path, this._scriptDirectory),
         });
 
+        const scripts: Script[] = [];
+
         for (const line of lines) {
             let isBlankName = false;
             let isEmptyContent = false;
@@ -496,6 +499,11 @@ export class ScriptExplorerProvider
                 scriptFilePath
             );
 
+            const script = new Script();
+            script.filePath = scriptFilePath;
+            script.title = scriptSection.label;
+            scripts.push(script);
+
             scriptSection.id = generateUUID();
             scriptSection.command = {
                 command: "vscode.open",
@@ -507,6 +515,20 @@ export class ScriptExplorerProvider
 
         this._tree = new ScriptTree(scriptSections);
 
+        this.refreshDatabase(scripts);
+
         return scriptSections;
+    }
+
+    async refreshDatabase(scripts: Script[]) {
+        const dataSource = this._dataSource?.getDataSource();
+        const scriptRepository = dataSource?.getTreeRepository(Script);
+
+        if (!scriptRepository) {
+            return;
+        }
+
+        await scriptRepository.clear();
+        await scriptRepository.save(scripts);
     }
 }

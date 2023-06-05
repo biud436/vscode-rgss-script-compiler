@@ -9,7 +9,7 @@ import {
 
 @Entity()
 @Tree("materialized-path")
-export class ScriptSection {
+export class Script {
     @PrimaryGeneratedColumn()
     id!: number;
 
@@ -17,10 +17,10 @@ export class ScriptSection {
     title!: string;
 
     @TreeChildren()
-    children!: ScriptSection[];
+    children!: Script[];
 
     @TreeParent()
-    parent!: ScriptSection;
+    parent!: Script;
 
     @Column({
         nullable: true,

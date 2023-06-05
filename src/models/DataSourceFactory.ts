@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { DataSource, DataSourceOptions } from "typeorm";
 import { SnakeNamingStrategy } from "typeorm-naming-strategies";
-import { ScriptSection } from "./ScriptSection";
+import { Script } from "./Script";
 import { ConfigService } from "../ConfigService";
 import { Path } from "../utils/Path";
 
@@ -17,7 +17,7 @@ export class DataSourceFactory {
             database: Path.join(workspacePath, "db.sqlite"),
             synchronize: true,
             namingStrategy: new SnakeNamingStrategy(),
-            entities: [ScriptSection],
+            entities: [Script],
             logging: true,
         };
 
