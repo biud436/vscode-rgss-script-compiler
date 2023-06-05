@@ -245,6 +245,7 @@ export class ScriptExplorerProvider
      * @param item {ScriptSection} The new script section.
      */
     async addTreeItem(item: ScriptSection): Promise<void> {
+        // Enter the script name
         const result = await vscode.window.showInputBox({
             prompt: "Please a new script name.",
             value: MessageHelper.INFO.UNTITLED,
@@ -262,6 +263,7 @@ export class ScriptExplorerProvider
         });
 
         if (result) {
+            // Create a new empty script file
             const targetFilePath = path.posix.join(
                 this.workspaceRoot,
                 this._scriptDirectory,
@@ -274,9 +276,16 @@ export class ScriptExplorerProvider
                 fs.writeFileSync(targetFilePath, "", "utf8");
             }
 
+            // 스크립트를 추가할 섹션의 위치를 찾는다.
             const targetIndex = this._tree?.findIndex(
                 (treeItem) => treeItem.id === item.id
             );
+
+            // const targetSection = this._tree?.find((treeItem) => treeItem.id === item.id);
+            // const {label} = targetSection! ?? '';
+
+            // const items = label.split(/([\d]+)\-(.*)/);
+            // const currentIndex = items[1];
 
             const copiedItem = {
                 ...item,
@@ -291,7 +300,6 @@ export class ScriptExplorerProvider
                 arguments: [vscode.Uri.file(targetFilePath).path],
             };
 
-            // this._tree = this._tree?.splice(targetIndex!, 0, copiedItem); 은 오류 발생 코드이다.
             this._tree?.splice(targetIndex!, 0, copiedItem);
 
             this.refresh();
@@ -363,7 +371,7 @@ export class ScriptExplorerProvider
 
         const lines = [];
 
-        // remove the backup file if it already exists.
+        // 백업 파일을 생성한다.
         const backupFileName = targetFilePath + ".bak";
         if (fs.existsSync(backupFileName)) {
             fs.unlinkSync(backupFileName);
@@ -372,12 +380,8 @@ export class ScriptExplorerProvider
         await fs.promises.copyFile(targetFilePath, backupFileName);
 
         for (const { filePath } of this._tree!) {
-            // Extract only the file name (including the extension)
+            // 확장자를 포함하여 파일명을 추출한다.
             const filename = Path.getFileName(decodeURIComponent(filePath));
-
-            if (filename === Path.defaultExt) {
-                continue;
-            }
 
             // ! FIXME 2023.03.13
             // 파일이 존재하지 않을 때 저장 후 Unpack을 강제로 할 경우, 리스트 파일이 갱신되지 않으면서 모든 파일이 날아가게 된다.
