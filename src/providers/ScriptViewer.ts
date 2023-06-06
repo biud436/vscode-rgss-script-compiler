@@ -230,6 +230,16 @@ export class ScriptExplorerProvider
      * @param item
      */
     async deleteTreeItem(item: ScriptSection): Promise<void> {
+        const choice = await vscode.window.showInformationMessage(
+            "Do you want to delete this script?",
+            "Yes",
+            "No"
+        );
+
+        if (choice === "No") {
+            return;
+        }
+
         this._tree = this._tree?.filter((treeItem) => treeItem.id !== item.id);
 
         const targetFilePath = path.posix.join(
