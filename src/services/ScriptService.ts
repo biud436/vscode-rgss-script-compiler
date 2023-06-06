@@ -1,52 +1,64 @@
+import { Repository, TreeRepository } from "typeorm";
 import { DataSourceFactory } from "../models/DataSourceFactory";
 import { Script } from "../models/Script";
+import { ScriptExplorerProvider } from "../providers/ScriptViewer";
 
+/**
+ * @class ScriptService
+ * @description This class allows you to interact with the Script entity.
+ */
 export class ScriptService {
     private _dataSource?: DataSourceFactory;
+    private _scriptRepository: TreeRepository<Script>;
+    private _treeProvider: ScriptExplorerProvider;
 
-    constructor(workspaceRoot: string) {
+    /**
+     * Creates an instance of ScriptService.
+     *
+     * @param workspaceRoot
+     * @param provider
+     */
+    constructor(workspaceRoot: string, provider: ScriptExplorerProvider) {
         this._dataSource = new DataSourceFactory(workspaceRoot);
+        this._scriptRepository = this._dataSource
+            ?.getDataSource()
+            ?.manager.getTreeRepository(Script);
+        this._treeProvider = provider;
     }
 
-    getRepository() {
-        const dataSource = this._dataSource?.getDataSource();
-        const scriptRepository = dataSource?.manager.getTreeRepository(Script);
-
-        return scriptRepository;
-    }
-
+    /**
+     * Insert a new script into the database.
+     *
+     * @param scripts
+     * @param isClear
+     * @returns
+     */
     async create(scripts: Script[], isClear = true) {
-        const scriptRepository = this.getRepository();
-
-        if (!scriptRepository) {
-            return;
-        }
-
         if (isClear) {
-            await scriptRepository.clear();
+            await this._scriptRepository?.clear();
         }
-        return await scriptRepository.save(scripts);
+        return await this._scriptRepository?.save(scripts);
     }
 
+    /**
+     * Select all scripts from the database.
+     *
+     * @returns
+     */
     async findAll(): Promise<Script[] | undefined> {
-        const repository = this.getRepository();
-        if (!repository) {
-            return;
-        }
-
-        const items = await repository?.findTrees();
+        const items = await this._scriptRepository?.findTrees();
 
         return items;
     }
 
+    /**
+     * Delete a script from the database.
+     *
+     * @param id
+     * @returns
+     */
     async delete(id: number) {
-        const repository = this.getRepository();
-
-        if (!repository) {
-            return;
-        }
-
-        const item = await repository.findOne({
+        const item = await this._scriptRepository.findOne({
             where: {
                 id,
             },
@@ -56,17 +68,18 @@ export class ScriptService {
             return;
         }
 
-        await repository.remove(item);
+        await this._scriptRepository.remove(item);
     }
 
+    /**
+     * Update a script from the database.
+     *
+     * @param id
+     * @param updateScriptDto
+     * @returns
+     */
     async update(id: number, updateScriptDto: Partial<Script>) {
-        const repository = this.getRepository();
-
-        if (!repository) {
-            return;
-        }
-
-        const item = await repository.findOne({
+        const item = await this._scriptRepository.findOne({
             where: {
                 id,
             },
@@ -76,6 +89,6 @@ export class ScriptService {
             return;
         }
 
-        await repository.update(id, updateScriptDto);
+        await this._scriptRepository.update(id, updateScriptDto);
     }
 }

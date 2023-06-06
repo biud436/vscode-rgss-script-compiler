@@ -39,7 +39,7 @@ export class ScriptExplorerProvider
         this.initWithScriptFolderWatcher();
         this._tree = new ScriptTree<ScriptSection>([]);
 
-        this._scriptService = new ScriptService(workspaceRoot);
+        this._scriptService = new ScriptService(workspaceRoot, this);
     }
 
     private _onDidChangeTreeData: vscode.EventEmitter<
