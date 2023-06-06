@@ -10,7 +10,7 @@ export class ScriptService {
 
     getRepository() {
         const dataSource = this._dataSource?.getDataSource();
-        const scriptRepository = dataSource?.getTreeRepository(Script);
+        const scriptRepository = dataSource?.manager.getTreeRepository(Script);
 
         return scriptRepository;
     }
