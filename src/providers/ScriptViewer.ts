@@ -239,17 +239,20 @@ export class ScriptExplorerProvider
         );
 
         this._watcher?.executeFileAction("onDidDelete", () => {
+            // 파일이 존재하면 삭제합니다.
             if (fs.existsSync(targetFilePath)) {
                 fs.unlinkSync(targetFilePath);
+
+                if (item.id) {
+                    this._scriptService?.deleteByUUID(item.id).then(() => {
+                        this.refresh();
+
+                        // Create a new script info file called 'info.txt'
+                        this.createScriptInfoFile();
+                    });
+                }
             }
         });
-
-        if (item.id) {
-            this._scriptService?.deleteByUUID(item.id).then(() => {
-                this.refresh();
-                this.refreshListFile();
-            });
-        }
     }
 
     /**
