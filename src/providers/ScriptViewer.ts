@@ -248,7 +248,11 @@ export class ScriptExplorerProvider
                         this.refresh();
 
                         // Create a new script info file called 'info.txt'
-                        this.createScriptInfoFile();
+                        this.createScriptInfoFile().then(() => {
+                            vscode.commands.executeCommand(
+                                "rgssScriptCompiler.save"
+                            );
+                        });
                     });
                 }
             }
@@ -279,11 +283,17 @@ export class ScriptExplorerProvider
         });
 
         if (result) {
+            const prefix = Path.getFileName(item.filePath).split("-");
+            const currentIndex = prefix[0];
+            const subPrefix = `${currentIndex}.${Math.floor(
+                Math.random() * 1000
+            )}-`;
+
             // Create a new empty script file
             const targetFilePath = path.posix.join(
                 this.workspaceRoot,
                 this._scriptDirectory,
-                result + Path.defaultExt
+                subPrefix + result + Path.defaultExt // 098.1-Test.rb
             );
 
             this._watcher?.executeFileAction("onDidCreate", () => {});
@@ -318,9 +328,6 @@ export class ScriptExplorerProvider
 
             this._tree?.splice(targetIndex!, 0, copiedItem);
 
-            this.refresh();
-            this.refreshListFile();
-
             // Create a new script.
             const script = new Script(result, targetFilePath);
             script.uuid = copiedItem.id;
@@ -332,6 +339,10 @@ export class ScriptExplorerProvider
             }
 
             await this._scriptService?.add(script);
+
+            this.refresh();
+            this.refreshListFile();
+            // await this.createScriptInfoFile();
         }
     }
 
