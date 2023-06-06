@@ -326,7 +326,7 @@ export class ScriptExplorerProvider
                 arguments: [vscode.Uri.file(targetFilePath).path],
             };
 
-            this._tree?.splice(targetIndex!, 0, copiedItem);
+            this._tree?.splice(targetIndex! + 1, 0, copiedItem);
 
             // Create a new script.
             const script = new Script(result, targetFilePath);
