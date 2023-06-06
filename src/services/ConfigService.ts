@@ -2,11 +2,11 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
-import { Path } from "./utils/Path";
+import { Path } from "../utils/Path";
 import { LoggingService } from "./LoggingService";
-import { Mutex } from "./Mutex";
-import { RGSS } from "./RGSS";
-import { JSerializeObject } from "./JSerializeObject";
+import { Mutex } from "../Mutex";
+import { RGSS } from "../RGSS";
+import { JSerializeObject } from "../JSerializeObject";
 
 /**
  * @class ConfigService

@@ -1,8 +1,8 @@
 /* eslint-disable curly */
 import * as vscode from "vscode";
-import { ConfigService } from "../ConfigService";
+import { ConfigService } from "../services/ConfigService";
 import { Helper } from "../Helper";
-import { LoggingService } from "../LoggingService";
+import { LoggingService } from "../services/LoggingService";
 import { WorkspaceValue } from "../common/WorkspaceValue";
 
 interface IStatusbarProvider {

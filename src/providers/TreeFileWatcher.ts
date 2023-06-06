@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { LoggingService } from "../LoggingService";
+import { LoggingService } from "../services/LoggingService";
 import { RGSSScriptSection } from "./RGSSScriptSection";
 import { LoggingMarker } from "./ScriptViewer";
 

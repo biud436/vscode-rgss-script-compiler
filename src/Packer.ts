@@ -3,8 +3,8 @@ import {
     RubyCompressScriptService,
     RubyScriptService,
 } from "./commands/ExtractScriptFiles";
-import { ConfigService } from "./ConfigService";
-import { LoggingService } from "./LoggingService";
+import { ConfigService } from "./services/ConfigService";
+import { LoggingService } from "./services/LoggingService";
 import { TARGET_SCRIPT_FILE_NAME, Unpacker } from "./Unpacker";
 import * as path from "path";
 import { Path } from "./utils/Path";

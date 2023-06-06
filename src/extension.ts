@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
-import { ConfigService } from "./ConfigService";
-import { LoggingService } from "./LoggingService";
+import { ConfigService } from "./services/ConfigService";
+import { LoggingService } from "./services/LoggingService";
 import * as path from "path";
 import { RGSSScriptSection } from "./providers/RGSSScriptSection";
 import { isInstalledRuby } from "./commands/CheckRuby";

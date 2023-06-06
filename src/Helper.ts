@@ -1,8 +1,8 @@
 import * as vscode from "vscode";
 import { Path } from "./utils/Path";
 import { setGamePath } from "./commands/SetGamePath";
-import { ConfigService } from "./ConfigService";
-import { LoggingService } from "./LoggingService";
+import { ConfigService } from "./services/ConfigService";
+import { LoggingService } from "./services/LoggingService";
 import { Packer } from "./Packer";
 import { Unpacker } from "./Unpacker";
 import { openGameFolder } from "./commands/OpenGameFolder";

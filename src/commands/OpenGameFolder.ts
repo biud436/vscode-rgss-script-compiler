@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
-import { ConfigService } from "../ConfigService";
-import { LoggingService } from "../LoggingService";
+import { ConfigService } from "../services/ConfigService";
+import { LoggingService } from "../services/LoggingService";
 import { exec } from "child_process";
 import * as fs from "fs";
 import * as path from "path";

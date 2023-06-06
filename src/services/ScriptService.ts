@@ -58,4 +58,24 @@ export class ScriptService {
 
         await repository.remove(item);
     }
+
+    async update(id: number, updateScriptDto: Partial<Script>) {
+        const repository = this.getRepository();
+
+        if (!repository) {
+            return;
+        }
+
+        const item = await repository.findOne({
+            where: {
+                id,
+            },
+        });
+
+        if (!item) {
+            return;
+        }
+
+        await repository.update(id, updateScriptDto);
+    }
 }

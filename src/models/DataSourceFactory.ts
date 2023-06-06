@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { DataSource, DataSourceOptions } from "typeorm";
 import { SnakeNamingStrategy } from "typeorm-naming-strategies";
 import { Script } from "./Script";
-import { ConfigService } from "../ConfigService";
+import { ConfigService } from "../services/ConfigService";
 import { Path } from "../utils/Path";
 
 export class DataSourceFactory {

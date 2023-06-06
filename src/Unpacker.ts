@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as path from "path";
-import { ConfigService } from "./ConfigService";
-import { LoggingService } from "./LoggingService";
+import { ConfigService } from "./services/ConfigService";
+import { LoggingService } from "./services/LoggingService";
 import {
     ExtractScriptFileFunction,
     extractScriptFiles,

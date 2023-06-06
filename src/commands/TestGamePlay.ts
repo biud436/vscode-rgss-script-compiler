@@ -1,5 +1,5 @@
-import { ConfigService } from "../ConfigService";
-import { LoggingService } from "../LoggingService";
+import { ConfigService } from "../services/ConfigService";
+import { LoggingService } from "../services/LoggingService";
 import { Path } from "../utils/Path";
 import { promisify } from "util";
 import { exec } from "child_process";

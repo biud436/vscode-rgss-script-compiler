@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { ConfigService } from "../ConfigService";
+import { ConfigService } from "../services/ConfigService";
 import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
-import { LoggingService } from "../LoggingService";
+import { LoggingService } from "../services/LoggingService";
 import { MessageHelper } from "./MessageHelper";
 import { Path } from "../utils/Path";
 import { RGSSScriptSection } from "../providers/RGSSScriptSection";
