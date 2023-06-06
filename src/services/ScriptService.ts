@@ -26,8 +26,15 @@ export class ScriptService {
         this._treeProvider = provider;
     }
 
+    getRepository() {
+        const dataSource = this._dataSource?.getDataSource();
+        const treeRepository = dataSource?.getTreeRepository(Script);
+
+        return treeRepository;
+    }
+
     /**
-     * Insert a new script into the database.
+     * Insert scripts into the database.
      *
      * @param scripts
      * @param isClear
@@ -38,6 +45,34 @@ export class ScriptService {
             await this._scriptRepository?.clear();
         }
         return await this._scriptRepository?.save(scripts);
+    }
+
+    /**
+     * Insert a new script into the database.
+     *
+     * @param scripts
+     * @param isClear
+     * @returns
+     */
+    async add(createScriptDto: Omit<Script, "id">) {
+        const repository = this.getRepository();
+        if (!repository) {
+            return;
+        }
+
+        const item = repository.create(createScriptDto);
+
+        return await repository?.save(item);
+    }
+
+    async findOneByUUID(uuid: string): Promise<Script | undefined> {
+        const item = await this._scriptRepository.findOne({
+            where: {
+                uuid,
+            },
+        });
+
+        return item!;
     }
 
     /**
@@ -68,6 +103,20 @@ export class ScriptService {
             return;
         }
 
+        await this._scriptRepository.manager.remove(item);
+    }
+
+    async deleteByUUID(uuid: string) {
+        const item = await this._scriptRepository.findOne({
+            where: {
+                uuid,
+            },
+        });
+
+        if (!item) {
+            return;
+        }
+
         await this._scriptRepository.remove(item);
     }
 
@@ -90,5 +139,19 @@ export class ScriptService {
         }
 
         await this._scriptRepository.update(id, updateScriptDto);
+    }
+
+    async updateByUUID(uuid: string, updateScriptDto: Partial<Script>) {
+        const item = await this._scriptRepository.findOne({
+            where: {
+                uuid,
+            },
+        });
+
+        if (!item) {
+            return;
+        }
+
+        await this._scriptRepository.update(item.id, updateScriptDto);
     }
 }

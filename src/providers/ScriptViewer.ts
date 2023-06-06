@@ -94,12 +94,6 @@ export class ScriptExplorerProvider
     }
 
     private onDidRenameFiles(oldUrl: vscode.Uri, newUrl: vscode.Uri) {
-        this.loggingService.info(
-            `[file ${LoggingMarker.RENAME}] ${JSON.stringify(
-                oldUrl
-            )} -> ${JSON.stringify(newUrl)}`
-        );
-
         const oldScriptSection = this._tree?.find((item) => {
             return (
                 Path.getFileName(item.label) + ".rb" ===
@@ -139,6 +133,15 @@ export class ScriptExplorerProvider
             title: MessageHelper.INFO.OPEN_SCRIPT,
             arguments: [vscode.Uri.file(targetFilePath).path],
         };
+
+        this._scriptService
+            ?.updateByUUID(oldItem.id!, {
+                title: label,
+                filePath: targetFilePath,
+            })
+            .then(() => {
+                this.loggingService.info(`[INFO] Script updated!`);
+            });
 
         // Replace the target index as new item in the tree
         // this._tree = this._tree?.replaceTree(oldItem.id, newScriptSection);
@@ -241,8 +244,12 @@ export class ScriptExplorerProvider
             }
         });
 
-        this.refresh();
-        this.refreshListFile();
+        if (item.id) {
+            this._scriptService?.deleteByUUID(item.id).then(() => {
+                this.refresh();
+                this.refreshListFile();
+            });
+        }
     }
 
     /**
@@ -310,6 +317,18 @@ export class ScriptExplorerProvider
 
             this.refresh();
             this.refreshListFile();
+
+            // Create a new script.
+            const script = new Script(result, targetFilePath);
+            script.uuid = copiedItem.id;
+
+            const parent = await this._scriptService?.findOneByUUID(item.id!);
+
+            if (parent) {
+                script.parent = parent;
+            }
+
+            await this._scriptService?.add(script);
         }
     }
 
@@ -367,6 +386,8 @@ export class ScriptExplorerProvider
      * Creates the text file called info.txt, which contains the script title.
      * This file is used to display the script title in the script explorer.
      * it is used to packing or unpacking the script in the ruby interpreter.
+     *
+     * @deprecated
      */
     async refreshListFile() {
         const targetFilePath = path.posix.join(
@@ -407,6 +428,42 @@ export class ScriptExplorerProvider
         }
 
         const raw = lines.join("\n");
+
+        await fs.promises.writeFile(targetFilePath, raw, "utf8");
+    }
+
+    /**
+     * Creates a script information file called 'info.txt', which contains the script title.
+     *
+     * @returns
+     */
+    async createScriptInfoFile() {
+        // Read all script files.
+        const scripts = await this._scriptService?.findAll();
+
+        if (!scripts) {
+            return;
+        }
+
+        const lines = [] as string[];
+
+        for (const script of scripts) {
+            const filename = Path.getFileName(
+                decodeURIComponent(script.filePath!)
+            );
+
+            lines.push(filename);
+            console.log(filename);
+        }
+
+        const raw = lines.join("\n");
+
+        // Create the script information file called 'info.txt'
+        const targetFilePath = path.posix.join(
+            this.workspaceRoot,
+            this._scriptDirectory,
+            ConfigService.TARGET_SCRIPT_LIST_FILE_NAME
+        );
 
         await fs.promises.writeFile(targetFilePath, raw, "utf8");
     }
@@ -500,11 +557,7 @@ export class ScriptExplorerProvider
                 scriptFilePath
             );
 
-            const script = new Script();
-            script.filePath = scriptFilePath;
-            script.title = scriptSection.label;
-            scripts.push(script);
-
+            // Create a tree item for the script explorer.
             scriptSection.id = generateUUID();
             scriptSection.command = {
                 command: "vscode.open",
@@ -512,6 +565,13 @@ export class ScriptExplorerProvider
                 arguments: [scriptFilePath],
             };
             scriptSections.push(scriptSection);
+
+            // Create a script for database.
+            const script = new Script();
+            script.filePath = scriptFilePath;
+            script.title = scriptSection.label;
+            script.uuid = scriptSection.id;
+            scripts.push(script);
         }
 
         this._tree = new ScriptTree(scriptSections);
