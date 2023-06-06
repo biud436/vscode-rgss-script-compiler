@@ -13,6 +13,7 @@ import { ScriptTree } from "./ScriptTree";
 import { MessageHelper } from "../common/MessageHelper";
 import { DataSourceFactory } from "../models/DataSourceFactory";
 import { Script } from "../models/Script";
+import { ScriptService } from "../services/ScriptService";
 
 export enum LoggingMarker {
     CREATED = "created",
@@ -28,7 +29,7 @@ export class ScriptExplorerProvider
     private _watcher?: TreeFileWatcher;
     private _scriptFolderRootWatcher?: TreeFileWatcher;
     private _tree?: ScriptTree<ScriptSection>;
-    private _dataSource?: DataSourceFactory;
+    private _scriptService?: ScriptService;
 
     constructor(
         private workspaceRoot: string,
@@ -38,7 +39,7 @@ export class ScriptExplorerProvider
         this.initWithScriptFolderWatcher();
         this._tree = new ScriptTree<ScriptSection>([]);
 
-        this._dataSource = new DataSourceFactory(workspaceRoot);
+        this._scriptService = new ScriptService(workspaceRoot);
     }
 
     private _onDidChangeTreeData: vscode.EventEmitter<
@@ -521,14 +522,6 @@ export class ScriptExplorerProvider
     }
 
     async refreshDatabase(scripts: Script[]) {
-        const dataSource = this._dataSource?.getDataSource();
-        const scriptRepository = dataSource?.getTreeRepository(Script);
-
-        if (!scriptRepository) {
-            return;
-        }
-
-        await scriptRepository.clear();
-        await scriptRepository.save(scripts);
+        await this._scriptService?.create(scripts);
     }
 }
