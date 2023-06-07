@@ -55,14 +55,9 @@ export class ScriptService {
      * @returns
      */
     async add(createScriptDto: Omit<Script, "id">) {
-        const repository = this.getRepository();
-        if (!repository) {
-            return;
-        }
+        const item = this._scriptRepository?.create(createScriptDto);
 
-        const item = repository.create(createScriptDto);
-
-        return await repository?.save(item);
+        return await this._scriptRepository?.save(item);
     }
 
     async findOneByUUID(uuid: string): Promise<Script | undefined> {

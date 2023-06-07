@@ -12,9 +12,17 @@ export class DataSourceFactory {
     private dataSource: DataSource;
 
     constructor(workspacePath: string) {
+        // this.options = {
+        //     type: "sqlite",
+        //     database: Path.join(workspacePath, "db.sqlite"),
+        //     synchronize: true,
+        //     namingStrategy: new SnakeNamingStrategy(),
+        //     entities: [Script],
+        //     logging: true,
+        // };
         this.options = {
-            type: "sqlite",
-            database: Path.join(workspacePath, "db.sqlite"),
+            type: "sqljs",
+            location: Path.join(workspacePath, "db.sqlite"),
             synchronize: true,
             namingStrategy: new SnakeNamingStrategy(),
             entities: [Script],
