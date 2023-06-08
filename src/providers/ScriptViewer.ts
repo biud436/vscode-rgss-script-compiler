@@ -258,11 +258,7 @@ export class ScriptExplorerProvider
                         this.refresh();
 
                         // Create a new script info file called 'info.txt'
-                        this.createScriptInfoFile().then(() => {
-                            vscode.commands.executeCommand(
-                                "rgssScriptCompiler.save"
-                            );
-                        });
+                        this.createScriptInfoFile().then(() => {});
                     });
                 }
             }
