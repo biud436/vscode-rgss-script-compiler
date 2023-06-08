@@ -64,8 +64,10 @@ export function activate(context: vscode.ExtensionContext) {
                 configService,
                 loggingService
             );
+            loggingService.info("configService.loadConfig(loggingService)");
         })
         .catch((e) => {
+            console.warn(e);
             statusbarProvider.hide();
         });
 
@@ -78,6 +80,7 @@ export function activate(context: vscode.ExtensionContext) {
             loggingService
         );
         statusbarProvider.show();
+        loggingService.info("configService.ON_LOAD_GAME_FOLDER.event()");
     });
 
     // Sets Subscriptions.
