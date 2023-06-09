@@ -26,7 +26,7 @@ export function activate(context: vscode.ExtensionContext) {
     const isRubyOK = isInstalledRuby();
     loggingService.info(`Ruby installed: ${isRubyOK}`);
     if (!isRubyOK) {
-        vscode.window.showInformationMessage(
+        vscode.window.showErrorMessage(
             "Can't find Ruby. Please install Ruby and try again."
         );
     }
