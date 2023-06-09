@@ -23,7 +23,13 @@ export function activate(context: vscode.ExtensionContext) {
     configService.setExtensionContext(context);
 
     // ! Step 3: Ruby Check
-    loggingService.info(`Ruby installed: ${isInstalledRuby()}`);
+    const isRubyOK = isInstalledRuby();
+    loggingService.info(`Ruby installed: ${isRubyOK}`);
+    if (!isRubyOK) {
+        vscode.window.showInformationMessage(
+            "Can't find Ruby. Please install Ruby and try again."
+        );
+    }
 
     // ! Step 4: Set the workspace folder.
 
