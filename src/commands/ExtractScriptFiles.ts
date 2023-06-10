@@ -2,7 +2,6 @@ import { ConfigService } from "../services/ConfigService";
 import * as cp from "child_process";
 import * as path from "path";
 import { LoggingService } from "../services/LoggingService";
-import { chdir } from "process";
 
 export type RubyRunnerCommandOptions = {
     /**
