@@ -102,6 +102,16 @@ export class ScriptService {
     }
 
     async deleteByUUID(uuid: string) {
+        if (!uuid) {
+            console.warn("uuid is the undefined or null");
+            return;
+        }
+
+        if (uuid === "") {
+            console.warn("uuid is empty");
+            return;
+        }
+
         const item = await this._scriptRepository.findOne({
             where: {
                 uuid,
@@ -109,6 +119,7 @@ export class ScriptService {
         });
 
         if (!item) {
+            console.warn("can't find the script item");
             return;
         }
 
