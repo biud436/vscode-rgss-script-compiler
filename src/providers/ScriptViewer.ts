@@ -258,7 +258,8 @@ export class ScriptExplorerProvider
                         this.refresh();
 
                         // Create a new script info file called 'info.txt'
-                        this.createScriptInfoFile().then(() => {});
+                        // this.createScriptInfoFile().then(() => {});
+                        this.refreshListFile();
                     });
                 }
             }
