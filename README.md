@@ -6,7 +6,7 @@ This extension allows you to edit scripts directly in Visual Studio Code without
 
 -   **Automatic Saving and Compilation**: Pressing `CTRL + S` saves your files and compiles your code automatically, so you don't have to worry about losing your progress.
 
--   **Test Play**: Pressing `F5` allows you to quickly test your code on Windows without having to run any additional commands.
+-   **Test Play**: Pressing `F5` allows you to quickly test your code without having to run any additional commands.
 
 ## Screenshots
 
