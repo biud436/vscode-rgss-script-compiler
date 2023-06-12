@@ -43,6 +43,9 @@ export async function openGameFolder(
             case "darwin":
                 await execPromise(`open ${targetFolder}`);
                 break;
+            case "linux": // Linux support (xdg-open built-in)
+                await execPromise(`xdg-open ${targetFolder}`);
+                break;
         }
     } catch (e) {
         showWarnMessage(loggingService);

@@ -7,6 +7,7 @@ import * as path from "path";
 import { RubyScriptService } from "./ExtractScriptFiles";
 import * as cp from "child_process";
 import { WorkspaceValue } from "../common/WorkspaceValue";
+import { isInstalledWine } from "./CheckWine";
 
 const execPromise = promisify(exec);
 
@@ -55,7 +56,7 @@ export class GamePlayService extends RubyScriptService {
         const version = this.configService.getRGSSVersion();
         const platform = process.platform;
 
-        if (platform !== "win32") {
+        if (platform === "darwin") {
             this._args = [];
             return;
         }
@@ -99,6 +100,22 @@ export class GamePlayService extends RubyScriptService {
                 ];
                 target.cwd = "";
                 break;
+            case "linux": // Linux supported with Wine
+                this.loggingService.info("Checking for Wine...");
+                if(!isInstalledWine()) {
+                    this.loggingService.info("Cannot execute test play on Linux without Wine!");
+                    this.loggingService.info("Install Wine on your system and try again");
+                    return;
+                }
+                this.loggingService.info("Wine is installed!");
+                target.gamePath = "wine";
+                // EXE for wine plus opt. args, ("." included incase it is not in $PATH)
+                target.args = [ "./Game.exe" ].concat(this._args!);
+                // Resolve POSIX path
+                target.cwd = Path.resolve(
+                    this.configService.getMainGameFolder()
+                );
+            break;
         }
 
         this._process = cp.execFile(
@@ -138,7 +155,7 @@ export function handleTestPlay<T extends GamePlayService = GamePlayService>(
 ): void {
     const platform = process.platform;
 
-    if (!["win32", "darwin"].includes(platform)) {
+    if (!["win32", "darwin", "linux"].includes(platform)) {
         showWarnMessage(loggingService);
         return;
     }

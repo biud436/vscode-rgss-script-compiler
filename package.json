@@ -35,57 +35,69 @@
             {
                 "command": "rgss-script-compiler.setGamePath",
                 "title": "Set Game Path",
+                "category": "RGSS Compiler",
                 "icon": "$(file-directory)"
             },
             {
                 "command": "rgss-script-compiler.unpack",
                 "title": "Unpack",
+                "category": "RGSS Compiler",
                 "icon": "$(package)"
             },
             {
                 "command": "rgss-script-compiler.compile",
                 "title": "Compile",
+                "category": "RGSS Compiler",
                 "icon": "$(file-binary)"
             },
             {
                 "command": "rgss-script-compiler.testPlay",
                 "title": "Test Play",
+                "category": "RGSS Compiler",
                 "icon": "$(debug-console)"
             },
             {
                 "command": "rgss-script-compiler.save",
-                "title": "Save"
+                "title": "Save",
+                "category": "RGSS Compiler"
             },
             {
                 "command": "rgss-script-compiler.importAuto",
-                "title": "Import Auto"
+                "title": "Import Auto",
+                "category": "RGSS Compiler"
             },
             {
                 "command": "rgssScriptViewer.refreshEntry",
+                "category": "RGSS Compiler",
                 "title": "Refresh"
             },
             {
                 "command": "rgss-script-compiler.openGameFolder",
                 "title": "Open Game Folder",
+                "category": "RGSS Compiler",
                 "icon": "$(root-folder-opened)"
             },
             {
                 "command": "rgss-script-compiler.openScript",
-                "title": "Open Script"
+                "title": "Open Script",
+                "category": "RGSS Compiler"
             },
             {
                 "command": "rgss-script-compiler.newFile",
                 "title": "New File",
+                "category": "RGSS Compiler",
                 "icon": "$(file-add)"
             },
             {
                 "command": "rgss-script-compiler.deleteFile",
                 "title": "Delete",
+                "category": "RGSS Compiler",
                 "icon": "$(trash)"
             },
             {
                 "command": "rgss-script-compiler.refreshScriptExplorer",
                 "title": "Refresh",
+                "category": "RGSS Compiler",
                 "icon": "$(refresh)"
             }
         ],
