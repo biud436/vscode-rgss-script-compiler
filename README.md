@@ -24,9 +24,11 @@ This extension is a beta version that has not been tested elaborately. We have s
 # System Requirements
 
 ## Windows
+
 -   Ruby version 2.6.8 or higher must be installed on your system.
 
 ## Linux
+
 -   Ruby version 2.6.8 or higher must be installed on your system.
 -   Wine (preferably the latest version)
 
@@ -74,6 +76,7 @@ If Ruby is installed properly, you should see the version number displayed (e.g.
 If running this extension on Linux you will also need to install `Wine` on your system to support testing the game.
 
 To check if Wine is installed in your system you can run this command:
+
 ```bash
 wine --version
 ```
@@ -83,6 +86,10 @@ wine --version
 -   Extension Maintainer
 
     -   Biud436 (https://github.com/biud436)
+
+-   Contributors
+
+    -   SnowSzn (https://github.com/SnowSzn)
 
 -   `RGSS3/plugins/rxscript.rb`
 
