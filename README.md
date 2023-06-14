@@ -6,7 +6,7 @@ This extension allows you to edit scripts directly in Visual Studio Code without
 
 -   **Automatic Saving and Compilation**: Pressing `CTRL + S` saves your files and compiles your code automatically, so you don't have to worry about losing your progress.
 
--   **Test Play (Windows Only)**: Pressing `F5` allows you to quickly test your code on Windows without having to run any additional commands.
+-   **Test Play**: Pressing `F5` allows you to quickly test your code without having to run any additional commands.
 
 ## Screenshots
 
@@ -23,7 +23,14 @@ This extension is a beta version that has not been tested elaborately. We have s
 
 # System Requirements
 
+## Windows
+
 -   Ruby version 2.6.8 or higher must be installed on your system.
+
+## Linux
+
+-   Ruby version 2.6.8 or higher must be installed on your system.
+-   Wine (preferably the latest version)
 
 # Change Log
 
@@ -33,6 +40,7 @@ This extension is a beta version that has not been tested elaborately. We have s
 
 -   Added a Script Explorer that allows users to add, remove, and refresh script files.
 -   Added a feature to hide the status bar.
+-   Added Linux support.
 
 # Marketplace Link
 
@@ -53,9 +61,7 @@ This extension is a beta version that has not been tested elaborately. We have s
 
 # Usage
 
-This extension is designed for use on macOS and Windows 11. Before using this extension, you must first install `ruby 2.6.8` or higher on your local machine. Here's how to check if Ruby is already installed:
-
-To use this extension, you must have Ruby installed on your computer (Ruby comes pre-installed on Mac, so you can ignore this step if you're on a Mac). I tried using a Node module like `Marshal` or a WASM-based Ruby because I didn't want to require a Ruby installation, but they were not stable.
+This extension is designed for use on macOS, Windows 11 and Linux. Before using this extension, you must first install `ruby 2.6.8` or higher on your local machine.
 
 To check if Ruby is installed on your computer, run this command in your terminal or command prompt:
 
@@ -63,13 +69,27 @@ To check if Ruby is installed on your computer, run this command in your termina
 ruby -v
 ```
 
+Ruby comes pre-installed on Mac, so you can ignore this step if you're on a Mac. I tried using a Node module like `Marshal` or a WASM-based Ruby because I didn't want to require a Ruby installation, but they were not stable.
+
 If Ruby is installed properly, you should see the version number displayed (e.g., `ruby 3.2.1`).
+
+If running this extension on Linux you will also need to install `Wine` on your system to support testing the game.
+
+To check if Wine is installed in your system you can run this command:
+
+```bash
+wine --version
+```
 
 # Maintainer and Contributors
 
 -   Extension Maintainer
 
     -   Biud436 (https://github.com/biud436)
+
+-   Contributors
+
+    -   SnowSzn (https://github.com/SnowSzn)
 
 -   `RGSS3/plugins/rxscript.rb`
 
