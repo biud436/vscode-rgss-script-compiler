@@ -17,6 +17,8 @@ export interface GamePlayServiceOptions {
     args: string[];
 }
 
+export const AVAILABLE_PLATFORMS = ["win32", "darwin", "linux"];
+
 /**
  * Show up the error message on the bottom of the screen.
  *
@@ -102,20 +104,24 @@ export class GamePlayService extends RubyScriptService {
                 break;
             case "linux": // Linux supported with Wine
                 this.loggingService.info("Checking for Wine...");
-                if(!isInstalledWine()) {
-                    this.loggingService.info("Cannot execute test play on Linux without Wine!");
-                    this.loggingService.info("Install Wine on your system and try again");
+                if (!isInstalledWine()) {
+                    this.loggingService.info(
+                        "Cannot execute test play on Linux without Wine!"
+                    );
+                    this.loggingService.info(
+                        "Install Wine on your system and try again"
+                    );
                     return;
                 }
                 this.loggingService.info("Wine is installed!");
                 target.gamePath = "wine";
                 // EXE for wine plus opt. args, ("." included incase it is not in $PATH)
-                target.args = [ "./Game.exe" ].concat(this._args!);
+                target.args = ["./Game.exe"].concat(this._args!);
                 // Resolve POSIX path
                 target.cwd = Path.resolve(
                     this.configService.getMainGameFolder()
                 );
-            break;
+                break;
         }
 
         this._process = cp.execFile(
@@ -155,7 +161,7 @@ export function handleTestPlay<T extends GamePlayService = GamePlayService>(
 ): void {
     const platform = process.platform;
 
-    if (!["win32", "darwin", "linux"].includes(platform)) {
+    if (!AVAILABLE_PLATFORMS.includes(platform)) {
         showWarnMessage(loggingService);
         return;
     }
