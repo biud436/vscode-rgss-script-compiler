@@ -22,6 +22,11 @@ export enum LoggingMarker {
     RENAME = "rename",
 }
 
+enum DialogOption {
+    YES = "Yes",
+    NO = "No",
+}
+
 export class ScriptExplorerProvider
     implements vscode.TreeDataProvider<ScriptSection>, vscode.Disposable
 {
@@ -232,11 +237,11 @@ export class ScriptExplorerProvider
     async deleteTreeItem(item: ScriptSection): Promise<void> {
         const choice = await vscode.window.showInformationMessage(
             "Do you want to delete this script?",
-            "Yes",
-            "No"
+            DialogOption.YES,
+            DialogOption.NO
         );
 
-        if (choice === "No") {
+        if (choice === DialogOption.NO) {
             return;
         }
 
@@ -249,7 +254,7 @@ export class ScriptExplorerProvider
         );
 
         this._watcher?.executeFileAction("onDidDelete", () => {
-            // 파일이 존재하면 삭제합니다.
+            // if the file exists, it will delete it.
             if (fs.existsSync(targetFilePath)) {
                 fs.unlinkSync(targetFilePath);
 
