@@ -8,6 +8,7 @@ import { RubyScriptService } from "./ExtractScriptFiles";
 import * as cp from "child_process";
 import { WorkspaceValue } from "../common/WorkspaceValue";
 import { isInstalledWine } from "./CheckWine";
+import { Validator } from "../utils/Validator";
 
 const execPromise = promisify(exec);
 
@@ -16,8 +17,6 @@ export interface GamePlayServiceOptions {
     cwd: string;
     args: string[];
 }
-
-export const AVAILABLE_PLATFORMS = ["win32", "darwin", "linux"];
 
 /**
  * Show up the error message on the bottom of the screen.
@@ -161,7 +160,7 @@ export function handleTestPlay<T extends GamePlayService = GamePlayService>(
 ): void {
     const platform = process.platform;
 
-    if (!AVAILABLE_PLATFORMS.includes(platform)) {
+    if (!Validator.isPlatformOK(platform)) {
         showWarnMessage(loggingService);
         return;
     }

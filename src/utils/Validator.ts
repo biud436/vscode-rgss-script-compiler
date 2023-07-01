@@ -5,6 +5,7 @@ export namespace Validator {
         "Please remove the special characters.";
     export const VALID = null;
     export const INVALID_SCRIPT_NAME = "Cannot use this script name.";
+    export const AVAILABLE_PLATFORMS = ["win32", "darwin", "linux"];
 
     export function isStringOrNotEmpty(value: any): boolean {
         return typeof value === "string" && value.length > 0;
@@ -74,5 +75,9 @@ export namespace Validator {
         }
 
         return isValid;
+    }
+
+    export function isPlatformOK(platform: string) {
+        return AVAILABLE_PLATFORMS.includes(platform);
     }
 }
