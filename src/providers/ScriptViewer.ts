@@ -26,6 +26,7 @@ enum DialogOption {
     YES = "Yes",
     NO = "No",
 }
+const IGNORE_BLACK_LIST_REGEXP = /^[\d]{3}\-(?:Untitled)\_[\d]+/gi;
 
 export class ScriptExplorerProvider
     implements vscode.TreeDataProvider<ScriptSection>, vscode.Disposable
@@ -374,7 +375,6 @@ export class ScriptExplorerProvider
         }
 
         const raw = fs.readFileSync(targetFilePath, "utf8");
-        const IGNORE_BLACK_LIST_REGEXP = /^[\d]{3}\-(?:Untitled)\_[\d]+/gi;
         const lines = raw.split("\n");
 
         let lineIndex = -1;
@@ -520,7 +520,6 @@ export class ScriptExplorerProvider
 
         const raw = fs.readFileSync(targetFilePath, "utf8");
 
-        const IGNORE_BLACK_LIST_REGEXP = /^[\d]{3}\-(?:Untitled)\_[\d]+/gi;
         const lines = raw.split("\n");
         const scriptSections: ScriptSection[] = [];
 
