@@ -26,7 +26,7 @@ export class ScriptService {
         this._treeProvider = provider;
     }
 
-    getRepository() {
+    private getRepository() {
         const dataSource = this._dataSource?.getDataSource();
         const treeRepository = dataSource?.getTreeRepository(Script);
 
@@ -40,7 +40,7 @@ export class ScriptService {
      * @param isClear
      * @returns
      */
-    async create(scripts: Script[], isClear = true) {
+    public async create(scripts: Script[], isClear = true) {
         if (isClear) {
             await this._scriptRepository?.clear();
         }
@@ -54,13 +54,13 @@ export class ScriptService {
      * @param isClear
      * @returns
      */
-    async add(createScriptDto: Omit<Script, "id">) {
+    public async add(createScriptDto: Omit<Script, "id">) {
         const item = this._scriptRepository?.create(createScriptDto);
 
         return await this._scriptRepository?.save(item);
     }
 
-    async findOneByUUID(uuid: string): Promise<Script | undefined> {
+    public async findOneByUUID(uuid: string): Promise<Script | undefined> {
         const item = await this._scriptRepository.findOne({
             where: {
                 uuid,
@@ -75,7 +75,7 @@ export class ScriptService {
      *
      * @returns
      */
-    async findAll(): Promise<Script[] | undefined> {
+    public async findAll(): Promise<Script[] | undefined> {
         const items = await this._scriptRepository?.findTrees();
 
         return items;
@@ -87,7 +87,7 @@ export class ScriptService {
      * @param id
      * @returns
      */
-    async delete(id: number) {
+    public async delete(id: number) {
         const item = await this._scriptRepository.findOne({
             where: {
                 id,
@@ -101,7 +101,7 @@ export class ScriptService {
         await this._scriptRepository.manager.remove(item);
     }
 
-    async deleteByUUID(uuid: string) {
+    public async deleteByUUID(uuid: string) {
         if (!uuid) {
             console.warn("uuid is the undefined or null");
             return;
@@ -133,7 +133,7 @@ export class ScriptService {
      * @param updateScriptDto
      * @returns
      */
-    async update(id: number, updateScriptDto: Partial<Script>) {
+    public async update(id: number, updateScriptDto: Partial<Script>) {
         const item = await this._scriptRepository.findOne({
             where: {
                 id,
@@ -147,7 +147,7 @@ export class ScriptService {
         await this._scriptRepository.update(id, updateScriptDto);
     }
 
-    async updateByUUID(uuid: string, updateScriptDto: Partial<Script>) {
+    public async updateByUUID(uuid: string, updateScriptDto: Partial<Script>) {
         const item = await this._scriptRepository.findOne({
             where: {
                 uuid,
