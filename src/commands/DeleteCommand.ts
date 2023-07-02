@@ -16,11 +16,23 @@ enum DialogOption {
     NO = "No",
 }
 
+/**
+ * DeleteCommand allows you to delete a script from the tree safely.
+ * it is also responsible for updating the list file after deleting the script.
+ *
+ * @class DeleteCommand
+ */
 export class DeleteCommand extends MenuCommand {
     constructor(protected dependencyProvider: DependencyProvider) {
         super(dependencyProvider);
     }
 
+    /**
+     * This method allows you to delete a script from the tree safely.
+     *
+     * @param item
+     * @returns
+     */
     public async execute(item: ScriptSection): Promise<void> {
         const choice = await vscode.window.showInformationMessage(
             "Do you want to delete this script?",
@@ -34,11 +46,7 @@ export class DeleteCommand extends MenuCommand {
 
         this.excludeCurrentSelectFileFromTree(item);
 
-        const targetFilePath = path.posix.join(
-            this.workspaceRoot,
-            this.scriptDirectory,
-            Path.getFileName(item.filePath)
-        );
+        const targetFilePath = this.getItemFilePath(item);
 
         try {
             await this.createListFile(targetFilePath, item);
@@ -51,6 +59,12 @@ export class DeleteCommand extends MenuCommand {
         }
     }
 
+    /**
+     * Exclude the current selected file from the tree.
+     *
+     * @param item
+     * @returns
+     */
     private excludeCurrentSelectFileFromTree(item: ScriptSection) {
         if (!this.tree) {
             return;
