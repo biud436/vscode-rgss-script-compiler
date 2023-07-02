@@ -8,6 +8,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { Path } from "../utils/Path";
 import { ScriptExplorerProvider } from "../providers/ScriptViewer";
+import { DependencyProvider } from "../providers/DependencyProvider";
 
 enum DialogOption {
     YES = "Yes",
@@ -15,14 +16,35 @@ enum DialogOption {
 }
 
 export class DeleteCommand {
-    constructor(
-        private tree: ScriptTree<ScriptSection>,
-        private workspaceRoot: string,
-        private scriptDirectory: string,
-        private watcher: TreeFileWatcher,
-        private scriptService: ScriptService,
-        private view: ScriptExplorerProvider
-    ) {}
+    constructor(private dependencyProvider: DependencyProvider) {}
+
+    private get view() {
+        return this.dependencyProvider.view;
+    }
+
+    private get tree() {
+        return this.dependencyProvider.tree!;
+    }
+
+    private set tree(tree: ScriptTree<ScriptSection>) {
+        this.dependencyProvider.tree = tree;
+    }
+
+    private get watcher() {
+        return this.dependencyProvider.watcher;
+    }
+
+    private get scriptService() {
+        return this.dependencyProvider.scriptService;
+    }
+
+    private get workspaceRoot() {
+        return this.dependencyProvider.workspaceRoot;
+    }
+
+    private get scriptDirectory() {
+        return this.dependencyProvider.scriptDirectory;
+    }
 
     public async execute(item: ScriptSection): Promise<void> {
         const choice = await vscode.window.showInformationMessage(

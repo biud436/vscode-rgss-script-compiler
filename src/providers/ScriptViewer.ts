@@ -14,6 +14,8 @@ import { MessageHelper } from "../common/MessageHelper";
 import { DataSourceFactory } from "../models/DataSourceFactory";
 import { Script } from "../models/Script";
 import { ScriptService } from "../services/ScriptService";
+import { DeleteCommand } from "../commands/DeleteCommand";
+import { DependencyProvider } from "./DependencyProvider";
 
 export enum LoggingMarker {
     CREATED = "created",
@@ -236,40 +238,29 @@ export class ScriptExplorerProvider
      * @param item
      */
     async deleteTreeItem(item: ScriptSection): Promise<void> {
-        const choice = await vscode.window.showInformationMessage(
-            "Do you want to delete this script?",
-            DialogOption.YES,
-            DialogOption.NO
-        );
-
-        if (choice === DialogOption.NO) {
+        if (!this._tree || !this._watcher || !this._scriptService) {
             return;
         }
-
-        this._tree = this._tree?.filter((treeItem) => treeItem.id !== item.id);
-
-        const targetFilePath = path.posix.join(
+        const dependencyProvider = new DependencyProvider(
+            this._tree,
             this.workspaceRoot,
             this._scriptDirectory,
-            Path.getFileName(item.filePath)
+            this._watcher,
+            this._scriptService,
+            this
         );
 
-        this._watcher?.executeFileAction("onDidDelete", () => {
-            // if the file exists, it will delete it.
-            if (fs.existsSync(targetFilePath)) {
-                fs.unlinkSync(targetFilePath);
+        const deleteCommand = new DeleteCommand(dependencyProvider);
 
-                if (item.id) {
-                    this._scriptService?.deleteByUUID(item.id).then(() => {
-                        this.refresh();
+        await deleteCommand.execute(item);
+    }
 
-                        // Create a new script info file called 'info.txt'
-                        // this.createScriptInfoFile().then(() => {});
-                        this.refreshListFile();
-                    });
-                }
-            }
-        });
+    setTree(tree: ScriptTree<ScriptSection>) {
+        this._tree = tree;
+    }
+
+    getTree(): ScriptTree<ScriptSection> | undefined {
+        return this._tree;
     }
 
     /**

@@ -119,10 +119,12 @@ export class ScriptService {
         });
 
         if (!item) {
-            throw new Error("can't find the script item");
+            // throw new Error("can't find the script item");
         }
 
-        await this._scriptRepository.remove(item);
+        if (item) {
+            await this._scriptRepository.remove(item);
+        }
     }
 
     /**
