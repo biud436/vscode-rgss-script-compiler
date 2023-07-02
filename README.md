@@ -37,10 +37,11 @@ This extension is a beta version that has not been tested elaborately. We have s
 
 ### New Features
 
--   Added a Script Explorer that allows users to add, remove, and refresh script files.
+-   Added a Script Explorer that allows users to add, remove, and refresh script files (#14)
 -   Added a feature to hide the status bar.
--   Added MKXP-Z support on Mac.
--   Added Linux support.
+-   Added MKXP-Z support on Mac
+-   Debug mode support (#16)
+-   Added Linux support (#21)
 
 # Marketplace Link
 
