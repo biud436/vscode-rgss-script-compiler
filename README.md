@@ -26,6 +26,11 @@ This extension is a beta version that has not been tested elaborately. We have s
 
 -   Ruby version 2.6.8 or higher must be installed on your system.
 
+## Mac
+
+-   Ruby 2.6.10 or higher must be installed on your system.
+-   [MKXP-Z](https://github.com/mkxp-z/mkxp-z)
+
 ## Linux
 
 -   Ruby version 2.6.8 or higher must be installed on your system.
