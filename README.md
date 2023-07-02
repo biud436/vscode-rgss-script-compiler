@@ -95,7 +95,7 @@ wine --version
 
 -   Contributors
 
-    -   SnowSzn (https://github.com/SnowSzn)
+    -   SnowSzn (PR [#21](https://github.com/biud436/vscode-rgss-script-compiler/pull/21))
 
 -   `RGSS3/plugins/rxscript.rb`
 
