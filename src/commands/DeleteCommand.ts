@@ -44,7 +44,7 @@ export class DeleteCommand {
         );
 
         try {
-            await this.createNewSerializedScriptFile(targetFilePath, item);
+            await this.recreateListFile(targetFilePath, item);
         } catch (error: any) {
             vscode.window.showErrorMessage(error.message);
         }
@@ -58,10 +58,7 @@ export class DeleteCommand {
         this.tree = this.tree?.filter((treeItem) => treeItem.id !== item.id);
     }
 
-    private createNewSerializedScriptFile(
-        targetFilePath: string,
-        item: ScriptSection
-    ) {
+    private recreateListFile(targetFilePath: string, item: ScriptSection) {
         return new Promise((resolve, reject) => {
             this.watcher?.executeFileAction("onDidDelete", () => {
                 if (fs.existsSync(targetFilePath)) {
