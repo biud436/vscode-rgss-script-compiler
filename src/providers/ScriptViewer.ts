@@ -22,7 +22,7 @@ export enum LoggingMarker {
     RENAME = "rename",
 }
 
-enum DialogOption {
+export enum DialogOption {
     YES = "Yes",
     NO = "No",
 }
