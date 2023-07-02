@@ -16,7 +16,11 @@ import { Script } from "../models/Script";
 import { ScriptService } from "../services/ScriptService";
 import { DeleteCommand } from "../commands/DeleteCommand";
 import { DependencyProvider } from "./DependencyProvider";
-import { checkMigrationNeeded } from "../commands/CheckMigrationNeeded";
+import {
+    checkMigrationNeeded,
+    migrationScriptListFile,
+    showMigrationNeededErrorMessage,
+} from "../commands/CheckMigrationNeeded";
 
 export enum LoggingMarker {
     CREATED = "created",
@@ -524,12 +528,19 @@ export class ScriptExplorerProvider
 
         const scripts: Script[] = [];
 
-        if (checkMigrationNeeded(lines)) {
-            vscode.window.showErrorMessage(
-                "You need to migrate to use the new version. Please delete the folder named 'Scripts' and import the script again."
-            );
-            return [];
-        }
+        // if (checkMigrationNeeded(lines)) {
+        //     showMigrationNeededErrorMessage();
+        //     migrationScriptListFile(
+        //         path.posix.join(this.workspaceRoot, this._scriptDirectory)
+        //     )
+        //         .then(() => {
+        //             this.refreshExplorer();
+        //         })
+        //         .catch((e) => {
+        //             vscode.window.showErrorMessage(e.message);
+        //         });
+        //     return [];
+        // }
 
         for (const line of lines) {
             let isBlankName = false;
