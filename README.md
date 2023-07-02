@@ -39,9 +39,9 @@ This extension is a beta version that has not been tested elaborately. We have s
 
 -   Added a Script Explorer that allows users to add, remove, and refresh script files ([#14](https://github.com/biud436/vscode-rgss-script-compiler/issues/14))
 -   Added a feature to hide the status bar.
--   Added MKXP-Z support on Mac
--   Debug mode support [#16](https://github.com/biud436/vscode-rgss-script-compiler/issues/16)
--   Added Linux support (pull requests [#21](https://github.com/biud436/vscode-rgss-script-compiler/pull/21))
+-   Added MKXP-Z support on Mac.
+-   Debug mode support ([#16](https://github.com/biud436/vscode-rgss-script-compiler/issues/16))
+-   Added Linux support (PR [#21](https://github.com/biud436/vscode-rgss-script-compiler/pull/21))
 
 # Marketplace Link
 
