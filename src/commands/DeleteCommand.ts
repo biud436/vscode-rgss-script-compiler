@@ -60,7 +60,7 @@ export class DeleteCommand {
 
     private createListFile(targetFilePath: string, item: ScriptSection) {
         return new Promise((resolve, reject) => {
-            this.watcher?.executeFileAction("onDidDelete", () => {
+            this.watcher.executeFileAction("onDidDelete", () => {
                 if (fs.existsSync(targetFilePath)) {
                     fs.unlinkSync(targetFilePath);
 
