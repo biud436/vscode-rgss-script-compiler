@@ -55,7 +55,7 @@ export class DeleteCommand {
             return;
         }
 
-        this.tree = this.tree?.filter((treeItem) => treeItem.id !== item.id);
+        this.tree = this.tree.filter((treeItem) => treeItem.id !== item.id);
     }
 
     private createListFile(targetFilePath: string, item: ScriptSection) {
@@ -66,7 +66,7 @@ export class DeleteCommand {
 
                     if (item.id) {
                         this.scriptService
-                            ?.deleteByUUID(item.id)
+                            .deleteByUUID(item.id)
                             .then(() => {
                                 this.view.refresh();
                                 this.view.refreshListFile();
