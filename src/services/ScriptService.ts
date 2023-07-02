@@ -119,8 +119,7 @@ export class ScriptService {
         });
 
         if (!item) {
-            console.warn("can't find the script item");
-            return;
+            throw new Error("can't find the script item");
         }
 
         await this._scriptRepository.remove(item);

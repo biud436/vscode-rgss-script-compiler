@@ -43,22 +43,11 @@ export class DeleteCommand {
             Path.getFileName(item.filePath)
         );
 
-        this.watcher?.executeFileAction("onDidDelete", () => {
-            // if the file exists, it will delete it.
-            if (fs.existsSync(targetFilePath)) {
-                fs.unlinkSync(targetFilePath);
-
-                if (item.id) {
-                    this.scriptService?.deleteByUUID(item.id).then(() => {
-                        this.view.refresh();
-
-                        // Create a new script info file called 'info.txt'
-                        // this.createScriptInfoFile().then(() => {});
-                        this.view.refreshListFile();
-                    });
-                }
-            }
-        });
+        try {
+            await this.createNewSerializedScriptFile(targetFilePath, item);
+        } catch (error: any) {
+            vscode.window.showErrorMessage(error.message);
+        }
     }
 
     private excludeCurrentSelectFileFromTree(item: ScriptSection) {
@@ -67,5 +56,34 @@ export class DeleteCommand {
         }
 
         this.tree = this.tree?.filter((treeItem) => treeItem.id !== item.id);
+    }
+
+    private createNewSerializedScriptFile(
+        targetFilePath: string,
+        item: ScriptSection
+    ) {
+        return new Promise((resolve, reject) => {
+            this.watcher?.executeFileAction("onDidDelete", () => {
+                if (fs.existsSync(targetFilePath)) {
+                    fs.unlinkSync(targetFilePath);
+
+                    if (item.id) {
+                        this.scriptService
+                            ?.deleteByUUID(item.id)
+                            .then(() => {
+                                this.view.refresh();
+                                this.view.refreshListFile();
+
+                                resolve(item.id);
+                            })
+                            .catch((error) => {
+                                reject(error);
+                            });
+                    } else {
+                        resolve("Cannot find the id in the script section");
+                    }
+                }
+            });
+        });
     }
 }
