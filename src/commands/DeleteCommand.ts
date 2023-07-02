@@ -67,6 +67,10 @@ export class DeleteCommand {
 
         try {
             await this.createListFile(targetFilePath, item);
+            await this.view.refreshListFile();
+            await vscode.commands.executeCommand(
+                "rgss-script-compiler.compile"
+            );
         } catch (error: any) {
             vscode.window.showErrorMessage(error.message);
         }
@@ -84,23 +88,23 @@ export class DeleteCommand {
         return new Promise((resolve, reject) => {
             this.watcher.executeFileAction("onDidDelete", () => {
                 if (fs.existsSync(targetFilePath)) {
-                    fs.unlinkSync(targetFilePath);
+                    fs.unlink(targetFilePath, (err) => {
+                        if (item.id) {
+                            this.scriptService
+                                .deleteByUUID(item.id)
+                                .then(() => {
+                                    this.view.refresh();
+                                    resolve(item.id);
+                                })
+                                .catch((error) => {
+                                    reject(error);
+                                });
+                        }
 
-                    if (item.id) {
-                        this.scriptService
-                            .deleteByUUID(item.id)
-                            .then(() => {
-                                this.view.refresh();
-                                this.view.refreshListFile();
-
-                                resolve(item.id);
-                            })
-                            .catch((error) => {
-                                reject(error);
-                            });
-                    } else {
-                        resolve("Cannot find the id in the script section");
-                    }
+                        if (err) {
+                            reject(err);
+                        }
+                    });
                 }
             });
         });
