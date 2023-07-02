@@ -14,11 +14,11 @@ export class DependencyProvider {
         public view: ScriptExplorerProvider
     ) {}
 
-    public set tree(tree: ScriptTree<ScriptSection>) {
-        this.view.setTree(tree);
-    }
-
     public get tree(): ScriptTree<ScriptSection> | undefined {
         return this.view.getTree();
+    }
+
+    public set tree(tree: ScriptTree<ScriptSection> | undefined) {
+        this.view.setTree(tree!);
     }
 }
