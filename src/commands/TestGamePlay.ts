@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { ConfigService } from "../services/ConfigService";
 import { LoggingService } from "../services/LoggingService";
 import { Path } from "../utils/Path";
@@ -9,6 +10,7 @@ import * as cp from "child_process";
 import { WorkspaceValue } from "../common/WorkspaceValue";
 import { isInstalledWine } from "./CheckWine";
 import { Validator } from "../utils/Validator";
+import { RGSS } from "../RGSS";
 
 const execPromise = promisify(exec);
 
@@ -17,6 +19,8 @@ export interface GamePlayServiceOptions {
     cwd: string;
     args: string[];
 }
+
+type GamePlayPrebuiltArgs = { [key in RGSS.MapOfPath]: string[] };
 
 /**
  * Show up the error message on the bottom of the screen.
@@ -50,19 +54,38 @@ export class GamePlayService extends RubyScriptService {
         );
     }
 
+    private prebuiltArgs: GamePlayPrebuiltArgs = {
+        RGSS1: ["debug"],
+        RGSS2: [],
+        RGSS3: ["console", "test"],
+    };
+
     /**
      * This function is responsible for making the command line options.
      */
     makeCommand() {
         const version = this.configService.getRGSSVersion();
         const platform = process.platform;
+        const { RGSS1, RGSS2, RGSS3 } = this.prebuiltArgs;
 
         if (platform === "darwin") {
             this._args = [];
             return;
         }
 
-        this._args = version === "RGSS3" ? ["console", "test"] : [];
+        switch (version) {
+            case "RGSS3":
+                this._args = RGSS3;
+                break;
+            case "RGSS2":
+                this._args = RGSS2;
+                break;
+            case "RGSS1":
+                this._args = RGSS1;
+                break;
+            default:
+                this._args = [];
+        }
     }
 
     /**
