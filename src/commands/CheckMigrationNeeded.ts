@@ -14,9 +14,11 @@ export function checkMigrationNeeded(lines: string[]): boolean {
     if (lines.length === 0) {
         return false;
     }
-    const isLineStartsWithNumber = lines.every((line) => {
-        return line.match(/^[\d]{3}[\.]*[\d]*\-/);
-    });
+    const isLineStartsWithNumber = lines
+        .filter((line) => line !== "")
+        .every((line) => {
+            return line.match(/^[\d]{3}[\.]*[\d]*\-/);
+        });
 
     return !isLineStartsWithNumber;
 }

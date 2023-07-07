@@ -528,19 +528,19 @@ export class ScriptExplorerProvider
 
         const scripts: Script[] = [];
 
-        // if (checkMigrationNeeded(lines)) {
-        //     showMigrationNeededErrorMessage();
-        //     migrationScriptListFile(
-        //         path.posix.join(this.workspaceRoot, this._scriptDirectory)
-        //     )
-        //         .then(() => {
-        //             this.refreshExplorer();
-        //         })
-        //         .catch((e) => {
-        //             vscode.window.showErrorMessage(e.message);
-        //         });
-        //     return [];
-        // }
+        if (checkMigrationNeeded(lines)) {
+            showMigrationNeededErrorMessage();
+            // migrationScriptListFile(
+            //     path.posix.join(this.workspaceRoot, this._scriptDirectory)
+            // )
+            //     .then(() => {
+            //         this.refreshExplorer();
+            //     })
+            //     .catch((e) => {
+            //         vscode.window.showErrorMessage(e.message);
+            //     });
+            return [];
+        }
 
         for (const line of lines) {
             let isBlankName = false;
