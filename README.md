@@ -38,7 +38,7 @@ This extension is a beta version that has not been tested elaborately. We have s
 
 # Change Log
 
-## 0.1.0
+## 0.8.1
 
 ### New Features
 
