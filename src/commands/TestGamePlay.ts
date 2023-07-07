@@ -34,12 +34,6 @@ function showWarnMessage(loggingService: LoggingService): void {
 }
 
 export class GamePlayService extends RubyScriptService {
-    private prebuiltArgs: GamePlayPrebuiltArgs = {
-        RGSS1: ["debug"],
-        RGSS2: [],
-        RGSS3: ["console", "test"],
-    };
-
     constructor(
         protected readonly configService: ConfigService,
         protected readonly loggingService: LoggingService
@@ -66,7 +60,11 @@ export class GamePlayService extends RubyScriptService {
     makeCommand() {
         const version = this.configService.getRGSSVersion();
         const platform = process.platform;
-        const { RGSS1, RGSS2, RGSS3 } = this.prebuiltArgs;
+        const { RGSS1, RGSS2, RGSS3 }: GamePlayPrebuiltArgs = {
+            RGSS1: ["debug"],
+            RGSS2: [],
+            RGSS3: ["console", "test"],
+        };
 
         if (platform === "darwin") {
             this._args = [];
