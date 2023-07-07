@@ -34,6 +34,12 @@ function showWarnMessage(loggingService: LoggingService): void {
 }
 
 export class GamePlayService extends RubyScriptService {
+    private prebuiltArgs: GamePlayPrebuiltArgs = {
+        RGSS1: ["debug"],
+        RGSS2: [],
+        RGSS3: ["console", "test"],
+    };
+
     constructor(
         protected readonly configService: ConfigService,
         protected readonly loggingService: LoggingService
@@ -53,12 +59,6 @@ export class GamePlayService extends RubyScriptService {
             }
         );
     }
-
-    private prebuiltArgs: GamePlayPrebuiltArgs = {
-        RGSS1: ["debug"],
-        RGSS2: [],
-        RGSS3: ["console", "test"],
-    };
 
     /**
      * This function is responsible for making the command line options.
