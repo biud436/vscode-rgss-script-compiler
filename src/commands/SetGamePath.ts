@@ -1,7 +1,6 @@
 import * as vscode from "vscode";
 import { ConfigService } from "../services/ConfigService";
 import { LoggingService } from "../services/LoggingService";
-import { Path } from "../utils/Path";
 
 /**
  * This function is responsible for setting the main game folder to config file.

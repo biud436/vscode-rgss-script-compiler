@@ -11,14 +11,10 @@ import { Validator } from "../utils/Validator";
 import { TreeFileWatcher } from "./TreeFileWatcher";
 import { ScriptTree } from "./ScriptTree";
 import { MessageHelper } from "../common/MessageHelper";
-import { DataSourceFactory } from "../models/DataSourceFactory";
-import { Script } from "../models/Script";
-import { ScriptService } from "../services/ScriptService";
 import { DeleteCommand } from "../commands/DeleteCommand";
 import { DependencyProvider } from "./DependencyProvider";
 import {
     checkMigrationNeeded,
-    migrationScriptListFile,
     showMigrationNeededErrorMessage,
 } from "../commands/CheckMigrationNeeded";
 
@@ -42,7 +38,7 @@ export class ScriptExplorerProvider
     private _watcher?: TreeFileWatcher;
     private _scriptFolderRootWatcher?: TreeFileWatcher;
     private _tree?: ScriptTree<ScriptSection>;
-    private _scriptService?: ScriptService;
+    // private _scriptService?: ScriptService;
 
     constructor(
         private workspaceRoot: string,
@@ -52,7 +48,7 @@ export class ScriptExplorerProvider
         this.initWithScriptFolderWatcher();
         this._tree = new ScriptTree<ScriptSection>([]);
 
-        this._scriptService = new ScriptService(workspaceRoot, this);
+        // this._scriptService = new ScriptService(workspaceRoot, this);
     }
 
     private _onDidChangeTreeData: vscode.EventEmitter<
@@ -147,14 +143,14 @@ export class ScriptExplorerProvider
             arguments: [vscode.Uri.file(targetFilePath).path],
         };
 
-        this._scriptService
-            ?.updateByUUID(oldItem.id!, {
-                title: label,
-                filePath: targetFilePath,
-            })
-            .then(() => {
-                this.loggingService.info(`[INFO] Script updated!`);
-            });
+        // this._scriptService
+        //     ?.updateByUUID(oldItem.id!, {
+        //         title: label,
+        //         filePath: targetFilePath,
+        //     })
+        //     .then(() => {
+        //         this.loggingService.info(`[INFO] Script updated!`);
+        //     });
 
         // Replace the target index as new item in the tree
         // this._tree = this._tree?.replaceTree(oldItem.id, newScriptSection);
@@ -243,7 +239,7 @@ export class ScriptExplorerProvider
      * @param item
      */
     async deleteTreeItem(item: ScriptSection): Promise<void> {
-        if (!this._tree || !this._watcher || !this._scriptService) {
+        if (!this._tree || !this._watcher) {
             return;
         }
         const dependencyProvider = new DependencyProvider(
@@ -251,7 +247,6 @@ export class ScriptExplorerProvider
             this.workspaceRoot,
             this._scriptDirectory,
             this._watcher,
-            this._scriptService,
             this
         );
 
@@ -338,16 +333,16 @@ export class ScriptExplorerProvider
             this._tree?.splice(targetIndex! + 1, 0, copiedItem);
 
             // Create a new script.
-            const script = new Script(result, targetFilePath);
-            script.uuid = copiedItem.id;
+            // const script = new Script(result, targetFilePath);
+            // script.uuid = copiedItem.id;
 
-            const parent = await this._scriptService?.findOneByUUID(item.id!);
+            // const parent = await this._scriptService?.findOneByUUID(item.id!);
 
-            if (parent) {
-                script.parent = parent;
-            }
+            // if (parent) {
+            //     script.parent = parent;
+            // }
 
-            await this._scriptService?.add(script);
+            // await this._scriptService?.add(script);
 
             this.refresh();
             this.refreshListFile();
@@ -459,36 +454,36 @@ export class ScriptExplorerProvider
      *
      * @returns
      */
-    async createScriptInfoFile() {
-        // Read all script files.
-        const scripts = await this._scriptService?.findAll();
+    // async createScriptInfoFile() {
+    //     // Read all script files.
+    //     const scripts = await this._scriptService?.findAll();
 
-        if (!scripts) {
-            return;
-        }
+    //     if (!scripts) {
+    //         return;
+    //     }
 
-        const lines = [] as string[];
+    //     const lines = [] as string[];
 
-        for (const script of scripts) {
-            const filename = Path.getFileName(
-                decodeURIComponent(script.filePath!)
-            );
+    //     for (const script of scripts) {
+    //         const filename = Path.getFileName(
+    //             decodeURIComponent(script.filePath!)
+    //         );
 
-            lines.push(filename);
-            console.log(filename);
-        }
+    //         lines.push(filename);
+    //         console.log(filename);
+    //     }
 
-        const raw = lines.join("\n");
+    //     const raw = lines.join("\n");
 
-        // Create the script information file called 'info.txt'
-        const targetFilePath = path.posix.join(
-            this.workspaceRoot,
-            this._scriptDirectory,
-            ConfigService.TARGET_SCRIPT_LIST_FILE_NAME
-        );
+    //     // Create the script information file called 'info.txt'
+    //     const targetFilePath = path.posix.join(
+    //         this.workspaceRoot,
+    //         this._scriptDirectory,
+    //         ConfigService.TARGET_SCRIPT_LIST_FILE_NAME
+    //     );
 
-        await fs.promises.writeFile(targetFilePath, raw, "utf8");
-    }
+    //     await fs.promises.writeFile(targetFilePath, raw, "utf8");
+    // }
 
     refreshExplorer() {
         this._tree = new ScriptTree<ScriptSection>([]);
@@ -526,7 +521,7 @@ export class ScriptExplorerProvider
             path: path.posix.join(folderUri.path, this._scriptDirectory),
         });
 
-        const scripts: Script[] = [];
+        // const scripts: Script[] = [];
 
         if (checkMigrationNeeded(lines)) {
             showMigrationNeededErrorMessage();
@@ -602,21 +597,21 @@ export class ScriptExplorerProvider
             scriptSections.push(scriptSection);
 
             // Create a script for database.
-            const script = new Script();
-            script.filePath = scriptFilePath;
-            script.title = scriptSection.label;
-            script.uuid = scriptSection.id;
-            scripts.push(script);
+            // const script = new Script();
+            // script.filePath = scriptFilePath;
+            // script.title = scriptSection.label;
+            // script.uuid = scriptSection.id;
+            // scripts.push(script);
         }
 
         this._tree = new ScriptTree(scriptSections);
 
-        this.refreshDatabase(scripts);
+        // this.refreshDatabase(scripts);
 
         return scriptSections;
     }
 
-    async refreshDatabase(scripts: Script[]) {
-        await this._scriptService?.create(scripts);
-    }
+    // async refreshDatabase(scripts: Script[]) {
+    //     await this._scriptService?.create(scripts);
+    // }
 }

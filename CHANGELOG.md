@@ -1,5 +1,22 @@
 # Version Log
 
+
+## 0.9.0 - 30 Aug 2023
+
+### Fixed
+
+- Fixed an issue that prevented extensions from being activated because of the database.
+
+## 0.8.1 - 07 Jul 2023 
+
+### New Features
+
+-   Added a Script Explorer that allows users to add, remove, and refresh script files ([#14](https://github.com/biud436/vscode-rgss-script-compiler/issues/14))
+-   Added a feature to hide the status bar.
+-   Added MKXP-Z support on Mac.
+-   Debug mode support ([#16](https://github.com/biud436/vscode-rgss-script-compiler/issues/16))
+-   Added Linux support (PR [#21](https://github.com/biud436/vscode-rgss-script-compiler/pull/21))
+
 ## 0.0.12 - 22 Mar 2022
 
 ### New Features

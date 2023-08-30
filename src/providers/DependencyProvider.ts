@@ -1,7 +1,6 @@
 import { ScriptTree } from "./ScriptTree";
 import { RGSSScriptSection as ScriptSection } from "./RGSSScriptSection";
 import { TreeFileWatcher } from "./TreeFileWatcher";
-import { ScriptService } from "../services/ScriptService";
 import { ScriptExplorerProvider } from "./ScriptViewer";
 
 export class DependencyProvider {
@@ -10,7 +9,7 @@ export class DependencyProvider {
         public workspaceRoot: string,
         public scriptDirectory: string,
         public watcher: TreeFileWatcher,
-        public scriptService: ScriptService,
+        // public scriptService: ScriptService,
         public view: ScriptExplorerProvider
     ) {}
 

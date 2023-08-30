@@ -3,7 +3,6 @@ import * as path from "path";
 import { ConfigService } from "./services/ConfigService";
 import { LoggingService } from "./services/LoggingService";
 import {
-    ExtractScriptFileFunction,
     extractScriptFiles,
     RubyScriptService,
 } from "./commands/ExtractScriptFiles";

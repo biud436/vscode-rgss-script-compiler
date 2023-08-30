@@ -1,13 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { ScriptTree } from "../providers/ScriptTree";
 import { RGSSScriptSection as ScriptSection } from "../providers/RGSSScriptSection";
-import { TreeFileWatcher } from "../providers/TreeFileWatcher";
-import { ScriptService } from "../services/ScriptService";
 import * as vscode from "vscode";
 import * as fs from "fs";
-import * as path from "path";
-import { Path } from "../utils/Path";
-import { ScriptExplorerProvider } from "../providers/ScriptViewer";
 import { DependencyProvider } from "../providers/DependencyProvider";
 import { MenuCommand } from "./MenuCommand";
 
@@ -79,15 +73,8 @@ export class DeleteCommand extends MenuCommand {
                 if (fs.existsSync(targetFilePath)) {
                     fs.unlink(targetFilePath, (err) => {
                         if (item.id) {
-                            this.scriptService
-                                .deleteByUUID(item.id)
-                                .then(() => {
-                                    this.view.refresh();
-                                    resolve(item.id);
-                                })
-                                .catch((error) => {
-                                    reject(error);
-                                });
+                            this.view.refresh();
+                            resolve(item.id);
                         }
 
                         if (err) {

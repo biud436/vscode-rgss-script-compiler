@@ -23,10 +23,6 @@ export class MenuCommand {
         return this.dependencyProvider.watcher;
     }
 
-    protected get scriptService() {
-        return this.dependencyProvider.scriptService;
-    }
-
     protected get workspaceRoot() {
         return this.dependencyProvider.workspaceRoot;
     }
