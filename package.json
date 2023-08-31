@@ -95,6 +95,12 @@
                 "icon": "$(trash)"
             },
             {
+                "command": "rgss-script-compiler.renameFile",
+                "title": "Rename",
+                "category": "RGSS Compiler",
+                "icon": "$(edit-rename)"
+            },
+            {
                 "command": "rgss-script-compiler.refreshScriptExplorer",
                 "title": "Refresh",
                 "category": "RGSS Compiler",
@@ -162,6 +168,10 @@
                     "command": "rgss-script-compiler.deleteFile",
                     "when": "view == rgssScriptViewer",
                     "group": "inline"
+                },
+                {
+                    "command": "rgss-script-compiler.renameFile",
+                    "when": "view == rgssScriptViewer"
                 }
             ]
         },

@@ -27,7 +27,7 @@ export function activate(context: vscode.ExtensionContext) {
     loggingService.info(`Ruby installed: ${isRubyOK}`);
     if (!isRubyOK) {
         vscode.window.showErrorMessage(
-            "Can't find Ruby. Please install Ruby and try again."
+            "Can't find Ruby. Please install Ruby and try again.",
         );
     }
 
@@ -44,14 +44,14 @@ export function activate(context: vscode.ExtensionContext) {
     statusbarProvider = new StatusbarProvider(
         context,
         loggingService,
-        configService
+        configService,
     );
 
     // ! Step 5 : Create a helper class and set the status bar provider.
     const helper = new Helper.Extension(
         configService,
         loggingService,
-        statusbarProvider
+        statusbarProvider,
     );
 
     loggingService.info("RGSS Script Compiler has executed successfully");
@@ -68,7 +68,7 @@ export function activate(context: vscode.ExtensionContext) {
             Helper.createScriptProviderFunction(
                 helper,
                 configService,
-                loggingService
+                loggingService,
             );
             loggingService.info("configService.loadConfig(loggingService)");
         })
@@ -83,7 +83,7 @@ export function activate(context: vscode.ExtensionContext) {
         Helper.createScriptProviderFunction(
             helper,
             configService,
-            loggingService
+            loggingService,
         );
         statusbarProvider.show();
         loggingService.info("configService.ON_LOAD_GAME_FOLDER.event()");
@@ -95,26 +95,32 @@ export function activate(context: vscode.ExtensionContext) {
         ...[
             vscode.commands.registerCommand(
                 "rgssScriptViewer.refreshEntry",
-                () => helper.getScriptProvider()?.refresh()
+                () => helper.getScriptProvider()?.refresh(),
             ),
             vscode.commands.registerCommand(
                 "rgss-script-compiler.deleteFile",
                 (item: RGSSScriptSection) => {
                     helper.getScriptProvider()?.deleteTreeItem(item);
-                }
+                },
+            ),
+            vscode.commands.registerCommand(
+                "rgss-script-compiler.renameFile",
+                (item: RGSSScriptSection) => {
+                    //
+                },
             ),
             vscode.commands.registerCommand(
                 "rgss-script-compiler.newFile",
                 (item: RGSSScriptSection) => {
                     helper.getScriptProvider()?.addTreeItem(item);
-                }
+                },
             ),
             vscode.commands.registerCommand(
                 "rgss-script-compiler.refreshScriptExplorer",
                 () => {
                     loggingService.info("[3]");
                     helper.getScriptProvider()?.refreshExplorer();
-                }
+                },
             ),
             vscode.workspace.onDidDeleteFiles((e) => {
                 e.files.forEach((e) => {
@@ -127,7 +133,7 @@ export function activate(context: vscode.ExtensionContext) {
                     }
                 });
             }),
-        ]
+        ],
     );
     context.subscriptions.push(
         ...[
@@ -139,12 +145,12 @@ export function activate(context: vscode.ExtensionContext) {
                         .then((_) => {
                             return vscode.commands.executeCommand(
                                 "rgss-script-compiler.unpack",
-                                () => {}
+                                () => {},
                             );
                         });
-                }
+                },
             ),
-        ]
+        ],
     );
 }
 
