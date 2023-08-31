@@ -13,6 +13,10 @@ export class RGSSScriptSection extends vscode.TreeItem {
         this.tooltip = `${this.label}`;
         this.description = `${this.label}`;
 
+        this.initWithIconPath(label);
+    }
+
+    private initWithIconPath(label: string) {
         if (label.length > 0) {
             this.iconPath = new vscode.ThemeIcon(
                 label.startsWith("▼") ? "notifications-collapse" : "file",
