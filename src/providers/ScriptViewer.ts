@@ -256,6 +256,28 @@ export class ScriptExplorerProvider
         await deleteCommand.execute(item);
     }
 
+    async changeScriptNameManually(item: ScriptSection) {
+        const result = await vscode.window.showInputBox({
+            prompt: "Please a new script name.",
+            value: item.label,
+            validateInput: (value: string) => {
+                if (!Validator.isStringOrNotEmpty(value)) {
+                    return Validator.PLASE_INPUT_SCR_NAME;
+                }
+
+                if (!Validator.isValidScriptName(value)) {
+                    return Validator.INVALID_SCRIPT_NAME;
+                }
+
+                return Validator.VALID;
+            },
+        });
+
+        if (result) {
+            // TODO: Replace code that change the tree item in here
+        }
+    }
+
     setTree(tree: ScriptTree<ScriptSection>) {
         this._tree = tree;
     }
