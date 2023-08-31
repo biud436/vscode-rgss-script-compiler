@@ -42,7 +42,7 @@ export class ScriptExplorerProvider
 
     constructor(
         private workspaceRoot: string,
-        private readonly loggingService: LoggingService
+        private readonly loggingService: LoggingService,
     ) {
         this.initWithFileWatcher();
         this.initWithScriptFolderWatcher();
@@ -83,7 +83,7 @@ export class ScriptExplorerProvider
     initWithScriptFolderWatcher() {
         this._scriptFolderRootWatcher = new TreeFileWatcher(
             this.loggingService,
-            "**/Scripts"
+            "**/Scripts",
         );
         this._scriptFolderRootWatcher.create();
 
@@ -126,7 +126,7 @@ export class ScriptExplorerProvider
         const targetFilePath = path.posix.join(
             this.workspaceRoot,
             this._scriptDirectory,
-            label + Path.defaultExt
+            label + Path.defaultExt,
         );
 
         // Create a new tree item
@@ -163,7 +163,7 @@ export class ScriptExplorerProvider
 
     private onDidCreate(url: vscode.Uri) {
         this.loggingService.info(
-            `[file ${LoggingMarker.CREATED}] ${JSON.stringify(url)}`
+            `[file ${LoggingMarker.CREATED}] ${JSON.stringify(url)}`,
         );
 
         const COLLAPSED = vscode.TreeItemCollapsibleState.None;
@@ -181,7 +181,7 @@ export class ScriptExplorerProvider
 
     private onDidChange(url: vscode.Uri) {
         this.loggingService.info(
-            `[file ${LoggingMarker.CHANGED}] ${JSON.stringify(url)}`
+            `[file ${LoggingMarker.CHANGED}] ${JSON.stringify(url)}`,
         );
     }
 
@@ -190,12 +190,13 @@ export class ScriptExplorerProvider
      */
     private onDidDelete(url: vscode.Uri) {
         this.loggingService.info(
-            `[file ${LoggingMarker.DELETED}] ${JSON.stringify(url)}`
+            `[file ${LoggingMarker.DELETED}] ${JSON.stringify(url)}`,
         );
 
         const scriptSection = this._tree?.find(
             (item) =>
-                Path.getFileName(item.filePath) === Path.getFileName(url.fsPath)
+                Path.getFileName(item.filePath) ===
+                Path.getFileName(url.fsPath),
         );
 
         if (scriptSection) {
@@ -214,13 +215,13 @@ export class ScriptExplorerProvider
     }
 
     getTreeItem(
-        element: ScriptSection
+        element: ScriptSection,
     ): vscode.TreeItem | Thenable<vscode.TreeItem> {
         return element;
     }
 
     getChildren(
-        element?: ScriptSection | undefined
+        element?: ScriptSection | undefined,
     ): vscode.ProviderResult<ScriptSection[]> {
         if (!this.workspaceRoot) {
             return [];
@@ -247,7 +248,7 @@ export class ScriptExplorerProvider
             this.workspaceRoot,
             this._scriptDirectory,
             this._watcher,
-            this
+            this,
         );
 
         const deleteCommand = new DeleteCommand(dependencyProvider);
@@ -290,14 +291,14 @@ export class ScriptExplorerProvider
             const prefix = Path.getFileName(item.filePath).split("-");
             const currentIndex = prefix[0];
             const subPrefix = `${currentIndex}.${Math.floor(
-                Math.random() * 1000
+                Math.random() * 1000,
             )}-`;
 
             // Create a new empty script file
             const targetFilePath = path.posix.join(
                 this.workspaceRoot,
                 this._scriptDirectory,
-                subPrefix + result + Path.defaultExt // 098.1-Test.rb
+                subPrefix + result + Path.defaultExt, // 098.1-Test.rb
             );
 
             this._watcher?.executeFileAction("onDidCreate", () => {});
@@ -306,16 +307,9 @@ export class ScriptExplorerProvider
                 fs.writeFileSync(targetFilePath, "", "utf8");
             }
 
-            // 스크립트를 추가할 섹션의 위치를 찾는다.
             const targetIndex = this._tree?.findIndex(
-                (treeItem) => treeItem.id === item.id
+                (treeItem) => treeItem.id === item.id,
             );
-
-            // const targetSection = this._tree?.find((treeItem) => treeItem.id === item.id);
-            // const {label} = targetSection! ?? '';
-
-            // const items = label.split(/([\d]+)\-(.*)/);
-            // const currentIndex = items[1];
 
             const copiedItem = {
                 ...item,
@@ -332,21 +326,8 @@ export class ScriptExplorerProvider
 
             this._tree?.splice(targetIndex! + 1, 0, copiedItem);
 
-            // Create a new script.
-            // const script = new Script(result, targetFilePath);
-            // script.uuid = copiedItem.id;
-
-            // const parent = await this._scriptService?.findOneByUUID(item.id!);
-
-            // if (parent) {
-            //     script.parent = parent;
-            // }
-
-            // await this._scriptService?.add(script);
-
             this.refresh();
             this.refreshListFile();
-            // await this.createScriptInfoFile();
         }
     }
 
@@ -355,12 +336,12 @@ export class ScriptExplorerProvider
         const targetFilePath = path.posix.join(
             this.workspaceRoot,
             this._scriptDirectory,
-            ConfigService.TARGET_SCRIPT_LIST_FILE_NAME
+            ConfigService.TARGET_SCRIPT_LIST_FILE_NAME,
         );
 
         if (!fs.existsSync(targetFilePath)) {
             vscode.window.showErrorMessage(
-                MessageHelper.ERROR.NOT_FOUND_LIST_FILE
+                MessageHelper.ERROR.NOT_FOUND_LIST_FILE,
             );
             return [];
         }
@@ -393,7 +374,7 @@ export class ScriptExplorerProvider
         }
 
         this.loggingService.info(
-            `FOUND [${lineIndex}] ${temp} => ${lines[lineIndex]} `
+            `FOUND [${lineIndex}] ${temp} => ${lines[lineIndex]} `,
         );
 
         return lines;
@@ -410,7 +391,7 @@ export class ScriptExplorerProvider
         const targetFilePath = path.posix.join(
             this.workspaceRoot,
             this._scriptDirectory,
-            ConfigService.TARGET_SCRIPT_LIST_FILE_NAME
+            ConfigService.TARGET_SCRIPT_LIST_FILE_NAME,
         );
 
         const lines = [];
@@ -432,7 +413,7 @@ export class ScriptExplorerProvider
             const realFilePath = path.posix.join(
                 this.workspaceRoot,
                 this._scriptDirectory,
-                filename
+                filename,
             );
 
             // ! FIXME 2023.03.13
@@ -449,42 +430,6 @@ export class ScriptExplorerProvider
         await fs.promises.writeFile(targetFilePath, raw, "utf8");
     }
 
-    /**
-     * Creates a script information file called 'info.txt', which contains the script title.
-     *
-     * @returns
-     */
-    // async createScriptInfoFile() {
-    //     // Read all script files.
-    //     const scripts = await this._scriptService?.findAll();
-
-    //     if (!scripts) {
-    //         return;
-    //     }
-
-    //     const lines = [] as string[];
-
-    //     for (const script of scripts) {
-    //         const filename = Path.getFileName(
-    //             decodeURIComponent(script.filePath!)
-    //         );
-
-    //         lines.push(filename);
-    //         console.log(filename);
-    //     }
-
-    //     const raw = lines.join("\n");
-
-    //     // Create the script information file called 'info.txt'
-    //     const targetFilePath = path.posix.join(
-    //         this.workspaceRoot,
-    //         this._scriptDirectory,
-    //         ConfigService.TARGET_SCRIPT_LIST_FILE_NAME
-    //     );
-
-    //     await fs.promises.writeFile(targetFilePath, raw, "utf8");
-    // }
-
     refreshExplorer() {
         this._tree = new ScriptTree<ScriptSection>([]);
 
@@ -499,12 +444,12 @@ export class ScriptExplorerProvider
         const targetFilePath = path.posix.join(
             this.workspaceRoot,
             this._scriptDirectory,
-            ConfigService.TARGET_SCRIPT_LIST_FILE_NAME
+            ConfigService.TARGET_SCRIPT_LIST_FILE_NAME,
         );
 
         if (!fs.existsSync(targetFilePath)) {
             vscode.window.showErrorMessage(
-                MessageHelper.ERROR.NOT_FOUND_LIST_FILE
+                MessageHelper.ERROR.NOT_FOUND_LIST_FILE,
             );
             return [];
         }
@@ -521,19 +466,8 @@ export class ScriptExplorerProvider
             path: path.posix.join(folderUri.path, this._scriptDirectory),
         });
 
-        // const scripts: Script[] = [];
-
         if (checkMigrationNeeded(lines)) {
             showMigrationNeededErrorMessage();
-            // migrationScriptListFile(
-            //     path.posix.join(this.workspaceRoot, this._scriptDirectory)
-            // )
-            //     .then(() => {
-            //         this.refreshExplorer();
-            //     })
-            //     .catch((e) => {
-            //         vscode.window.showErrorMessage(e.message);
-            //     });
             return [];
         }
 
@@ -559,7 +493,7 @@ export class ScriptExplorerProvider
                 .with({
                     path: path.posix.join(
                         fileUri.path,
-                        targetScriptSection + Path.defaultExt
+                        targetScriptSection + Path.defaultExt,
                     ),
                 })
                 .toString();
@@ -568,23 +502,20 @@ export class ScriptExplorerProvider
                 fileUri.with({
                     path: Path.join(
                         fileUri.path,
-                        targetScriptSection + Path.defaultExt
+                        targetScriptSection + Path.defaultExt,
                     ),
-                }).fsPath
+                }).fsPath,
             );
             if (stat.size === 0) {
                 isEmptyContent = true;
             }
 
             const scriptSection = new ScriptSection(
-                // isEmptyContent
-                //     ? ""
-                //     : targetScriptSection.replace(/^[\d]{3}\-/, ""),
                 targetScriptSection.match(/^[\d]{3}\-(?:Untitled)/g)
                     ? ""
                     : targetScriptSection.replace(/^[\d]{3}\-/, ""),
                 COLLAPSED,
-                scriptFilePath
+                scriptFilePath,
             );
 
             // Create a tree item for the script explorer.
@@ -595,23 +526,10 @@ export class ScriptExplorerProvider
                 arguments: [scriptFilePath],
             };
             scriptSections.push(scriptSection);
-
-            // Create a script for database.
-            // const script = new Script();
-            // script.filePath = scriptFilePath;
-            // script.title = scriptSection.label;
-            // script.uuid = scriptSection.id;
-            // scripts.push(script);
         }
 
         this._tree = new ScriptTree(scriptSections);
 
-        // this.refreshDatabase(scripts);
-
         return scriptSections;
     }
-
-    // async refreshDatabase(scripts: Script[]) {
-    //     await this._scriptService?.create(scripts);
-    // }
 }
