@@ -38,8 +38,14 @@ This extension is a beta version that has not been tested elaborately. We have s
 
 # Change Log
 
+## 0.9.2 - 01 Sep 2023
 
-## 0.9.0
+### New Features / Fixed
+
+-   Added a new feature that can change the name of the script file in TreeViewer.
+-   Fixed issue that can't open the TreeViewer when containing the dot more than one string inside script name.
+
+## 0.9.0 - 30 Aug 2023
 
 ### Fixed
 

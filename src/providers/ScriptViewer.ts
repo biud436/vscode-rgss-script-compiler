@@ -17,6 +17,7 @@ import {
     checkMigrationNeeded,
     showMigrationNeededErrorMessage,
 } from "../commands/CheckMigrationNeeded";
+import { FileIndexTransformer } from "../common/FileIndexTransformer";
 
 export enum LoggingMarker {
     CREATED = "created",
@@ -38,7 +39,6 @@ export class ScriptExplorerProvider
     private _watcher?: TreeFileWatcher;
     private _scriptFolderRootWatcher?: TreeFileWatcher;
     private _tree?: ScriptTree<ScriptSection>;
-    // private _scriptService?: ScriptService;
 
     constructor(
         private workspaceRoot: string,
@@ -47,8 +47,6 @@ export class ScriptExplorerProvider
         this.initWithFileWatcher();
         this.initWithScriptFolderWatcher();
         this._tree = new ScriptTree<ScriptSection>([]);
-
-        // this._scriptService = new ScriptService(workspaceRoot, this);
     }
 
     private _onDidChangeTreeData: vscode.EventEmitter<
@@ -143,18 +141,6 @@ export class ScriptExplorerProvider
             arguments: [vscode.Uri.file(targetFilePath).path],
         };
 
-        // this._scriptService
-        //     ?.updateByUUID(oldItem.id!, {
-        //         title: label,
-        //         filePath: targetFilePath,
-        //     })
-        //     .then(() => {
-        //         this.loggingService.info(`[INFO] Script updated!`);
-        //     });
-
-        // Replace the target index as new item in the tree
-        // this._tree = this._tree?.replaceTree(oldItem.id, newScriptSection);
-
         this.replaceLineByFilename(oldItem.label, label);
 
         this.refresh();
@@ -239,7 +225,10 @@ export class ScriptExplorerProvider
      *
      * @param item
      */
-    async deleteTreeItem(item: ScriptSection): Promise<void> {
+    async deleteTreeItem(
+        item: ScriptSection,
+        isCopyMode?: boolean,
+    ): Promise<void> {
         if (!this._tree || !this._watcher) {
             return;
         }
@@ -253,28 +242,18 @@ export class ScriptExplorerProvider
 
         const deleteCommand = new DeleteCommand(dependencyProvider);
 
-        await deleteCommand.execute(item);
+        await deleteCommand.execute(item, isCopyMode);
+
+        if (!isCopyMode) {
+            this.hideActiveScript();
+        }
     }
 
     async changeScriptNameManually(item: ScriptSection) {
-        const result = await vscode.window.showInputBox({
-            prompt: "Please a new script name.",
-            value: item.label,
-            validateInput: (value: string) => {
-                if (!Validator.isStringOrNotEmpty(value)) {
-                    return Validator.PLASE_INPUT_SCR_NAME;
-                }
+        const isCopyMode = true;
 
-                if (!Validator.isValidScriptName(value)) {
-                    return Validator.INVALID_SCRIPT_NAME;
-                }
-
-                return Validator.VALID;
-            },
-        });
-
-        if (result) {
-            // TODO: Replace code that change the tree item in here
+        if (await this.addTreeItem(item, isCopyMode)) {
+            await this.deleteTreeItem(item, isCopyMode);
         }
     }
 
@@ -291,11 +270,18 @@ export class ScriptExplorerProvider
      *
      * @param item {ScriptSection} The new script section.
      */
-    async addTreeItem(item: ScriptSection): Promise<void> {
+    async addTreeItem(
+        item: ScriptSection,
+        isCopyMode?: boolean,
+    ): Promise<boolean> {
         // Enter the script name
         const result = await vscode.window.showInputBox({
-            prompt: "Please a new script name.",
-            value: MessageHelper.INFO.UNTITLED,
+            prompt: isCopyMode
+                ? "Please enter the script name you want to change"
+                : "Please a new script name.",
+            value: isCopyMode
+                ? MessageHelper.INFO.NEW_SCRIPT_NAME
+                : MessageHelper.INFO.UNTITLED,
             validateInput: (value: string) => {
                 if (!Validator.isStringOrNotEmpty(value)) {
                     return Validator.PLASE_INPUT_SCR_NAME;
@@ -311,10 +297,7 @@ export class ScriptExplorerProvider
 
         if (result) {
             const prefix = Path.getFileName(item.filePath).split("-");
-            const currentIndex = prefix[0];
-            const subPrefix = `${currentIndex}.${Math.floor(
-                Math.random() * 1000,
-            )}-`;
+            const subPrefix = FileIndexTransformer.transform(prefix?.[0] ?? "");
 
             // Create a new empty script file
             const targetFilePath = path.posix.join(
@@ -323,10 +306,25 @@ export class ScriptExplorerProvider
                 subPrefix + result + Path.defaultExt, // 098.1-Test.rb
             );
 
+            this.loggingService.info("subPrefix: " + subPrefix);
+
             this._watcher?.executeFileAction("onDidCreate", () => {});
 
+            let readContents = undefined;
+            if (isCopyMode && fs.existsSync(item.filePath)) {
+                readContents = fs.readFileSync(item.filePath, "utf8");
+
+                this.loggingService.info(
+                    `[INFO] readContents: ${readContents}`,
+                );
+            }
+
             if (!fs.existsSync(targetFilePath)) {
-                fs.writeFileSync(targetFilePath, "", "utf8");
+                fs.writeFileSync(
+                    targetFilePath,
+                    readContents ? readContents : "",
+                    "utf8",
+                );
             }
 
             const targetIndex = this._tree?.findIndex(
@@ -350,7 +348,29 @@ export class ScriptExplorerProvider
 
             this.refresh();
             this.refreshListFile();
+
+            this.showScript(vscode.Uri.file(targetFilePath));
+
+            return true;
         }
+
+        return false;
+    }
+
+    /**
+     * Show the script file in the editor.
+     * @param file
+     */
+    showScript(file: vscode.Uri) {
+        vscode.commands.executeCommand("workbench.action.closeActiveEditor");
+        vscode.window.showTextDocument(file);
+    }
+
+    /**
+     * Hide the active script file in the editor.
+     */
+    hideActiveScript() {
+        vscode.commands.executeCommand("workbench.action.closeActiveEditor");
     }
 
     replaceLineByFilename(label: string, newLabel: string) {

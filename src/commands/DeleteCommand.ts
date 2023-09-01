@@ -27,15 +27,20 @@ export class DeleteCommand extends MenuCommand {
      * @param item
      * @returns
      */
-    public async execute(item: ScriptSection): Promise<void> {
-        const choice = await vscode.window.showInformationMessage(
-            "Do you want to delete this script?",
-            DialogOption.YES,
-            DialogOption.NO
-        );
+    public async execute(
+        item: ScriptSection,
+        isCopyMode?: boolean,
+    ): Promise<void> {
+        if (!isCopyMode) {
+            const choice = await vscode.window.showInformationMessage(
+                "Do you want to delete this script?",
+                DialogOption.YES,
+                DialogOption.NO,
+            );
 
-        if (choice === DialogOption.NO) {
-            return;
+            if (choice === DialogOption.NO) {
+                return;
+            }
         }
 
         this.excludeCurrentSelectFileFromTree(item);
@@ -46,7 +51,7 @@ export class DeleteCommand extends MenuCommand {
             await this.createListFile(targetFilePath, item);
             await this.view.refreshListFile();
             await vscode.commands.executeCommand(
-                "rgss-script-compiler.compile"
+                "rgss-script-compiler.compile",
             );
         } catch (error: any) {
             vscode.window.showErrorMessage(error.message);
