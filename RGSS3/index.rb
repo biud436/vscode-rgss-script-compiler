@@ -66,6 +66,14 @@ module EntryPoint
       end
     end
 
+    def is_windows?
+      return RUBY_PLATFORM =~ /mswin(?!ce)|mingw|cygwin|bccwin/
+    end
+
+    def is_mac?
+      return RUBY_PLATFORM =~ /darwin/
+    end
+
     private
 
     ##
