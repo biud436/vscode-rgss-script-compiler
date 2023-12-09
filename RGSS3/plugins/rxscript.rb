@@ -13,6 +13,7 @@
 #   end
 #------------------------------------------------------------------------------
 # Modified by : Jinseok Eo
+# - Fixed an issue where filenames were always set to ASCII-8BIT.
 #==============================================================================
 
 require 'securerandom'
@@ -142,9 +143,9 @@ module RXDATA
         if File.exist? File.join(indir, 'info.txt')
             input = File.open(File.join(indir, 'info.txt'), 'rb')
             input.read.each_line do |line|
-                filename = line.gsub("\n", '')
+                filename = line.gsub("\n", '') # it is always ASCII-8BIT
+                filename.force_encoding('utf-8')
 
-                #
                 files.push(File.join(indir, filename))
             end
             input.close

@@ -74,6 +74,10 @@ module EntryPoint
       return RUBY_PLATFORM =~ /darwin/
     end
 
+    def is_hangul?(filename)
+      return filename =~ /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/      
+    end
+
     private
 
     ##
@@ -103,6 +107,7 @@ module EntryPoint
     # @return [void]
     def compress_script(vscode_workspace, scripts_file)
       begin
+
         root_folder = @vscode_workspace
         extract_folder = File.join(root_folder, 'Scripts').gsub('\\', '/')
 
@@ -111,6 +116,7 @@ module EntryPoint
         RXDATA.CompressScript(extract_folder, @scripts_file)
       rescue => e
         puts e
+        puts e.backtrace
       end
     end
   end
