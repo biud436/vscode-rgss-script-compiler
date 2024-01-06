@@ -1,4 +1,8 @@
 import { dump, load } from "@hyrious/marshal";
+import * as fs from "fs";
+import * as path from "path";
+
+const targetDir = [__dirname, "example"];
 
 describe("dump", () => {
     it("dump(null)", () => {
@@ -14,16 +18,9 @@ describe("dump", () => {
     });
 
     it("echo 테스트", () => {
-        // class Test
-        //   def initialize
-        //     @name = "hello"
-        //   end
-
-        //   def name
-        //     @name
-        //   end
-        // end
-        const serialized = `\x04\bo:\tTest\x06:\n@nameI\"\nhello\x06:\x06ET`;
+        const serialized = fs.readFileSync(
+            path.join(...targetDir, "test.dump"),
+        );
 
         // Marshal.dump(test).unpack("U*")
         expect(dump(load(serialized))).toEqual(
