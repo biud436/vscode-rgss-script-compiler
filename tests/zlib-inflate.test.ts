@@ -49,7 +49,9 @@ const targetDir = [__dirname, "example"];
 const targetFile = path.join(...targetDir, "Scripts.rvdata2");
 const file = fs.readFileSync(targetFile);
 
-type ScriptTuple = [number, Buffer, Buffer];
+const outputFile = path.join(...targetDir, `${uuidv4()}.rvdata2`);
+
+type ScriptTuple = [number, Buffer | Uint8Array, Buffer];
 
 describe("Marshal.load", () => {
     it("Game_System이 포함되어 있는지 확인한다.", () => {
@@ -82,11 +84,73 @@ describe("Marshal.load", () => {
             if (scriptName === "Main") {
                 main.name = scriptName;
                 main.content = scriptContent;
-                console.log(scriptContent);
             }
         }
 
         expect(main.name).toEqual("Main");
         expect(main.content).toContain("rgss_main { SceneManager.run }");
+    });
+
+    it("스크립트를 생성하고 다시 읽는다", () => {
+        const dummyScript = "rgss_main { SceneManager.run }";
+
+        const scripts: ScriptTuple[] = [];
+        const encoder = new TextEncoder();
+        scripts.push(
+            [
+                Store.getRandomSection(),
+                Buffer.from("Game_System", "utf-8"),
+                // encoder.encode("Game_System"),
+                Store.zlibDeflate(`class Game_System; end`),
+            ],
+            [
+                Store.getRandomSection(),
+                Buffer.from("Main", "utf-8"),
+                // encoder.encode("Main"),
+                Store.zlibDeflate(dummyScript),
+            ],
+        );
+
+        console.log(scripts);
+
+        const data = Marshal.dump(scripts);
+
+        fs.writeFileSync(outputFile, data);
+
+        function read() {
+            const fileBuffer = fs.readFileSync(outputFile);
+
+            const scripts = Marshal.load(fileBuffer) as ScriptTuple[];
+            const main = {
+                name: "",
+                content: "",
+            };
+
+            for (const script of scripts) {
+                const [, name, content] = script;
+
+                const scriptContent = Store.zlibInflate(content);
+                const scriptName = Buffer.from(name).toString("utf-8");
+                console.log("name", scriptName);
+
+                if (scriptName === "Main") {
+                    main.name = scriptName;
+                    main.content = scriptContent;
+                    console.log(scriptContent);
+                }
+            }
+
+            return main;
+        }
+
+        const main = read();
+
+        expect(main.name).toEqual("Main");
+    });
+
+    afterAll(() => {
+        if (fs.existsSync(outputFile)) {
+            fs.unlinkSync(outputFile);
+        }
     });
 });
