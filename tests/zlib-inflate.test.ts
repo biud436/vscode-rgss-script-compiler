@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import * as zlib from "zlib";
+import * as crypto from "crypto";
 import { v4 as uuidv4 } from "uuid";
 import { load, dump, DumpOptions, LoadOptions } from "@hyrious/marshal";
 
@@ -16,7 +17,9 @@ class Marshal {
     }
 
     static dump(value: unknown, options?: DumpOptions): Uint8Array {
-        return dump(value, options);
+        return dump(value, {
+            ...options,
+        });
     }
 }
 
@@ -146,6 +149,49 @@ describe("Marshal.load", () => {
         const main = read();
 
         expect(main.name).toEqual("Main");
+    });
+
+    it("스크립트를 읽고, load & dump하여 파일이 같은 지 확인한다.", () => {
+        function getHash(filePath: string) {
+            const fileBuffer = fs.readFileSync(filePath);
+
+            const hash = crypto.createHash("sha256");
+            hash.update(fileBuffer);
+
+            const fileHash = hash.digest("hex");
+
+            return fileHash;
+        }
+
+        // 스크립트를 읽는다.
+        const scripts = Marshal.load(file) as ScriptTuple[];
+
+        const items: ScriptTuple[] = [];
+
+        for (const script of scripts) {
+            const [uuid, name, content] = script;
+
+            // 압축을 해제한다.
+            const scriptContent = Store.zlibInflate(content);
+            const scriptName = Buffer.from(name).toString("utf-8");
+
+            // 다시 압축한다.
+            items.push([
+                uuid,
+                Buffer.from(scriptName),
+                Store.zlibDeflate(scriptContent),
+            ]);
+        }
+
+        const data = Marshal.dump(items);
+
+        fs.writeFileSync(outputFile, data);
+
+        const crc1 = getHash(targetFile);
+        const crc2 = getHash(outputFile);
+
+        // 같은 파일이 아님
+        expect(crc1).toEqual(crc2);
     });
 
     afterAll(() => {
