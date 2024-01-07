@@ -6,6 +6,7 @@ import { RGSSScriptSection } from "./providers/RGSSScriptSection";
 import { isInstalledRuby } from "./commands/CheckRuby";
 import { Helper } from "./Helper";
 import { StatusbarProvider } from "./providers/StatusbarProvider";
+import { store } from "./store/GlobalStore";
 
 let statusbarProvider: StatusbarProvider;
 
@@ -30,6 +31,8 @@ export function activate(context: vscode.ExtensionContext) {
             "Can't find Ruby. Please install Ruby and try again.",
         );
     }
+
+    store.setIsRubyInstalled(isRubyOK);
 
     // ! Step 4: Set the workspace folder.
 

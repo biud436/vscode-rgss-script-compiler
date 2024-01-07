@@ -37,6 +37,12 @@ class Store {
 
         return z.toString("utf-8");
     }
+
+    static zlibDeflate(str: string): Buffer {
+        const z = zlib.deflateSync(str);
+
+        return z;
+    }
 }
 
 const targetDir = [__dirname, "example"];

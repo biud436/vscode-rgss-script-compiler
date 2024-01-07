@@ -19,7 +19,7 @@ export class ScriptListFile {
     constructor(
         private readonly configService: ConfigService,
         private readonly loggingService: LoggingService,
-        private readonly workspaceRoot: string
+        private readonly workspaceRoot: string,
     ) {
         this._lines = [];
     }
@@ -28,7 +28,7 @@ export class ScriptListFile {
         const targetFilePath = path.posix.join(
             this.workspaceRoot,
             this._scriptDirectory,
-            ConfigService.TARGET_SCRIPT_LIST_FILE_NAME
+            ConfigService.TARGET_SCRIPT_LIST_FILE_NAME,
         );
 
         return targetFilePath;
@@ -51,7 +51,7 @@ export class ScriptListFile {
         this.loggingService.info(`ScriptListFile: ${this.filePath}`);
         if (!fs.existsSync(this.filePath)) {
             vscode.window.showErrorMessage(
-                MessageHelper.ERROR.NOT_FOUND_LIST_FILE
+                MessageHelper.ERROR.NOT_FOUND_LIST_FILE,
             );
             return false;
         }
@@ -120,33 +120,35 @@ export class ScriptListFile {
             let isBlankName = false;
             let isEmptyContent = false;
 
+            // 빈 라인이거나, 무시할 라인이면 다음 라인으로 넘어갑니다.
             if (line.match(IGNORE_BLACK_LIST_REGEXP)) {
                 isBlankName = true;
             }
 
             let targetScriptSection = "";
 
+            // 확장자가 .rb로 끝나는 라인을 찾습니다.
             if (line.endsWith(defaultExt)) {
                 targetScriptSection = line.replace(defaultExt, "");
             }
 
+            const targetFilePath = Path.join(
+                fileUri.path,
+                targetScriptSection + defaultExt,
+            );
+
             const scriptFilePath = fileUri
                 .with({
-                    path: path.posix.join(
-                        fileUri.path,
-                        targetScriptSection + defaultExt
-                    ),
+                    path: targetFilePath,
                 })
                 .toString();
 
             const stat = fs.statSync(
                 fileUri.with({
-                    path: Path.join(
-                        fileUri.path,
-                        targetScriptSection + Path.defaultExt
-                    ),
-                }).fsPath
+                    path: targetFilePath,
+                }).fsPath,
             );
+            // 빈 파일인지 체크하는 플래그입니다.
             if (stat.size === 0) {
                 isEmptyContent = true;
             }
@@ -154,7 +156,7 @@ export class ScriptListFile {
             const scriptSection = new RGSSScriptSection(
                 isEmptyContent ? "" : targetScriptSection,
                 COLLAPSED,
-                scriptFilePath
+                scriptFilePath,
             );
 
             scriptSection.id = generateUUID();
@@ -171,7 +173,7 @@ export class ScriptListFile {
 
     updateFilename(
         scriptFileName: string,
-        newScriptFileName: string
+        newScriptFileName: string,
     ): string[] {
         const lines = this.lines.slice(0);
         const { defaultExt: ext } = Path;
@@ -181,33 +183,41 @@ export class ScriptListFile {
         for (const line of lines) {
             lineIndex++;
 
+            // 빈 라인이거나, 무시할 라인이면 다음 라인으로 넘어갑니다.
             if (line.match(IGNORE_BLACK_LIST_REGEXP)) {
                 continue;
             }
 
             let targetScriptSection = "";
 
+            // 확장자가 .rb로 끝나는 라인을 찾습니다.
             if (line.endsWith(ext)) {
                 targetScriptSection = line.replace(ext, "");
             }
 
+            // 스크립트 파일명이 같으면 라인 인덱스를 반환합니다.
             if (targetScriptSection === scriptFileName) {
                 break;
             }
         }
 
+        // 라인 인덱스가 유효하면 해당 라인을 새로운 스크립트 파일명으로 변경합니다.
         const temp = lines[lineIndex];
         if (lines[lineIndex]) {
             lines[lineIndex] = newScriptFileName;
         }
 
+        // 변경된 라인을 로그로 출력합니다.
         this.loggingService.info(
-            `FOUND [${lineIndex}] ${temp} => ${lines[lineIndex]} `
+            `FOUND [${lineIndex}] ${temp} => ${lines[lineIndex]} `,
         );
 
         return lines;
     }
 
+    /**
+     * 백업 파일을 생성합니다.
+     */
     async createBackupFile(): Promise<void> {
         const { filePath: targetFilePath } = this;
         const backupFileName = targetFilePath + ScriptListFile._TMP;
@@ -244,7 +254,7 @@ export class ScriptListFile {
             const realFilePath = path.posix.join(
                 this.workspaceRoot,
                 this._scriptDirectory,
-                filename
+                filename,
             );
 
             // ! FIXME 2023.03.13

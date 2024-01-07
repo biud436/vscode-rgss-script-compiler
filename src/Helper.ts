@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import * as vscode from "vscode";
 import { Path } from "./utils/Path";
 import { setGamePath } from "./commands/SetGamePath";
@@ -25,7 +26,7 @@ export namespace Helper {
         constructor(
             private readonly configService: ConfigService,
             private readonly loggingService: LoggingService,
-            private readonly statusbarProvider: StatusbarProvider
+            private readonly statusbarProvider: StatusbarProvider,
         ) {
             this.updateConfiguration();
         }
@@ -56,12 +57,12 @@ export namespace Helper {
                     this.configService.ON_LOAD_GAME_FOLDER.event(
                         (gameFolder) => {
                             this.loggingService.info(
-                                `Game folder is changed to ${gameFolder}`
+                                `Game folder is changed to ${gameFolder}`,
                             );
                             this.statusbarProvider.show();
-                        }
+                        },
                     );
-                }
+                },
             );
         }
 
@@ -72,12 +73,12 @@ export namespace Helper {
                     this.loggingService.info("save");
                     await this.configService.detectRGSSVersion();
                     await vscode.commands.executeCommand(
-                        "workbench.action.files.save"
+                        "workbench.action.files.save",
                     );
                     await vscode.commands.executeCommand(
-                        "rgss-script-compiler.compile"
+                        "rgss-script-compiler.compile",
                     );
-                }
+                },
             );
         }
 
@@ -87,10 +88,10 @@ export namespace Helper {
                 () => {
                     const gamePlayService = new GamePlayService(
                         this.configService,
-                        this.loggingService
+                        this.loggingService,
                     );
                     gamePlayService.run();
-                }
+                },
             );
         }
 
@@ -101,7 +102,7 @@ export namespace Helper {
                     this.loggingService.info("[2]");
                     if (!this.configService) {
                         this.loggingService.info(
-                            "There is no workspace folder."
+                            "There is no workspace folder.",
                         );
                         return;
                     }
@@ -112,15 +113,15 @@ export namespace Helper {
                         () => {
                             vscode.commands
                                 .executeCommand(
-                                    "rgss-script-compiler.refreshScriptExplorer"
+                                    "rgss-script-compiler.refreshScriptExplorer",
                                 )
                                 .then(() => {
                                     this.loggingService.info("refreshed");
                                 });
-                        }
+                        },
                     );
                     unpacker.unpack();
-                }
+                },
             );
         }
 
@@ -130,17 +131,17 @@ export namespace Helper {
                 () => {
                     if (!this.configService) {
                         this.loggingService.info(
-                            "There is no workspace folder."
+                            "There is no workspace folder.",
                         );
                         return;
                     }
 
                     const bundler = new Packer(
                         this.configService,
-                        this.loggingService
+                        this.loggingService,
                     );
                     bundler.pack();
-                }
+                },
             );
         }
 
@@ -153,7 +154,7 @@ export namespace Helper {
                 "rgss-script-compiler.openGameFolder",
                 () => {
                     openGameFolder(this.configService, this.loggingService);
-                }
+                },
             );
         }
 
@@ -162,7 +163,7 @@ export namespace Helper {
                 "rgss-script-compiler.openScript",
                 (scriptFile: vscode.Uri) => {
                     vscode.window.showTextDocument(scriptFile);
-                }
+                },
             );
         }
 
@@ -189,7 +190,7 @@ export namespace Helper {
     class StatusBarProviderImpl {
         getGameFolderOpenStatusBarItem() {
             const statusBarItem = vscode.window.createStatusBarItem(
-                vscode.StatusBarAlignment.Left
+                vscode.StatusBarAlignment.Left,
             );
             statusBarItem.text = `$(file-directory) RGSS: Set Game Folder`;
             statusBarItem.command = "rgss-script-compiler.setGamePath";
@@ -199,7 +200,7 @@ export namespace Helper {
 
         getUnpackStatusBarItem() {
             const statusBarItem = vscode.window.createStatusBarItem(
-                vscode.StatusBarAlignment.Left
+                vscode.StatusBarAlignment.Left,
             );
             statusBarItem.text = `$(sync~spin) RGSS: Import`;
             statusBarItem.command = "rgss-script-compiler.unpack";
@@ -209,7 +210,7 @@ export namespace Helper {
 
         getCompileStatusBarItem() {
             const statusBarItem = vscode.window.createStatusBarItem(
-                vscode.StatusBarAlignment.Left
+                vscode.StatusBarAlignment.Left,
             );
             statusBarItem.text = `$(sync) RGSS: Compile`;
             statusBarItem.command = "rgss-script-compiler.compile";
@@ -219,7 +220,7 @@ export namespace Helper {
 
         getGameFolderPathStatusBarItem(projectPath: vscode.Uri) {
             const statusBarItem = vscode.window.createStatusBarItem(
-                vscode.StatusBarAlignment.Left
+                vscode.StatusBarAlignment.Left,
             );
             statusBarItem.text = `$(pulse) Game Path: ${projectPath.fsPath}`;
             statusBarItem.backgroundColor = "yellow";
@@ -229,7 +230,7 @@ export namespace Helper {
 
         getOpenGameFolderButtonItem() {
             const statusBarItem = vscode.window.createStatusBarItem(
-                vscode.StatusBarAlignment.Left
+                vscode.StatusBarAlignment.Left,
             );
             statusBarItem.text = `$(folder) RGSS: Open Game Folder`;
             statusBarItem.command = "rgss-script-compiler.openGameFolder";
@@ -256,25 +257,36 @@ export namespace Helper {
     export const createScriptProviderFunction = (
         helper: Helper.Extension,
         configService: ConfigService,
-        loggingService: LoggingService
+        loggingService: LoggingService,
     ) => {
         if (!helper.getScriptProvider()) {
             loggingService.info("Importing the scripts....");
 
             const scriptViewerPath = Path.resolve(
-                configService.getMainGameFolder()
+                configService.getMainGameFolder(),
             );
             const scriptProvider = new ScriptExplorerProvider(
                 scriptViewerPath,
-                loggingService
+                loggingService,
+                configService,
             );
 
             helper.setScriptProvider(scriptProvider);
 
-            vscode.window.registerTreeDataProvider(
-                "rgssScriptViewer",
-                scriptProvider
-            );
+            const context = configService.getExtensionContext();
+
+            const view = vscode.window.createTreeView("rgssScriptViewer", {
+                treeDataProvider: scriptProvider,
+                showCollapseAll: true,
+                canSelectMany: true,
+                dragAndDropController: scriptProvider,
+            });
+            context.subscriptions.push(view);
+
+            // vscode.window.registerTreeDataProvider(
+            //     "rgssScriptViewer",
+            //     scriptProvider,
+            // );
         }
     };
 }

@@ -31,10 +31,17 @@ export enum DialogOption {
     NO = "No",
 }
 const IGNORE_BLACK_LIST_REGEXP = /^[\d]{3}\-(?:Untitled)\_[\d]+/gi;
+const DND_TREE_VIEW_ID = "application/vnd.code.tree.rgssScriptViewer";
 
 export class ScriptExplorerProvider
-    implements vscode.TreeDataProvider<ScriptSection>, vscode.Disposable
+    implements
+        vscode.TreeDataProvider<ScriptSection>,
+        vscode.TreeDragAndDropController<ScriptSection>,
+        vscode.Disposable
 {
+    dropMimeTypes = [DND_TREE_VIEW_ID];
+    dragMimeTypes = ["text/uri-list"];
+
     private _scriptDirectory = "Scripts";
     private _watcher?: TreeFileWatcher;
     private _scriptFolderRootWatcher?: TreeFileWatcher;
@@ -43,6 +50,7 @@ export class ScriptExplorerProvider
     constructor(
         private workspaceRoot: string,
         private readonly loggingService: LoggingService,
+        private readonly configService: ConfigService,
     ) {
         this.initWithFileWatcher();
         this.initWithScriptFolderWatcher();
@@ -116,6 +124,38 @@ export class ScriptExplorerProvider
         if (oldScriptSection) {
             this.renameTreeItem(oldScriptSection, newUrl);
         }
+    }
+
+    /**
+     * 드롭 시 호출되는 이벤트
+     *
+     * @param target 옮길 위치
+     * @param sources 드래그한 트리 노드
+     * @param token
+     * @returns
+     */
+    public async handleDrop(
+        target: ScriptSection | undefined,
+        sources: vscode.DataTransfer,
+        token: vscode.CancellationToken,
+    ): Promise<void> {
+        const transferItem = sources.get(DND_TREE_VIEW_ID);
+        if (!transferItem) {
+            return;
+        }
+
+        this.loggingService.info("target:" + JSON.stringify(target));
+        this.loggingService.info(
+            "sources:" + JSON.stringify(transferItem.value),
+        );
+    }
+
+    public handleDrag(
+        source: readonly ScriptSection[],
+        dataTransfer: vscode.DataTransfer,
+        token: vscode.CancellationToken,
+    ): void | Thenable<void> {
+        dataTransfer.set(DND_TREE_VIEW_ID, new vscode.DataTransferItem(source));
     }
 
     private renameTreeItem(oldItem: ScriptSection, newUrl: vscode.Uri) {
@@ -192,7 +232,7 @@ export class ScriptExplorerProvider
     }
 
     /**
-     * Refresh the tree data in the script explorer.
+     * 스크립트 탐색기를 갱신합니다.
      */
     refresh(): void {
         this._onDidChangeTreeData.fire();
