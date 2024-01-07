@@ -114,8 +114,6 @@ describe("Marshal.load", () => {
             ],
         );
 
-        console.log(scripts);
-
         const data = Marshal.dump(scripts);
 
         fs.writeFileSync(outputFile, data);
@@ -134,12 +132,10 @@ describe("Marshal.load", () => {
 
                 const scriptContent = Store.zlibInflate(content);
                 const scriptName = Buffer.from(name).toString("utf-8");
-                console.log("name", scriptName);
 
                 if (scriptName === "Main") {
                     main.name = scriptName;
                     main.content = scriptContent;
-                    console.log(scriptContent);
                 }
             }
 
@@ -151,7 +147,7 @@ describe("Marshal.load", () => {
         expect(main.name).toEqual("Main");
     });
 
-    it("스크립트를 읽고, load & dump하여 파일이 같은 지 확인한다.", () => {
+    it("배열을 만들고 CRuby의 Marshal과 동일한 결과인지 확인한다", () => {
         function getHash(filePath: string) {
             const fileBuffer = fs.readFileSync(filePath);
 
@@ -190,7 +186,32 @@ describe("Marshal.load", () => {
         const crc1 = getHash(targetFile);
         const crc2 = getHash(outputFile);
 
-        // 같은 파일이 아님
+        // 결론: Ruby의 Marshal과 동일한 결과물을 만들어내지 않는다.
+        expect(crc1).toEqual(crc2);
+    });
+
+    it("CRuby의 Marshal의 결과물을 @hyrious/marshal로 dump을 떴을 때 동일한 지 확인한다.", () => {
+        function getHash(filePath: string) {
+            const fileBuffer = fs.readFileSync(filePath);
+
+            const hash = crypto.createHash("sha256");
+            hash.update(fileBuffer);
+
+            const fileHash = hash.digest("hex");
+
+            return fileHash;
+        }
+
+        // 스크립트를 읽는다.
+        const scripts = Marshal.load(file) as ScriptTuple[];
+        const data = Marshal.dump(scripts);
+
+        fs.writeFileSync(outputFile, data);
+
+        const crc1 = getHash(targetFile);
+        const crc2 = getHash(outputFile);
+
+        // 결론: crc1와 crc2는 다르므로 서로 다른 결과물을 만들어낸다.
         expect(crc1).toEqual(crc2);
     });
 
