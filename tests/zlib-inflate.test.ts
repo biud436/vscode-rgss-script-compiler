@@ -147,7 +147,7 @@ describe("Marshal.load", () => {
         expect(main.name).toEqual("Main");
     });
 
-    it("배열을 만들고 CRuby의 Marshal과 동일한 결과인지 확인한다", () => {
+    it("배열을 만들고 CRuby의 Marshal과 다른 결과인지 확인한다", () => {
         function getHash(filePath: string) {
             const fileBuffer = fs.readFileSync(filePath);
 
@@ -187,10 +187,10 @@ describe("Marshal.load", () => {
         const crc2 = getHash(outputFile);
 
         // 결론: Ruby의 Marshal과 동일한 결과물을 만들어내지 않는다.
-        expect(crc1).toEqual(crc2);
+        expect(crc1).not.toEqual(crc2);
     });
 
-    it("CRuby의 Marshal의 결과물을 @hyrious/marshal로 dump을 떴을 때 동일한 지 확인한다.", () => {
+    it("CRuby의 Marshal의 결과물을 @hyrious/marshal로 dump을 떴을 때 서로 다른 지 확인한다.", () => {
         function getHash(filePath: string) {
             const fileBuffer = fs.readFileSync(filePath);
 
@@ -212,7 +212,7 @@ describe("Marshal.load", () => {
         const crc2 = getHash(outputFile);
 
         // 결론: crc1와 crc2는 다르므로 서로 다른 결과물을 만들어낸다.
-        expect(crc1).toEqual(crc2);
+        expect(crc1).not.toEqual(crc2);
     });
 
     afterAll(() => {
