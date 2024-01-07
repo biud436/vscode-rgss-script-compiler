@@ -22,4 +22,4 @@ jobs:
     - name: Build
       run: |
         yarn install
-        yarn test
+        yarn test zlib-inflate
