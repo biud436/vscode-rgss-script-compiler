@@ -1,5 +1,9 @@
 # Version Log
 
+## 1.0.0 - 10 Mar 2024
+
+-   Added a new feature that can drag and drop
+
 ## 0.9.3 - 09 Dec 2023
 
 -   Fixed an issue where filenames were always set to ASCII-8BIT [(#23)](https://github.com/biud436/vscode-rgss-script-compiler/issues/23)

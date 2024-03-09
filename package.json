@@ -3,7 +3,7 @@
     "displayName": "RGSS Script Compiler",
     "description": "This extension allows you to compile script files as a bundle file called 'Scripts.rvdata2'",
     "repository": "https://github.com/biud436/vscode-rgss-script-compiler",
-    "version": "0.9.2",
+    "version": "1.0.0",
     "engines": {
         "vscode": "^1.81.0"
     },
@@ -212,14 +212,11 @@
         "pretest": "yarn run compile && yarn run lint",
         "lint": "eslint src --ext ts",
         "vsc:test": "node ./out/test/runTest.js",
-        "test": "jest --config jest.config.js",
         "publish": "vsce package"
     },
     "devDependencies": {
         "@prettier/plugin-ruby": "^4.0.2",
         "@types/glob": "^8.1.0",
-        "@types/jest": "^29.5.11",
-        "@types/mocha": "^10.0.1",
         "@types/node": "20.x",
         "@types/vscode": "^1.81.0",
         "@typescript-eslint/eslint-plugin": "^6.3.0",
@@ -228,11 +225,8 @@
         "babel-jest": "^29.7.0",
         "eslint": "^8.46.0",
         "glob": "^10.3.3",
-        "jest": "^29.7.0",
-        "mocha": "^10.2.0",
         "prettier": "^3.0.1",
         "reflect-metadata": "^0.1.13",
-        "ts-jest": "^29.1.1",
         "typescript": "^5.1.6"
     },
     "dependencies": {

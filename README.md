@@ -18,8 +18,6 @@ This extension allows you to edit scripts directly in Visual Studio Code without
 
 </p>
 
-This extension is a beta version that has not been tested elaborately. We have secured stability by correcting problems such as third-party scripts, but please back up the scripts in advance.
-
 # System Requirements
 
 ## Windows
@@ -35,13 +33,6 @@ This extension is a beta version that has not been tested elaborately. We have s
 
 -   Ruby version 2.6.8 or higher must be installed on your system.
 -   Wine (preferably the latest version)
-
-# Change Log
-
-## 0.9.3 - 09 Dec 2023
-
--   Fixed an issue where filenames were always set to ASCII-8BIT [(#23)](https://github.com/biud436/vscode-rgss-script-compiler/issues/23)
--   Added stack trace code to the Ruby code.
 
 # Marketplace Link
 

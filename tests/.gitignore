@@ -1,2 +1,3 @@
 *.test.js
 *.js.map
+*.ts2
