@@ -144,11 +144,32 @@ export class ScriptExplorerProvider
             return;
         }
 
-        this.loggingService.info("target:" + JSON.stringify(target));
-        this.loggingService.info(
-            "sources:" + JSON.stringify(transferItem.value),
-        );
+        const source = transferItem.value as ScriptSection[];
+
+        if (source.length === 0) {
+            return;
+        }
+
+        const oldItem = source[0];
+        const newItem = target;
+
+        if (!newItem) {
+            return;
+        }
+
+        if (oldItem.id === newItem.id) {
+            return;
+        }
+
+        this.moveScriptSection(oldItem, newItem);
     }
+
+    /**
+     *
+     * @param source
+     * @param dataTransfer
+     * @param token
+     */
 
     public handleDrag(
         source: readonly ScriptSection[],
@@ -156,6 +177,28 @@ export class ScriptExplorerProvider
         token: vscode.CancellationToken,
     ): void | Thenable<void> {
         dataTransfer.set(DND_TREE_VIEW_ID, new vscode.DataTransferItem(source));
+    }
+
+    /**
+     * 드래그를 통해 이동한 스크립트를 탐색기에 반영합니다.
+     *
+     * @param oldItem
+     * @param newItem
+     */
+    private moveScriptSection(oldItem: ScriptSection, newItem: ScriptSection) {
+        const oldIndex = this._tree?.findIndex(
+            (item) => item.id === oldItem.id,
+        );
+        const newIndex = this._tree?.findIndex(
+            (item) => item.id === newItem.id,
+        );
+
+        if (oldIndex !== undefined && newIndex !== undefined) {
+            this._tree?.splice(oldIndex, 1);
+            this._tree?.splice(newIndex, 0, oldItem);
+        }
+
+        this.refresh();
     }
 
     private renameTreeItem(oldItem: ScriptSection, newUrl: vscode.Uri) {
@@ -519,8 +562,8 @@ export class ScriptExplorerProvider
     }
 
     /**
-     * Parse each lines from a file called 'info.txt' and extract the script title.
-     * and then next this method will be created an each script tree data.
+     * 루비로 작성된 스크립트 추출기를 통해 스크립트 목록 파일을 생성합니다.
+     * 이렇게 생성된 info.txt 파일로부터 스크립트 목록을 파싱하여 트리 데이터를 생성합니다.
      */
     private parseScriptSectionFromList(): ScriptSection[] {
         const targetFilePath = path.posix.join(

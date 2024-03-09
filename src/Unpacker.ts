@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import * as fs from "fs";
 import * as path from "path";
 import { ConfigService } from "./services/ConfigService";
@@ -8,6 +9,11 @@ import {
 } from "./commands/ExtractScriptFiles";
 import { Path } from "./utils/Path";
 
+const message = {
+    UNPACKER_NOT_READY: "Unpacker is not ready.",
+    JOB_COMPLETED: "Job completed.",
+};
+
 namespace RGSS {
     export const TARGET_SCRIPT_FILE_NAME = "Scripts.rvdata2";
     export class Unpacker {
@@ -17,7 +23,7 @@ namespace RGSS {
         constructor(
             protected readonly configService: ConfigService,
             protected readonly loggingService: LoggingService,
-            protected readonly successCallback?: () => void
+            protected readonly successCallback?: () => void,
         ) {
             this._targetFile = "";
             this._isReady = false;
@@ -42,7 +48,7 @@ namespace RGSS {
             if (!fs.existsSync(targetFile)) {
                 this.loggingService.info(`${targetFile} not found.`);
                 throw new Error(
-                    `Data/${ConfigService.TARGET_SCRIPT_FILE_NAME} not found.`
+                    `Data/${ConfigService.TARGET_SCRIPT_FILE_NAME} not found.`,
                 );
             }
 
@@ -68,8 +74,8 @@ namespace RGSS {
          */
         unpack() {
             if (!this._isReady) {
-                this.loggingService.info("Unpacker is not ready.");
-                throw new Error("Unpacker is not ready.");
+                this.loggingService.info(message.UNPACKER_NOT_READY);
+                throw new Error(message.UNPACKER_NOT_READY);
             }
 
             this.updateTargetFile();
@@ -82,7 +88,7 @@ namespace RGSS {
                     this.loggingService,
                     {
                         vscodeWorkspaceFolder: Path.resolve(
-                            this.configService.getVSCodeWorkSpace()
+                            this.configService.getVSCodeWorkSpace(),
                         ),
                         scriptFile: targetFile,
                     },
@@ -90,14 +96,14 @@ namespace RGSS {
                         if (err) {
                             this.loggingService.info(err);
                         }
-                        this.loggingService.info("Job completed.");
-                    }
+                        this.loggingService.info(message.JOB_COMPLETED);
+                    },
                 );
 
                 extractScriptFiles(
                     this.loggingService,
                     rubyScriptService,
-                    this.successCallback
+                    this.successCallback,
                 );
             } catch (e) {
                 this.loggingService.info((<Error>e).message);

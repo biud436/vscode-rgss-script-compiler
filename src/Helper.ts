@@ -52,7 +52,6 @@ export namespace Helper {
             return vscode.commands.registerCommand(
                 "rgss-script-compiler.setGamePath",
                 async () => {
-                    this.loggingService.info("[1]");
                     await setGamePath(this.configService, this.loggingService);
                     this.configService.ON_LOAD_GAME_FOLDER.event(
                         (gameFolder) => {
@@ -70,7 +69,6 @@ export namespace Helper {
             return vscode.commands.registerCommand(
                 "rgss-script-compiler.save",
                 async () => {
-                    this.loggingService.info("save");
                     await this.configService.detectRGSSVersion();
                     await vscode.commands.executeCommand(
                         "workbench.action.files.save",
@@ -99,7 +97,6 @@ export namespace Helper {
             return vscode.commands.registerCommand(
                 "rgss-script-compiler.unpack",
                 () => {
-                    this.loggingService.info("[2]");
                     if (!this.configService) {
                         this.loggingService.info(
                             "There is no workspace folder.",
@@ -282,11 +279,6 @@ export namespace Helper {
                 dragAndDropController: scriptProvider,
             });
             context.subscriptions.push(view);
-
-            // vscode.window.registerTreeDataProvider(
-            //     "rgssScriptViewer",
-            //     scriptProvider,
-            // );
         }
     };
 }
