@@ -53,7 +53,7 @@ This extension is a beta version that has not been tested elaborately. We have s
 -   The workspace is not automatically set to the initial game folder. This is because the workspace and game folders may be different.
 -   This extension is not always active. The Game.ini file must be located in the root game folder to activate it.
 -   The extension will activate the remaining buttons only when a game folder is selected. However, if the rgss-compiler.json file exists, it will be automatically activated. When VS Code starts up, the Import or Compile button will be automatically activated if this file exists.
--   Do not compile scripts while RPG Maker XP or RPG Maker VX Ace is running. The script information in RPG Maker exists in the form of a global variable in memory based on the initial imported file content (Scripts.rvdata2), and does not detect changes made to the file. Manipulating memory based on the contents of the file requires heap memory manipulation in the tool, such as CreateRemoteThread or DLL Injection to directly penetrate the target process and implement a kind of hack, such as the RPG Maker tool's Virtual Memory. When loaded with RGSS301.dll, etc. using CreateRemoteThread, one thread is executed, and if you attach a specific script at that time, you can implement a hack like a cheat engine.
+-   Do not compile scripts while RPG Maker XP or RPG Maker VX Ace is running.
 
 # Supported tools
 
