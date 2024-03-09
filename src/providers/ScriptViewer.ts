@@ -199,6 +199,7 @@ export class ScriptExplorerProvider
         }
 
         this.refresh();
+        this.refreshListFile();
     }
 
     private renameTreeItem(oldItem: ScriptSection, newUrl: vscode.Uri) {
