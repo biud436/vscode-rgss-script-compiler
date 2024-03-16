@@ -7,6 +7,7 @@ import { isInstalledRuby } from "./commands/CheckRuby";
 import { Helper } from "./Helper";
 import { StatusbarProvider } from "./providers/StatusbarProvider";
 import { store } from "./store/GlobalStore";
+import { Events } from "./events/EventHandler";
 
 let statusbarProvider: StatusbarProvider;
 
@@ -19,13 +20,16 @@ export function activate(context: vscode.ExtensionContext) {
     // ! Step 1: Logging Service
     const loggingService = new LoggingService();
 
+    Events.on("info", (message: string) => loggingService.info(message));
+    Events.emit("info", "RGSS Script Compiler[Extension] has been activated.");
+
     // ! Step 2: Config Service
     const configService = new ConfigService(loggingService);
     configService.setExtensionContext(context);
 
     // ! Step 3: Ruby Check
     const isRubyOK = isInstalledRuby();
-    loggingService.info(`Ruby installed: ${isRubyOK}`);
+    Events.emit("info", `Ruby installed: ${isRubyOK}`);
     if (!isRubyOK) {
         vscode.window.showErrorMessage(
             "Can't find Ruby. Please install Ruby and try again.",
@@ -35,9 +39,8 @@ export function activate(context: vscode.ExtensionContext) {
     store.setIsRubyInstalled(isRubyOK);
 
     // ! Step 4: Set the workspace folder.
-
     if (!vscode.workspace.workspaceFolders) {
-        loggingService.info("Workspace Folder is not specified.");
+        Events.emit("info", "Workspace Folder is not specified.");
         throw new Error("Workspace Folder is not specified.");
     }
 
@@ -57,7 +60,7 @@ export function activate(context: vscode.ExtensionContext) {
         statusbarProvider,
     );
 
-    loggingService.info("RGSS Script Compiler has executed successfully");
+    Events.emit("info", "RGSS Script Compiler has executed successfully");
 
     statusbarProvider.create();
 
@@ -73,7 +76,7 @@ export function activate(context: vscode.ExtensionContext) {
                 configService,
                 loggingService,
             );
-            loggingService.info("configService.loadConfig(loggingService)");
+            Events.emit("info", "configService.loadConfig(loggingService)");
         })
         .catch((e) => {
             console.warn(e);
@@ -89,7 +92,7 @@ export function activate(context: vscode.ExtensionContext) {
             loggingService,
         );
         statusbarProvider.show();
-        loggingService.info("configService.ON_LOAD_GAME_FOLDER.event()");
+        Events.emit("info", "configService.ON_LOAD_GAME_FOLDER.event()");
     });
 
     // Sets Subscriptions.
@@ -130,7 +133,7 @@ export function activate(context: vscode.ExtensionContext) {
                     if (
                         path.posix.join(e.path).includes("rgss-compiler.json")
                     ) {
-                        loggingService.info("rgss-compiler.json is deleted.");
+                        Events.emit("info", "rgss-compiler.json is deleted.");
 
                         statusbarProvider.hide();
                     }
