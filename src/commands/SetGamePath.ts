@@ -1,6 +1,5 @@
 import * as vscode from "vscode";
 import { ConfigService } from "../services/ConfigService";
-import { LoggingService } from "../services/LoggingService";
 
 /**
  * This function is responsible for setting the main game folder to config file.
@@ -8,10 +7,7 @@ import { LoggingService } from "../services/LoggingService";
  * @param configService
  * @param loggingService
  */
-export async function setGamePath(
-    configService: ConfigService,
-    loggingService: LoggingService
-) {
+export async function setGamePath(configService: ConfigService) {
     const value = await vscode.window.showOpenDialog({
         canSelectFiles: false,
         canSelectFolders: true,

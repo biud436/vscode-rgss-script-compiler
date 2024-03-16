@@ -10,6 +10,7 @@ import { openGameFolder } from "./commands/OpenGameFolder";
 import { GamePlayService } from "./commands/TestGamePlay";
 import { ScriptExplorerProvider } from "./providers/ScriptViewer";
 import { StatusbarProvider } from "./providers/StatusbarProvider";
+import { Events } from "./events/EventHandler";
 
 /**
  * @namespace Helper
@@ -52,10 +53,11 @@ export namespace Helper {
             return vscode.commands.registerCommand(
                 "rgss-script-compiler.setGamePath",
                 async () => {
-                    await setGamePath(this.configService, this.loggingService);
+                    await setGamePath(this.configService);
                     this.configService.ON_LOAD_GAME_FOLDER.event(
                         (gameFolder) => {
-                            this.loggingService.info(
+                            Events.emit(
+                                "info",
                                 `Game folder is changed to ${gameFolder}`,
                             );
                             this.statusbarProvider.show();
@@ -98,9 +100,7 @@ export namespace Helper {
                 "rgss-script-compiler.unpack",
                 () => {
                     if (!this.configService) {
-                        this.loggingService.info(
-                            "There is no workspace folder.",
-                        );
+                        Events.emit("info", "There is no workspace folder.");
                         return;
                     }
 
@@ -113,7 +113,7 @@ export namespace Helper {
                                     "rgss-script-compiler.refreshScriptExplorer",
                                 )
                                 .then(() => {
-                                    this.loggingService.info("refreshed");
+                                    Events.emit("info", "refreshed");
                                 });
                         },
                     );
@@ -127,9 +127,7 @@ export namespace Helper {
                 "rgss-script-compiler.compile",
                 () => {
                     if (!this.configService) {
-                        this.loggingService.info(
-                            "There is no workspace folder.",
-                        );
+                        Events.emit("info", "There is no workspace folder.");
                         return;
                     }
 
@@ -257,7 +255,7 @@ export namespace Helper {
         loggingService: LoggingService,
     ) => {
         if (!helper.getScriptProvider()) {
-            loggingService.info("Importing the scripts....");
+            Events.emit("info", "Importing the scripts....");
 
             const scriptViewerPath = Path.resolve(
                 configService.getMainGameFolder(),
