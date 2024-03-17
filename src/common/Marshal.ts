@@ -19,7 +19,7 @@ export class Marshal {
      */
     static load(
         data: string | Uint8Array | ArrayBuffer,
-        options?: LoadOptions,
+        options?: LoadOptions | undefined,
     ): ScriptTuple[] {
         return load(data, {
             ...options,
@@ -28,7 +28,9 @@ export class Marshal {
         }) as ScriptTuple[];
     }
 
-    static dump(value: unknown, options?: DumpOptions): Uint8Array {
-        return dump(value);
+    static dump(data: unknown, options?: DumpOptions | undefined): Uint8Array {
+        return dump(data, {
+            ...options,
+        });
     }
 }
