@@ -31,10 +31,21 @@ export class EncryptionManager {
         const scripts = Marshal.load(scriptFile);
 
         const scriptNames: string[] = [];
+
+        let scriptIndex = 0;
+
         for (const script of scripts) {
             const [, name, content] = script;
             const scriptContent = EncryptionManager.zlibInflate(content);
             const scriptName = Buffer.from(name).toString("utf-8");
+
+            // add index prefix like as "001" to title
+            const prefix = scriptIndex.toString().padStart(3, "0");
+
+            let title = `${prefix}-${scriptName}`;
+            if (!title || title === "" || title.length === 0) {
+                title = `${prefix}-Untitled`;
+            }
 
             // IO 병목
             await fs.promises.writeFile(
@@ -44,6 +55,7 @@ export class EncryptionManager {
             );
 
             scriptNames.push(scriptName);
+            scriptIndex++;
         }
 
         fs.writeFileSync(
