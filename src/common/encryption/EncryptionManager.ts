@@ -49,12 +49,12 @@ export class EncryptionManager {
 
             // IO 병목
             await fs.promises.writeFile(
-                path.join(targetFolder, `${scriptName}.rb`),
+                path.join(targetFolder, `${title}.rb`),
                 scriptContent,
                 "utf-8",
             );
 
-            scriptNames.push(scriptName);
+            scriptNames.push(title);
             scriptIndex++;
         }
 
