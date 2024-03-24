@@ -6,6 +6,9 @@ import { Marshal } from "../Marshal";
 import { Path } from "../../utils/Path";
 
 export class EncryptionManager {
+    /**
+     * Inflate a zlib compressed string.
+     */
     static zlibInflate(str: Buffer): string {
         const z = zlib.inflateSync(str);
 
@@ -39,7 +42,6 @@ export class EncryptionManager {
             const scriptContent = EncryptionManager.zlibInflate(content);
             const scriptName = Buffer.from(name).toString("utf-8");
 
-            // add index prefix like as "001" to title
             const prefix = scriptIndex.toString().padStart(3, "0");
 
             let title = `${prefix}-${scriptName}`;
@@ -47,7 +49,6 @@ export class EncryptionManager {
                 title = `${prefix}-Untitled`;
             }
 
-            // IO 병목
             await fs.promises.writeFile(
                 path.join(targetFolder, `${title}.rb`),
                 scriptContent,
